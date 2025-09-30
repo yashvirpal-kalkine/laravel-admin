@@ -4,6 +4,7 @@ set -e
 echo "🟢 Starting Laravel container setup..."
 
 echo "Fixing storage and bootstrap/cache permissions..."
+mkdir -p /var/www/html/storage/framework/sessions
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
 
@@ -29,7 +30,10 @@ php artisan optimize || true
 
 
 # Run migrations + seed safely
-php artisan migrate:fresh --seed --force || true
+#php artisan migrate:fresh --seed --force || true
+#php artisan db:seed --force || true
+php artisan migrate --force || true
+
 
 # Start PHP-FPM in foreground
 exec php-fpm -F
