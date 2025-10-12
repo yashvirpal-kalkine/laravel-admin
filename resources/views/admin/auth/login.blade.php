@@ -2,11 +2,12 @@
 <html>
 <head>
     <title>Admin Login</title>
+          @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
 <h2>Admin Login</h2>
 
-<form method="POST" action="{{ route('admin.login') }}">
+<form method="POST" action="{{ route('admin.login.submit') }}">
     @csrf
     <div>
         <label>Email</label>

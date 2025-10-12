@@ -8,7 +8,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('admin.guest')->group(function () {
         Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-        Route::post('/login', [LoginController::class, 'login']);
+        Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
     });
 
     Route::middleware('admin')->group(function () {
