@@ -6,6 +6,8 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+use App\Models\Admin; // Make sure this import matches your model's namespace
+use Illuminate\Support\Facades\Hash;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -17,7 +19,18 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test@localhost.com',
+            'password' => Hash::make('password'),
+        ]);
+        Admin::create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@localhost.com',
+            'password' => Hash::make('password'),
+        ]);
+        Admin::create([
+            'name' => 'Admin',
+            'email' => 'admin@localhost.com',
+            'password' => Hash::make('password'),
         ]);
     }
 }
