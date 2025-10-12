@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Admin Login</title>
-          @vite(['resources/css/app.css', 'resources/js/app.js'])
+         @vite(['resources/css/admin.css', 'resources/js/admin.js'])
 </head>
 <body>
 <h2>Admin Login</h2>
