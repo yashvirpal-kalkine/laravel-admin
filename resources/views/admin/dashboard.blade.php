@@ -967,6 +967,8 @@
     <!-- /.col -->
 </div>
 <!--end::Row-->
+
+
 <!-- OPTIONAL SCRIPTS -->
 
 @push('scripts')
