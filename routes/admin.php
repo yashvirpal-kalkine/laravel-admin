@@ -26,5 +26,29 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::resource('users.addresses', \App\Http\Controllers\Admin\AddressController::class)->shallow();
+
+
+        // Categories
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+
+    // Tags
+    Route::resource('tags', \App\Http\Controllers\Admin\TagController::class);
+
+    // Products
+    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+
+    // Orders
+    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+
+    // Invoices
+    Route::resource('invoices', \App\Http\Controllers\Admin\InvoiceController::class);
+
+      Route::resource('bcategories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+    Route::resource('btags', \App\Http\Controllers\Admin\BlogTagController::class);
+    Route::resource('posts', \App\Http\Controllers\Admin\BlogPostController::class);
+
+    Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
+    Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
+
     });
 });

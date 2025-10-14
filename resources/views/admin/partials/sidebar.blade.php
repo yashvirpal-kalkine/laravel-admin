@@ -24,60 +24,99 @@
                         <p>Users</p>
                     </a>
                 </li>
-                {{-- <li class="nav-item {{ request()->routeIs('admin.users.*') ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-people"></i>
-                    <p>
-                        Users
-                        <i class="end bi bi-chevron-down"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="{{ route('admin.users.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                            <i class="bi bi-circle nav-icon"></i>
-                            <p>All Users</p>
-                        </a>
-                    </li>
-                </ul>
-                </li> --}}
 
-                <!-- <li class="nav-item menu-open">
-                    <a href="#" class="nav-link active">
-                        <i class="nav-icon bi bi-speedometer"></i>
-                        <p>
-                            Dashboard
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
+                <li class="nav-item">
+                    <a href="{{ route('admin.transactions.index') }}" class="nav-link {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-currency-dollar"></i>
+                        <p>Transactions</p>
+                    </a>
+                </li>
+
+                <li class="nav-item {{ request()->routeIs('admin.ecommerce.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->routeIs('admin.ecommerce.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-cart4"></i>
+                        <p>E-Commerce <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./index.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Dashboard v1</p>
+                            <a href="{{ route('admin.categories.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-tags"></i>
+                                <p>Categories</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index2.html" class="nav-link active">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Dashboard v2</p>
+                            <a href="{{ route('admin.tags.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-tag"></i>
+                                <p>Tags</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Dashboard v3</p>
+                            <a href="{{ route('admin.products.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-box-seam"></i>
+                                <p>Products</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.orders.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-bag-check"></i>
+                                <p>Orders</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.invoices.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-receipt"></i>
+                                <p>Invoices</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="./generate/theme.html" class="nav-link">
-                        <i class="nav-icon bi bi-palette"></i>
-                        <p>Theme Generate</p>
+
+               
+                <li class="nav-item {{ request()->routeIs('admin.blog.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-journal-text"></i>
+                        <p>Blogs <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
-                </li> -->
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.bcategories.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.bcategories.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-folder2-open"></i>
+                                <p>Categories</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.btags.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.btags.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-tags"></i>
+                                <p>Tags</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.posts.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-file-earmark-text"></i>
+                                <p>Posts</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-layout-text-window-reverse"></i>
+                        <p>Pages</p>
+                    </a>
+                </li>
+
+
+
             </ul>
         </nav>
     </div>
