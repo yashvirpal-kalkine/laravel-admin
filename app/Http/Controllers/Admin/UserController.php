@@ -11,11 +11,28 @@ use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with(['billingAddresses', 'shippingAddresses'])->paginate(15);
-        return view('admin.users.index', compact('users'));
+        $query = User::query();
+
+        // Search by name, email, or phone
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->with(['billingAddresses', 'shippingAddresses'])->orderBy('id', 'desc')->paginate(1);
+
+        // Keep the search query in pagination links
+        $users->appends($request->all());
+
+        return view('admin.users.index', compact('users', 'search'));
     }
+
+
 
     public function create()
     {
@@ -29,6 +46,7 @@ class UserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'status' => $request->has('status'),
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
@@ -45,6 +63,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'status' => $request->has('status'),
         ]);
 
         if ($request->filled('password')) {

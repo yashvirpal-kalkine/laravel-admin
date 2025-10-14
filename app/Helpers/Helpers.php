@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Illuminate\Support\HtmlString;
 
 if (!function_exists('isActiveRoute')) {
     /**
@@ -56,6 +57,21 @@ if (!function_exists('formatCurrency')) {
     function formatCurrency($amount, $symbol = '$', $decimals = 2)
     {
         return $symbol . number_format($amount, $decimals, '.', ',');
+    }
+
+    if (!function_exists('status_badge')) {
+        function status_badge($status): HtmlString
+        {
+            $statuses = [
+                1 => ['Active', 'success'],
+                0 => ['Inactive', 'danger'],
+                2 => ['Suspended', 'warning'],
+            ];
+
+            [$label, $color] = $statuses[$status] ?? ['Unknown', 'secondary'];
+
+            return new HtmlString("<span class='badge bg-{$color}'>{$label}</span>");
+        }
     }
 
     //     <!-- <a href="{{ route('admin.dashboard') }}" class="nav-link {{ isActiveRoute('admin.dashboard') }}">

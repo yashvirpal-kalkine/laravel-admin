@@ -11,9 +11,8 @@ $user->name => route('admin.users.edit', $user->id),
 ];
 @endphp
 
-<div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Addresses for {{ $user->name }}</h5>
+<div class="card card-primary card-outline mb-4">
+    <div class="card-header d-flex justify-content-end align-items-center">
         <a href="{{ route('admin.users.addresses.create', $user->id) }}" class="btn btn-primary btn-sm">+ Add Address</a>
     </div>
 

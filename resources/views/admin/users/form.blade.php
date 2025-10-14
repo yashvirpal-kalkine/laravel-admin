@@ -10,9 +10,9 @@ $title => ''
 ];
 @endphp
 
-<div class="card shadow-sm">
-    <div class="card-header">
-        <h5 class="mb-0">{{ $title }}</h5>
+<div class="card card-primary card-outline mb-4">
+    <div class="card-header d-flex justify-content-end align-items-center">
+        <a href="{{ route('admin.users.index') }}" class="btn btn-primary btn-sm">+ Back to List</a>
     </div>
     <div class="card-body">
         <form action="{{ isset($user) && $user->exists ? route('admin.users.update', $user->id) : route('admin.users.store') }}" method="POST">
@@ -48,6 +48,14 @@ $title => ''
                     <label class="form-label">Confirm Password</label>
                     <input type="password" name="password_confirmation" class="form-control">
                 </div>
+                <div class="mb-3 col-md-6">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="status" value="1"
+                            id="statusSwitch" {{ old('status', $user->status ?? true) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="statusSwitch">Active</label>
+                    </div>
+                </div>
+
             </div>
             <button type="submit" class="btn btn-primary">{{ isset($user) && $user->exists ? 'Update' : 'Create' }}</button>
             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancel</a>

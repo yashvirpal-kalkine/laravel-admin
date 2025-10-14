@@ -58,9 +58,7 @@ class AddressController extends Controller
     {
         $address->update($request->validated());
 
-        return redirect()
-            ->route('admin.users.addresses.index', $address->user_id)
-            ->with('success', 'Address updated successfully.');
+        return redirect()->route('admin.users.addresses.index', $address->user_id)->with('success', 'Address updated successfully.');
     }
 
     /**
@@ -71,8 +69,6 @@ class AddressController extends Controller
         $userId = $address->user_id;
         $address->delete();
 
-        return redirect()
-            ->route('admin.users.addresses.index', $userId)
-            ->with('success', 'Address deleted successfully.');
+        return redirect()->route('admin.users.addresses.index', $userId)->with('success', 'Address deleted successfully.');
     }
 }

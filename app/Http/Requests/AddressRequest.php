@@ -23,6 +23,7 @@ class AddressRequest extends FormRequest
             'country' => 'required|string|max:100',
             'postal_code' => 'nullable|string|max:20',
             'phone' => 'nullable|string|max:20',
+            'status' => 'nullable|boolean',
         ];
     }
 
