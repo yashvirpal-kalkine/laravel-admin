@@ -57,25 +57,24 @@ if (!function_exists('formatCurrency')) {
     {
         return $symbol . number_format($amount, $decimals, '.', ',');
     }
+
+    //     <!-- <a href="{{ route('admin.dashboard') }}" class="nav-link {{ isActiveRoute('admin.dashboard') }}">
+    //     <i class="nav-icon bi bi-speedometer2"></i>
+    //     <p>Dashboard</p>
+    // </a> -->
+
+    // <!-- Flash messages -->
+    // <!-- @if(session('message'))
+    //     <div class="alert alert-{{ session('message_type', 'success') }}">
+    //         {{ session('message') }}
+    //     </div>
+    // @endif -->
+
+    // <!-- Currency formatting -->
+    // <!-- <p>Total: {{ formatCurrency(12345.678) }}</p>  -->
+    // <!-- Output: $12,345.68 -->
+
+    // <!-- Date formatting -->
+    // <!-- <p>Created at: {{ formatDate($user->created_at) }}</p>  -->
+    // <!-- Output: 14 Oct 2025 -->
 }
-
-?>
-<!-- <a href="{{ route('admin.dashboard') }}" class="nav-link {{ isActiveRoute('admin.dashboard') }}">
-    <i class="nav-icon bi bi-speedometer2"></i>
-    <p>Dashboard</p>
-</a> -->
-
-<!-- Flash messages -->
-<!-- @if(session('message'))
-    <div class="alert alert-{{ session('message_type', 'success') }}">
-        {{ session('message') }}
-    </div>
-@endif -->
-
-<!-- Currency formatting -->
-<!-- <p>Total: {{ formatCurrency(12345.678) }}</p>  -->
-<!-- Output: $12,345.68 -->
-
-<!-- Date formatting -->
-<!-- <p>Created at: {{ formatDate($user->created_at) }}</p>  -->
-<!-- Output: 14 Oct 2025 -->

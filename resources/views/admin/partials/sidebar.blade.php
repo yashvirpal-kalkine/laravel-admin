@@ -19,8 +19,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="./generate/theme.html" class="nav-link">
-                        <i class="nav-icon bi bi-palette"></i>
+                    <a href="{{ route('admin.users.index') }}" class="nav-link {{ isActiveRoute('admin.users.*') }}">
+                        <i class="nav-icon bi bi-people"></i>
                         <p>Users</p>
                     </a>
                 </li>

@@ -24,6 +24,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // 🚪 Logout
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        Route::resource('users.addresses', \App\Http\Controllers\Admin\AddressController::class)->shallow();
     });
 });
