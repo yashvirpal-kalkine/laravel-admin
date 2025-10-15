@@ -45,7 +45,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Invoices
         Route::resource('invoices', \App\Http\Controllers\Admin\AddressController::class);
 
-        Route::resource('bcategories', \App\Http\Controllers\Admin\AddressController::class);
+        Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
         Route::resource('btags', \App\Http\Controllers\Admin\AddressController::class);
         Route::resource('posts', \App\Http\Controllers\Admin\AddressController::class);
 

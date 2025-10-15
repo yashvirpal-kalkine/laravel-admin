@@ -84,8 +84,8 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('admin.bcategories.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.bcategories.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.blog-categories.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.blog-categories.*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-folder2-open"></i>
                                 <p>Categories</p>
                             </a>
