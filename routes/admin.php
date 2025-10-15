@@ -31,7 +31,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
         // Categories
-        Route::resource('categories', \App\Http\Controllers\Admin\AddressController::class);
+        Route::resource('product-categories', \App\Http\Controllers\Admin\ProductCategoryController::class);
 
         // Tags
         Route::resource('tags', \App\Http\Controllers\Admin\AddressController::class);

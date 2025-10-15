@@ -39,8 +39,8 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('admin.categories.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.product-categories.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.product-categories.*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-tags"></i>
                                 <p>Categories</p>
                             </a>
