@@ -91,8 +91,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.btags.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.btags.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.blog-tags.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.blog-tags.*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-tags"></i>
                                 <p>Tags</p>
                             </a>
