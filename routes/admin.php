@@ -49,7 +49,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('btags', \App\Http\Controllers\Admin\AddressController::class);
         Route::resource('posts', \App\Http\Controllers\Admin\AddressController::class);
 
-        Route::resource('pages', \App\Http\Controllers\Admin\AddressController::class);
+        Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
         Route::resource('transactions', \App\Http\Controllers\Admin\AddressController::class);
         // // Categories
         // Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
