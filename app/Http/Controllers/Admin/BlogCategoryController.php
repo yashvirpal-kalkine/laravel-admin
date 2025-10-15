@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BlogCategory;
-use App\Http\Requests\Admin\BlogCategoryRequest;
+use App\Http\Requests\BlogCategoryRequest;
 use Illuminate\Support\Str;
 
 class BlogCategoryController extends Controller

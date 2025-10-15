@@ -47,7 +47,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
         Route::resource('blog-tags', \App\Http\Controllers\Admin\BlogTagController::class);
-        Route::resource('posts', \App\Http\Controllers\Admin\AddressController::class);
+        Route::resource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class);
 
         Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
         Route::resource('transactions', \App\Http\Controllers\Admin\AddressController::class);
@@ -66,11 +66,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // // Invoices
         // Route::resource('invoices', \App\Http\Controllers\Admin\InvoiceController::class);
 
-        // Route::resource('bcategories', \App\Http\Controllers\Admin\BlogCategoryController::class);
-        // Route::resource('btags', \App\Http\Controllers\Admin\BlogTagController::class);
-        // Route::resource('posts', \App\Http\Controllers\Admin\BlogPostController::class);
-
-        // Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
+       
         // Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
 
     });

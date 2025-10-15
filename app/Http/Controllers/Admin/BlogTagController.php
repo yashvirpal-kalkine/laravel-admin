@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BlogTag;
-use App\Http\Requests\Admin\BlogTagRequest;
+use App\Http\Requests\BlogTagRequest;
 use Illuminate\Support\Str;
 
 class BlogTagController extends Controller

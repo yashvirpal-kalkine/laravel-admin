@@ -98,8 +98,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.posts.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.blog-posts.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.blog-posts.*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-file-earmark-text"></i>
                                 <p>Posts</p>
                             </a>
