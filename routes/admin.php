@@ -40,7 +40,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 
         // Orders
-        Route::resource('orders', \App\Http\Controllers\Admin\AddressController::class);
+        Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
 
         // Invoices
         Route::resource('invoices', \App\Http\Controllers\Admin\AddressController::class);

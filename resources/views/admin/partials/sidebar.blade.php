@@ -73,6 +73,13 @@
                                 <p>Invoices</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.invoices.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-receipt"></i>
+                                <p>Coupon</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
