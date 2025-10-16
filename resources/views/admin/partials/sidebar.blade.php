@@ -2,7 +2,8 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
     <div class="sidebar-brand">
         <a href="./index.html" class="brand-link">
-            <img src="{{ asset('backend/assets/img/AdminLTELogo.png') }}" alt="{{ config('app.name') }}" class="brand-image opacity-75 shadow" />
+            <img src="{{ asset('backend/assets/img/AdminLTELogo.png') }}" alt="{{ config('app.name') }}"
+                class="brand-image opacity-75 shadow" />
             <span class="brand-text fw-light">{{ config('app.name') }}</span>
         </a>
 
@@ -10,7 +11,8 @@
 
     <div class="sidebar-wrapper">
         <nav class="mt-2">
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
+                aria-label="Main navigation" data-accordion="false" id="navigation">
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}" class="nav-link {{ isActiveRoute('admin.dashboard') }}">
                         <i class="nav-icon bi bi-speedometer2"></i>
@@ -26,7 +28,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('admin.transactions.index') }}" class="nav-link {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.transactions.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-currency-dollar"></i>
                         <p>Transactions</p>
                     </a>
@@ -74,8 +77,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.invoices.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.coupons.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.coupons.*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-receipt"></i>
                                 <p>Coupon</p>
                             </a>
@@ -83,7 +86,7 @@
                     </ul>
                 </li>
 
-               
+
                 <li class="nav-item {{ request()->routeIs('admin.blog.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-journal-text"></i>
@@ -114,9 +117,10 @@
                     </ul>
                 </li>
 
-                
+
                 <li class="nav-item">
-                    <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.pages.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-layout-text-window-reverse"></i>
                         <p>Pages</p>
                     </a>

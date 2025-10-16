@@ -42,6 +42,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Orders
         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
 
+        // Coupons
+        Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
+
         // Invoices
         Route::resource('invoices', \App\Http\Controllers\Admin\AddressController::class);
 
@@ -51,19 +54,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
         Route::resource('transactions', \App\Http\Controllers\Admin\AddressController::class);
-       
 
-        // // Products
-        // Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 
-        // // Orders
-        // Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
-
-        // // Invoices
-        // Route::resource('invoices', \App\Http\Controllers\Admin\InvoiceController::class);
-
-       
-        // Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
+        Route::resource('settings', \App\Http\Controllers\Admin\SettingController::class);
 
     });
 });
