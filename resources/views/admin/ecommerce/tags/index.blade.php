@@ -2,24 +2,22 @@
 
 @section('content')
     @php
-        $title = 'Blog Tags List';
-        $breadcrumbs = [
-            'Home' => route('admin.dashboard'),
-            'Blog Tags' => ''
-        ];
+        $title = 'Product Tags';
+        $breadcrumbs = ['Home' => route('admin.dashboard'), 'Product Tags' => ''];
     @endphp
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <form action="{{ route('admin.blog-tags.index') }}" method="GET" class="d-flex">
+            <form action="{{ route('admin.product-tags.index') }}" method="GET" class="d-flex">
                 <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by title or slug"
                     value="{{ $search ?? '' }}">
                 <button type="submit" class="btn btn-sm btn-primary ms-2">Search</button>
             </form>
-            <a href="{{ route('admin.blog-tags.create') }}" class="btn btn-primary btn-sm">+ Add Tag</a>
+            <a href="{{ route('admin.product-tags.create') }}" class="btn btn-primary btn-sm">+ Add Tag</a>
         </div>
+
         <div class="card-body">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover align-middle">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -47,16 +45,13 @@
                             </td>
                             <td>{{ $tag->author?->name ?? '-' }}</td>
                             <td class="d-flex gap-1">
-                                <a href="{{ route('admin.blog-tags.edit', $tag->id) }}" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-pencil text-white"></i>
-                                </a>
-                                <form action="{{ route('admin.blog-tags.destroy', $tag->id) }}" method="POST"
+                                <a href="{{ route('admin.product-tags.edit', $tag->id) }}" class="btn btn-warning btn-sm"><i
+                                        class="bi bi-pencil"></i></a>
+                                <form action="{{ route('admin.product-tags.destroy', $tag->id) }}" method="POST"
                                     onsubmit="return confirm('Delete this tag?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash text-white"></i>
-                                    </button>
+                                    <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
                                 </form>
                             </td>
                         </tr>
@@ -68,10 +63,9 @@
                 </tbody>
             </table>
         </div>
-        <div class="card-footer">
-            <div class="d-flex justify-content-end">
-                {{ $tags->links('pagination::bootstrap-5') }}
-            </div>
+
+        <div class="card-footer d-flex justify-content-end">
+            {{ $tags->links('pagination::bootstrap-5') }}
         </div>
     </div>
 @endsection

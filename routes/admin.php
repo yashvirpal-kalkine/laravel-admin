@@ -34,7 +34,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('product-categories', \App\Http\Controllers\Admin\ProductCategoryController::class);
 
         // Tags
-        Route::resource('tags', \App\Http\Controllers\Admin\AddressController::class);
+        Route::resource('product-tags', \App\Http\Controllers\Admin\ProductTagController::class);
 
         // Products
         Route::resource('products', \App\Http\Controllers\Admin\AddressController::class);
@@ -51,11 +51,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
         Route::resource('transactions', \App\Http\Controllers\Admin\AddressController::class);
-        // // Categories
-        // Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-
-        // // Tags
-        // Route::resource('tags', \App\Http\Controllers\Admin\TagController::class);
+       
 
         // // Products
         // Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
