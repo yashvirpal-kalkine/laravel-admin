@@ -79,7 +79,7 @@
     <!-- /.col -->
 </div>
 <!-- /.row -->
-
+{{--
 <!--begin::Row-->
 <div class="row">
     <div class="col-md-12">
@@ -1136,5 +1136,5 @@
     <button type="submit">Logout</button>
 </form> -->
 
-
+--}}
 @endsection
