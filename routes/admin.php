@@ -37,7 +37,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('product-tags', \App\Http\Controllers\Admin\ProductTagController::class);
 
         // Products
-        Route::resource('products', \App\Http\Controllers\Admin\AddressController::class);
+        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 
         // Orders
         Route::resource('orders', \App\Http\Controllers\Admin\AddressController::class);
