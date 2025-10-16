@@ -46,7 +46,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
 
         // Invoices
-        Route::get('transactions/{transaction}/invoice', [\App\Http\Controllers\Admin\TransactionController::class, 'invoice'])->name('admin.transactions.invoice');
+        Route::get('transactions/{transaction}/invoice', [\App\Http\Controllers\Admin\TransactionController::class, 'invoice'])->name('transactions.invoice');
 
         Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
         Route::resource('blog-tags', \App\Http\Controllers\Admin\BlogTagController::class);
