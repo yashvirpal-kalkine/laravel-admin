@@ -9,9 +9,52 @@ use App\Models\Address;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserRequest;
 
+use Yajra\DataTables\Facades\DataTables;
+
+
 class UserController extends Controller
 {
+
     public function index(Request $request)
+    {
+        // If AJAX request → return DataTables JSON
+        if ($request->ajax()) {
+            $query = User::with('addresses'); // eager load addresses count
+
+            return DataTables::of($query)
+                ->addIndexColumn() // adds serial number
+                ->addColumn('addresses', function ($user) {
+                    $viewUrl = route('admin.users.addresses.index', $user->id);
+                    $addUrl = route('admin.users.addresses.create', $user->id);
+                    return '
+                        <a href="' . $viewUrl . '" class="btn btn-info btn-sm">View (' . $user->addresses->count() . ')</a>
+                        <a href="' . $addUrl . '" class="btn btn-success btn-sm">Add</a>
+                    ';
+                })
+                ->addColumn('status', function ($user) {
+                    return status_badge($user->status);
+                })
+                ->addColumn('actions', function ($user) {
+                    $edit = route('admin.users.edit', $user->id);
+                    $delete = route('admin.users.destroy', $user->id);
+                    return '
+                        <a href="' . $edit . '" class="btn btn-warning btn-sm"><i class="bi bi-pencil text-white"></i></a>
+                        <form action="' . $delete . '" method="POST" style="display:inline;" onsubmit="return confirm(\'Delete this user?\')">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash text-white"></i></button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['addresses', 'status', 'actions']) // allow HTML
+                ->make(true);
+        }
+
+        // If not AJAX → return view
+        return view('admin.users.index');
+    }
+
+
+    public function indexx(Request $request)
     {
         $query = User::query();
 
