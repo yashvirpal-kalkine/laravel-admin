@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             $user = User::create([
                 'name' => 'Test User',
                 'email' => 'user@localhost.com',
+                'phone' => '0123456789',
                 'password' => Hash::make('password'),
             ]);
             $this->command->info("✅ Test user created: user@localhost.com / password");

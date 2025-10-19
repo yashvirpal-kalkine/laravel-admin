@@ -36,9 +36,7 @@ class AddressController extends Controller
     {
         $user->addresses()->create($request->validated());
 
-        return redirect()
-            ->route('admin.users.addresses.index', $user->id)
-            ->with('success', 'Address added successfully.');
+        return redirect()->route('admin.users.addresses.index', $user->id)->with('success', 'Address added successfully.');
     }
 
     /**
@@ -47,7 +45,6 @@ class AddressController extends Controller
     public function edit(Address $address)
     {
         $user = $address->user;
-
         return view('admin.users.address-form', compact('user', 'address'));
     }
 

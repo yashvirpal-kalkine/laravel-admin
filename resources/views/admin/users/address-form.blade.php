@@ -71,6 +71,7 @@ $title => ''
                 </div>
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">
+                        <input type="hidden" name="status" value="0"/>
                         <input class="form-check-input" type="checkbox" name="status" value="1"
                             id="statusSwitch" {{ old('status', $address->status ?? true) ? 'checked' : '' }}>
                         <label class="form-check-label" for="statusSwitch">Active</label>

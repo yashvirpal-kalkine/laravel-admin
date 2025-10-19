@@ -21,7 +21,7 @@
     <link rel="preload" href="{{ asset('backend/css/adminlte.css')}}" as="style" />
     <link rel="stylesheet" href="{{ asset('backend/css/index.css') }}" media="print" onload="this.media='all'" />
     <link rel="stylesheet" href="{{ asset('backend/css/overlayscrollbars.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('backend/css/font/bootstrap-icons.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('backend/css/bootstrap-icons.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/css/adminlte.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/css/apexcharts.css') }}" />
     @stack('styles')
