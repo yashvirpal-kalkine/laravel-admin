@@ -12,21 +12,10 @@ class SettingController extends Controller
 {
     public function index()
     {
-        // Define available currencies (comma-separated string)
-        $currencyOptions = [
-            'INR' => '₹',
-            'USD' => '$',
-            'EUR' => '€',
-            'GBP' => '£',
-            'AUD' => 'A$',
-            'CAD' => 'C$',
-        ];
-
-        // Pass to view
-        $currencies = $currencyOptions;
+        $currencies = config('settings.currencies');
+        $socialPlatforms = config('settings.social_platforms');
 
         $settings = Setting::all()->pluck('value', 'key')->toArray();
-        $socialPlatforms = ['facebook', 'instagram', 'twitter', 'youtube'];
 
         return view('admin.settings.index', compact(
             'settings',

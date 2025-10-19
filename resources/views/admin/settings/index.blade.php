@@ -32,10 +32,6 @@
                         <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social" type="button"
                             role="tab">Social</button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="assets-tab" data-bs-toggle="tab" data-bs-target="#assets" type="button"
-                            role="tab">Assets</button>
-                    </li>
                 </ul>
 
                 <div class="tab-content mt-3" id="settingsTabContent">
@@ -185,13 +181,6 @@
                                         value="{{ old('social.' . $platform, json_decode($settings['social'] ?? '{}', true)[$platform] ?? '') }}">
                                 </div>
                             @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Assets Tab -->
-                    <div class="tab-pane fade" id="assets" role="tabpanel">
-                        <div class="row mb-3">
-
                         </div>
                     </div>
                 </div>
