@@ -27,5 +27,11 @@ return [
         'twitter',
         'youtube',
     ],
+    'payment_gateways' => [
+        'paypal',
+        'stripe',
+        'razorpay',
+        'payu',
+    ],
 
 ];

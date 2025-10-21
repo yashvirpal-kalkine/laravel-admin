@@ -14,34 +14,41 @@ class SettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'favicon' => 'nullable|file|image|max:1024',
-            'header_logo' => 'nullable|file|image|max:2048',
-            'footer_logo' => 'nullable|file|image|max:2048',
-            'currency' => 'nullable|string|max:10',
-            'email' => 'nullable|email:rfc,dns',
-            'email2' => 'nullable|email:rfc,dns',
-            'phone' => 'nullable|string|max:20',
-            'phone2' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'map' => 'nullable|string',
+            // ✅ GENERAL SETTINGS
+            'general.favicon' => 'nullable|file|image|max:1024',
+            'general.header_logo' => 'nullable|file|image|max:2048',
+            'general.footer_logo' => 'nullable|file|image|max:2048',
+            'general.currency' => 'nullable|string|max:10',
+            'general.email' => 'nullable|email:rfc,dns',
+            'general.email2' => 'nullable|email:rfc,dns',
+            'general.phone' => 'nullable|string|max:20',
+            'general.phone2' => 'nullable|string|max:20',
+            'general.address' => 'nullable|string',
+            'general.map' => 'nullable|string',
 
+            // ✅ SMTP SETTINGS
+            'smtp.host' => 'nullable|string|max:255',
+            'smtp.port' => 'nullable|integer',
+            'smtp.username' => 'nullable|string|max:255',
+            'smtp.password' => 'nullable|string|max:255',
+            'smtp.from' => 'nullable|string|max:255',
+
+            // ✅ SCRIPT SETTINGS
+            'script.head' => 'nullable|string',
+            'script.body' => 'nullable|string',
+            'script.footer' => 'nullable|string',
+
+            // 💳 PAYMENT SETTINGS
             'payment_gateway' => 'nullable|array',
-            'payment_gateway.*' => 'nullable|string',
+            'payment_gateway.*.enabled' => 'nullable|boolean',
+            'payment_gateway.*.merchant_id' => 'nullable|string|max:255',
+            'payment_gateway.*.secret_key' => 'nullable|string|max:255',
+            'payment_gateway.*.webhook_key' => 'nullable|string|max:255',
+            'payment_gateway.*.webhook_url' => 'nullable|url',
 
-
-            'smtp_host' => 'nullable|string|max:255',
-            'smtp_port' => 'nullable|integer',
-            'smtp_username' => 'nullable|string|max:255',
-            'smtp_password' => 'nullable|string|max:255',
-            'smtp_from' => 'nullable|string|max:255',
-
-            'head_script' => 'nullable|string',
-            'body_script' => 'nullable|string',
-            'footer_script' => 'nullable|string',            
-            'footer_content' => 'nullable|string',
-
+            // ✅ SOCIAL SETTINGS
             'social' => 'nullable|array',
-
+            'social.*' => 'nullable|string|max:255',
         ];
     }
 }

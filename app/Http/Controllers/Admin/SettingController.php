@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
@@ -14,13 +13,24 @@ class SettingController extends Controller
     {
         $currencies = config('settings.currencies');
         $socialPlatforms = config('settings.social_platforms');
+        $paymentGateways = config('settings.payment_gateways');
 
         $settings = Setting::all()->pluck('value', 'key')->toArray();
+
+        // Decode JSON fields if they exist
+        $settings['social'] = !empty($settings['social']) && is_string($settings['social'])
+            ? json_decode($settings['social'], true)
+            : ($settings['social'] ?? []);
+
+        $settings['payment_gateway'] = !empty($settings['payment_gateway']) && is_string($settings['payment_gateway'])
+            ? json_decode($settings['payment_gateway'], true)
+            : ($settings['payment_gateway'] ?? []);
 
         return view('admin.settings.index', compact(
             'settings',
             'currencies',
-            'socialPlatforms'
+            'socialPlatforms',
+            'paymentGateways'
         ));
     }
 
@@ -28,22 +38,27 @@ class SettingController extends Controller
     {
         $data = $request->except(['header_logo', 'footer_logo', 'favicon']);
         $socialData = $request->input('social', []);
-        Setting::set('social', json_encode($socialData));
+        $paymentData = $request->input('payment_gateway', []);
 
-        // Handle files
+        // Save grouped data
+        Setting::set('social', json_encode($socialData));
+        Setting::set('payment_gateway', json_encode($paymentData));
+
+        // Handle file uploads
         foreach (['header_logo', 'footer_logo', 'favicon'] as $fileKey) {
             if ($request->hasFile($fileKey)) {
                 $file = $request->file($fileKey);
                 $path = $file->store('settings', 'public');
-                $data[$fileKey] = $path;
+                Setting::set($fileKey, $path);
             }
         }
 
+        // Save other settings
         foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                $value = json_encode($value);
+            if (in_array($key, ['social', 'payment_gateway'])) {
+                continue;
             }
-            Setting::set($key, $value);
+            Setting::set($key, is_array($value) ? json_encode($value) : $value);
         }
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
