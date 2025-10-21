@@ -8,25 +8,45 @@ use App\Models\Page;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Str;
 
+use Yajra\DataTables\Facades\DataTables;
 class PageController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Page::query();
+        if ($request->ajax()) {
+            $query = Page::query()->with('author');
 
-        // Search by title or slug
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%");
-            });
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('status', function ($page) {
+                    return status_badge($page->status);
+                })
+                ->addColumn('published_at', function ($page) {
+                    return $page->published_at ? $page->published_at->format('Y-m-d H:i') : '-';
+                })
+                ->addColumn('actions', function ($page) {
+                    $edit = route('admin.pages.edit', $page->id);
+                    $delete = route('admin.pages.destroy', $page->id);
+                    return '
+                    <a href="' . $edit . '" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil text-white"></i>
+                    </a>
+                    <form action="' . $delete . '" method="POST" style="display:inline;" onsubmit="return confirm(\'Delete this page?\')">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash text-white"></i>
+                        </button>
+                    </form>
+                ';
+                })
+                ->rawColumns(['status', 'actions'])
+                ->make(true);
         }
 
-        $pages = $query->orderBy('id', 'desc')->paginate(10);
-        $pages->appends($request->all());
-
-        return view('admin.pages.index', compact('pages', 'search'));
+        return view('admin.pages.index');
     }
+
+
 
     public function create()
     {

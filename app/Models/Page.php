@@ -24,6 +24,7 @@ class Page extends Model
         'status',
         'published_at',
         'author_id',
+        'template',
     ];
 
     protected $casts = [

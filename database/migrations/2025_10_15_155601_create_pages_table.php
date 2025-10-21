@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
-            
+
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('short_description')->nullable();
@@ -23,10 +23,11 @@ return new class extends Migration {
             $table->string('meta_keywords')->nullable();
             $table->text('meta_description')->nullable();
             $table->string('seo_image')->nullable();
+            $table->string('template')->nullable();
             $table->string('canonical_url')->nullable();
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->boolean('status')->default(true)->default(1);
             $table->timestamp('published_at')->nullable();
-            $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
 
 
             $table->timestamps();

@@ -27,9 +27,10 @@ class PageRequest extends FormRequest
             'meta_description' => 'nullable|string|max:500',
             'seo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'canonical_url' => 'nullable|url|max:255',
-            'status' => 'required|in:draft,published,archived',
+            'status' => 'required|boolean',
             'published_at' => 'nullable|date',
             'author_id' => 'nullable|exists:users,id',
+            'template' => 'nullable|string|max:255',
         ];
     }
 }
