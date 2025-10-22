@@ -7,7 +7,8 @@
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.coupons.index') }}" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
+            <a href="{{ route('admin.coupons.index') }}" class="btn btn-primary btn-sm"><i
+                    class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
         </div>
 
         <div class="card-body">
@@ -55,15 +56,15 @@
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Valid From</label>
-                        <input type="date" name="valid_from" class="form-control"
-                            value="{{ old('valid_from', isset($coupon->valid_from) ? $coupon->valid_from->format('Y-m-d') : '') }}">
+                        <input type="text" name="valid_from" class="form-control datetime"
+                            value="{{ old('valid_from', isset($coupon->valid_from) ? $coupon->valid_from : '') }}">
                         @error('valid_from') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Valid Until</label>
-                        <input type="date" name="valid_until" class="form-control"
-                            value="{{ old('valid_until', isset($coupon->valid_until) ? $coupon->valid_until->format('Y-m-d') : '') }}">
+                        <input type="text" name="valid_until" class="form-control datetime"
+                            value="{{ old('valid_until', isset($coupon->valid_until) ? $coupon->valid_until : '') }}">
                         @error('valid_until') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                     <div class="mb-3 col-md-6">
@@ -82,3 +83,4 @@
         </div>
     </div>
 @endsection
+@include('components.admin.datetimepicker')
