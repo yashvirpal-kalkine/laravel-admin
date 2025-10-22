@@ -7,7 +7,7 @@
 
     <div class="card card-outline card-primary">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.transactions.index') }}" class="btn btn-primary btn-sm">← Back</a>
+            <a href="{{ route('admin.transactions.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
         </div>
 
         <div class="card-body">

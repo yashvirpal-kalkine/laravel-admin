@@ -13,7 +13,7 @@ $user->name => route('admin.users.edit', $user->id),
 
 <div class="card card-primary card-outline mb-4">
     <div class="card-header d-flex justify-content-end align-items-center">
-        <a href="{{ route('admin.users.addresses.create', $user->id) }}" class="btn btn-primary btn-sm">+ Add Address</a>
+        <a href="{{ route('admin.users.addresses.create', $user->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Add Address</a>
     </div>
 
     <div class="card-body">

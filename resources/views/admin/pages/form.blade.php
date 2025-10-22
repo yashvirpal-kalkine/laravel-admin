@@ -12,7 +12,7 @@ $breadcrumbs = [
 
 <div class="card card-primary card-outline mb-4">
     <div class="card-header d-flex justify-content-end align-items-center">
-        <a href="{{ route('admin.pages.index') }}" class="btn btn-primary btn-sm">+ Back to List</a>
+        <a href="{{ route('admin.pages.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Back to List</a>
     </div>
     <div class="card-body">
         <form action="{{ isset($page) && $page->exists ? route('admin.pages.update', $page->id) : route('admin.pages.store') }}" method="POST" enctype="multipart/form-data">
@@ -86,8 +86,8 @@ $breadcrumbs = [
                     @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- SEO Image -->
-                <div class="mb-3 col-md-6">
+                
+                {{-- <div class="mb-3 col-md-6">
                     <label class="form-label">SEO Image</label>
                     <input type="file" name="seo_image" class="form-control">
                     @if(isset($page) && $page->seo_image)
@@ -96,14 +96,25 @@ $breadcrumbs = [
                     @error('seo_image') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- Canonical URL -->
+               
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Canonical URL</label>
                     <input type="url" name="canonical_url" value="{{ old('canonical_url', $page->canonical_url ?? '') }}" class="form-control">
                     @error('canonical_url') <small class="text-danger">{{ $message }}</small> @enderror
-                </div>
+                </div> --}}
 
-                <!-- Status -->
+               
+
+                <!-- Published At -->
+                {{-- <div class="mb-3 col-md-6">
+                    <label class="form-label">Published At</label>
+                    <input type="text" name="published_at"
+                            value="{{ old('published_at', isset($page->published_at) ? $page->published_at->format('Y-m-d\TH:i') : '') }}"
+                            class="form-control datetime">
+                            @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
+                </div> --}}
+
+                 <!-- Status -->
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch mb-3">
                         <input type="hidden" name="status" value="0"/>
@@ -111,13 +122,6 @@ $breadcrumbs = [
                             id="statusSwitch" {{ old('status', $page->status ?? true) ? 'checked' : '' }}>
                         <label class="form-check-label" for="statusSwitch">Active</label>
                     </div>
-                </div>
-
-                <!-- Published At -->
-                <div class="mb-3 col-md-6">
-                    <label class="form-label">Published At</label>
-                    <input type="datetime-local" name="published_at" value="{{ old('published_at', isset($page->published_at) ? $page->published_at->format('Y-m-d\TH:i') : '') }}" class="form-control">
-                    @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
             </div>
@@ -128,3 +132,4 @@ $breadcrumbs = [
     </div>
 </div>
 @endsection
+@include('components.admin.datetimepicker')

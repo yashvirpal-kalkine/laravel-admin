@@ -23,7 +23,7 @@
                             <th>Title</th>
                             <th>Slug</th>
                             <th>Status</th>
-                            <th>Published At</th>
+                            {{-- <th>Published At</th> --}}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -53,7 +53,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'slug', name: 'slug' },
                 { data: 'status', name: 'status', orderable: false, searchable: false },
-                { data: 'published_at', name: 'published_at' },
+               // { data: 'published_at', name: 'published_at' },
                 { data: 'actions', name: 'actions', orderable: false, searchable: false }
             ],
             order: [[4, 'desc']]

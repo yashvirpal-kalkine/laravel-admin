@@ -21,9 +21,9 @@ class PageController extends Controller
                 ->addColumn('status', function ($page) {
                     return status_badge($page->status);
                 })
-                ->addColumn('published_at', function ($page) {
-                    return $page->published_at ? $page->published_at->format('Y-m-d H:i') : '-';
-                })
+                // ->addColumn('published_at', function ($page) {
+                //     return $page->published_at ? $page->published_at->format('Y-m-d H:i') : '-';
+                // })
                 ->addColumn('actions', function ($page) {
                     $edit = route('admin.pages.edit', $page->id);
                     $delete = route('admin.pages.destroy', $page->id);

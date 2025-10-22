@@ -12,7 +12,7 @@
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.blog-posts.index') }}" class="btn btn-primary btn-sm">+ Back to List</a>
+            <a href="{{ route('admin.blog-posts.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
         </div>
 
         <div class="card-body">
