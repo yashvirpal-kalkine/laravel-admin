@@ -14,17 +14,35 @@ class BlogTagController extends Controller
 {
     public function index(Request $request)
     {
-        $query = BlogTag::query();
+        if ($request->ajax()) {
+            $tags = BlogTag::with('author')->select('blog_tags.*');
 
-        if ($search = $request->input('search')) {
-            $query->where('title', 'like', "%{$search}%")
-                ->orWhere('slug', 'like', "%{$search}%");
+            return DataTables::of($tags)
+                ->addIndexColumn()
+                ->addColumn('status', function ($tag) {
+                    return status_badge($tag->status);
+                })
+                ->addColumn('author', function ($tag) {
+                    return $tag->author?->name ?? '-';
+                })
+                ->addColumn('actions', function ($tag) {
+                    $editUrl = route('admin.blog-tags.edit', $tag->id);
+                    $deleteUrl = route('admin.blog-tags.destroy', $tag->id);
+                    return '
+                        <a href="' . $editUrl . '" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil text-white"></i>
+                        </a>
+                        <form action="' . $deleteUrl . '" method="POST" class="d-inline" onsubmit="return confirm(\'Delete this tag?\')">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash text-white"></i></button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['status', 'actions'])
+                ->make(true);
         }
 
-        $tags = $query->orderBy('id', 'desc')->paginate(10);
-        $tags->appends($request->all());
-
-        return view('admin.blog-tags.index', compact('tags', 'search'));
+        return view('admin.blog-tags.index');
     }
 
     public function create()

@@ -17,17 +17,47 @@ class BlogPostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = BlogPost::query()->with(['author', 'categories', 'tags']);
+        if ($request->ajax()) {
+            $posts = BlogPost::with(['categories', 'tags', 'author'])->select('blog_posts.*');
 
-        if ($search = $request->input('search')) {
-            $query->where('title', 'like', "%{$search}%")
-                ->orWhere('slug', 'like', "%{$search}%");
+            return DataTables::of($posts)
+                ->addIndexColumn()
+                ->addColumn('categories', function ($post) {
+                    return $post->categories->pluck('title')->map(fn($c) => "<span class='badge bg-info text-dark me-1'>$c</span>")->implode(' ');
+                })
+                ->addColumn('tags', function ($post) {
+                    return $post->tags->pluck('title')->map(fn($t) => "<span class='badge bg-secondary me-1'>$t</span>")->implode(' ');
+                })
+                ->addColumn('status', function ($post) {
+                    return status_badge($post->status);
+                })
+                // ->addColumn('published_at', function ($post) {
+                //     return $post->published_at ? $post->published_at->format('d M Y, h:i A') : '-';
+                // })
+                // ->addColumn('author', function ($post) {
+                //     return $post->author?->name ?? '-';
+                // })
+                ->addColumn('actions', function ($post) {
+                    $editUrl = route('admin.blog-posts.edit', $post->id);
+                    $deleteUrl = route('admin.blog-posts.destroy', $post->id);
+
+                    return '
+                        <a href="' . $editUrl . '" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil text-white"></i>
+                        </a>
+                        <form action="' . $deleteUrl . '" method="POST" class="d-inline" onsubmit="return confirm(\'Delete this post?\')">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash text-white"></i>
+                            </button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['categories', 'tags', 'status', 'actions'])
+                ->make(true);
         }
 
-        $posts = $query->orderBy('id', 'desc')->paginate(10);
-        $posts->appends($request->all());
-
-        return view('admin.blog-posts.index', compact('posts', 'search'));
+        return view('admin.blog-posts.index');
     }
 
     public function create()

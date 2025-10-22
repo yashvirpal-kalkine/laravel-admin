@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use PDF; 
 
+use Yajra\DataTables\Facades\DataTables;
 class TransactionController extends Controller
 {
     public function index(Request $request)

@@ -7,6 +7,8 @@ use App\Http\Requests\CouponRequest;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
 
+use Yajra\DataTables\Facades\DataTables;
+
 class CouponController extends Controller
 {
     public function index(Request $request)
