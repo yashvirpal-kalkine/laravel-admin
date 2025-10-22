@@ -1,65 +1,64 @@
 @extends('layouts.admin')
 
 @section('content')
+    @php
+        $title = 'Coupons';
+        $breadcrumbs = ['Home' => route('admin.dashboard'), 'Coupons' => ''];
+    @endphp
     <div class="card card-primary card-outline mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>Coupons</h5>
+        <div class="card-header d-flex justify-content-end align-items-center">
             <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary btn-sm">+ Add Coupon</a>
         </div>
 
         <div class="card-body">
-            <form action="{{ route('admin.coupons.index') }}" method="GET" class="mb-3 d-flex gap-2">
-                <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by title or code"
-                    value="{{ $search ?? '' }}">
-                <button type="submit" class="btn btn-sm btn-primary">Search</button>
-            </form>
-
-            <table class="table table-bordered align-middle">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Code</th>
-                        <th>Type</th>
-                        <th>Value</th>
-                        <th>Status</th>
-                        <th>Valid From</th>
-                        <th>Valid Until</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($coupons as $coupon)
+            <div class="table-responsive">
+                <table id="dataTable" class="table table-bordered align-middle">
+                    <thead>
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $coupon->title }}</td>
-                            <td>{{ $coupon->code }}</td>
-                            <td>{{ ucfirst($coupon->type) }}</td>
-                            <td>{{ $coupon->type == 'percentage' ? $coupon->value . '%' : '₹' . $coupon->value }}</td>
-                            <td><span class="badge bg-{{ $coupon->status_badge }}">{{ ucfirst($coupon->status) }}</span></td>
-                            <td>{{ $coupon->valid_from?->format('Y-m-d') ?? '-' }}</td>
-                            <td>{{ $coupon->valid_until?->format('Y-m-d') ?? '-' }}</td>
-                            <td class="d-flex gap-1">
-                                <a href="{{ route('admin.coupons.edit', $coupon->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST"
-                                    onsubmit="return confirm('Delete this coupon?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">Del</button>
-                                </form>
-                            </td>
+                            <th>#</th>
+                            {{-- <th>Title</th> --}}
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                            <th>Valid From</th>
+                            <th>Valid Until</th>
+                            <th>Actions</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="text-center">No coupons found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <div class="card-footer d-flex justify-content-end">
-            {{ $coupons->links('pagination::bootstrap-5') }}
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
+
+@push('styles')
+    <!-- DataTables CSS -->
+    <link href="{{ asset('backend/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+@endpush
+@push('scripts')
+    <script src="{{ asset('backend/js/jquery-3.6.0.min.js') }}"></script>
+    <!-- DataTables -->
+    <script src="{{ asset('backend/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('backend/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('#dataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route("admin.coupons.index") !!}',
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    // { data: 'title', name: 'title' },
+                    { data: 'code', name: 'code' },
+                    { data: 'type', name: 'type' },
+                    { data: 'value', name: 'value' },
+                    { data: 'status', name: 'status', orderable: false, searchable: false },
+                    { data: 'valid_from', name: 'valid_from' },
+                    { data: 'valid_until', name: 'valid_until' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
+                ]
+            });
+        });
+    </script>
+@endpush

@@ -34,7 +34,7 @@
                         @error('code') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <div class="mb-3 col-md-4">
+                    <div class="mb-3 col-md-6">
                         <label class="form-label">Type</label>
                         <select name="type" class="form-select" required>
                             @foreach(['fixed', 'percentage'] as $type)
@@ -46,19 +46,11 @@
                         @error('type') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <div class="mb-3 col-md-4">
+                    <div class="mb-3 col-md-6">
                         <label class="form-label">Value</label>
                         <input type="number" step="0.01" name="value" class="form-control"
                             value="{{ old('value', $coupon->value ?? '') }}" required>
                         @error('value') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
-
-                    <div class="mb-3 col-md-4">
-                        <label class="form-label">Status</label>
-                        <input type="hidden" name="status" value="0" />
-                        <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $coupon->status ?? true) ? 'checked' : '' }} />
-                        <label class="form-check-label" for="statusSwitch">Active</label>
-                        @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="mb-3 col-md-6">
@@ -73,6 +65,13 @@
                         <input type="date" name="valid_until" class="form-control"
                             value="{{ old('valid_until', isset($coupon->valid_until) ? $coupon->valid_until->format('Y-m-d') : '') }}">
                         @error('valid_until') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <div class="form-check form-switch mb-3">
+                            <input type="hidden" name="status" value="0" />
+                            <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $coupon->status ?? true) ? 'checked' : '' }} />
+                            <label class="form-check-label" for="statusSwitch">Active</label>
+                        </div>
                     </div>
                 </div>
 

@@ -24,13 +24,23 @@ if (!function_exists('isActiveRoute')) {
     }
 }
 
-if (!function_exists('formatDate')) {
+if (!function_exists('dateFormat')) {
     /**
      * Format a date using Carbon
      */
-    function formatDate($date, $format = 'd M Y')
+    function dateFormat($date)
     {
-        return $date ? Carbon::parse($date)->format($format) : null;
+        if (!$date)
+            return null;
+
+        $dt = Carbon::parse($date);
+
+        // Show time only if it's not 00:00:00
+        if ($dt->format('H:i:s') != '00:00:00') {
+            return $dt->format('d M Y H:i');
+        }
+
+        return $dt->format('d M Y');
     }
 }
 
@@ -45,7 +55,7 @@ if (!function_exists('flashMessage')) {
     }
 }
 
-if (!function_exists('formatCurrency')) {
+if (!function_exists('currencyformat')) {
     /**
      * Format a number as currency
      *
@@ -54,7 +64,7 @@ if (!function_exists('formatCurrency')) {
      * @param int $decimals
      * @return string
      */
-    function formatCurrency($amount, $symbol = '$', $decimals = 2)
+    function currencyformat($amount, $symbol = '$', $decimals = 2)
     {
         return $symbol . number_format($amount, $decimals, '.', ',');
     }
