@@ -27,24 +27,28 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('order_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Transaction ID</label>
                         <input type="text" name="transaction_id"
                             value="{{ old('transaction_id', $transaction->transaction_id ?? '') }}" class="form-control">
+                            @error('transaction_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <label>Amount</label>
                         <input type="number" step="0.01" name="amount"
                             value="{{ old('amount', $transaction->amount ?? '') }}" class="form-control" required>
+                            @error('amount') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <label>Payment Method</label>
                         <input type="text" name="payment_method"
                             value="{{ old('payment_method', $transaction->payment_method ?? '') }}" class="form-control">
+                            @error('payment_method') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="col-md-4 mb-3">
@@ -56,12 +60,14 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Response (JSON / Notes)</label>
                         <textarea name="response" rows="3"
                             class="form-control">{{ old('response', $transaction->response ?? '') }}</textarea>
+                            @error('response') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
 

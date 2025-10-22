@@ -22,41 +22,49 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Title</label>
                     <input type="text" name="title" value="{{ old('title', $product->title ?? '') }}" class="form-control" required>
+                    @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Slug</label>
                     <input type="text" name="slug" value="{{ old('slug', $product->slug ?? '') }}" class="form-control">
+                    @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">SKU</label>
                     <input type="text" name="sku" value="{{ old('sku', $product->sku ?? '') }}" class="form-control">
+                    @error('sku') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Stock</label>
                     <input type="number" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" class="form-control">
+                    @error('stock') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Price</label>
                     <input type="number" step="0.01" name="price" value="{{ old('price', $product->price ?? 0) }}" class="form-control">
+                    @error('price') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Discount Price</label>
                     <input type="number" step="0.01" name="discount_price" value="{{ old('discount_price', $product->discount_price ?? '') }}" class="form-control">
+                    @error('discount_price') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>                
 
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Short Description</label>
                     <textarea name="short_description" class="form-control" rows="2">{{ old('short_description', $product->short_description ?? '') }}</textarea>
+                    @error('short_description') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Description</label>
                     <textarea name="description" class="form-control" rows="5">{{ old('description', $product->description ?? '') }}</textarea>
+                    @error('description') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
@@ -66,6 +74,7 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                             <option value="{{ $id }}" @selected(in_array($id, old('product_category_ids', isset($product) ? $product->categories->pluck('id')->toArray() : [])))>{{ $title }}</option>
                         @endforeach
                     </select>
+                    @error('product_category_ids') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
@@ -75,24 +84,28 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                             <option value="{{ $id }}" @selected(in_array($id, old('product_tag_ids', isset($product) ? $product->tags->pluck('id')->toArray() : [])))>{{ $title }}</option>
                         @endforeach
                     </select>
+                    @error('product_tag_ids') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                         <label class="form-label">Meta Title</label>
                         <input type="text" name="meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}"
                             class="form-control">
+                            @error('meta_title') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Meta Keywords</label>
                         <input type="text" name="meta_keywords"
                             value="{{ old('meta_keywords', $product->meta_keywords ?? '') }}" class="form-control">
+                            @error('meta_keywords') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="mb-3 col-md-12">
                         <label class="form-label">Meta Description</label>
                         <textarea name="meta_description" class="form-control"
                             rows="3">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+                            @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                 <div class="mb-3 col-md-6">
@@ -101,6 +114,7 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                         <input type="checkbox" name="is_featured" class="form-check-input" value="1" id="is_featured"
                                {{ old('is_featured', $product->is_featured ?? false) ? 'checked' : '' }}>
                         <label for="is_featured" class="form-check-label">Featured Product</label>
+                        @error('is_featured') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
 
@@ -109,6 +123,7 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                         <input type="hidden" name="status" value="0" />
                         <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $product->status ?? true) ? 'checked' : '' }} />
                         <label class="form-check-label" for="statusSwitch">Active</label>
+                        @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
             </div>

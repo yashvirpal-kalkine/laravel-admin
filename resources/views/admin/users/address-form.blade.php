@@ -41,6 +41,7 @@ $title => ''
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Address Line 2</label>
                     <input type="text" name="address_line2" value="{{ old('address_line2', $address->address_line2 ?? '') }}" class="form-control">
+                @error('address_line2') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
@@ -52,6 +53,7 @@ $title => ''
                 <div class="mb-3 col-md-6">
                     <label class="form-label">State</label>
                     <input type="text" name="state" value="{{ old('state', $address->state ?? '') }}" class="form-control">
+                    @error('state') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
@@ -63,17 +65,19 @@ $title => ''
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Postal Code</label>
                     <input type="text" name="postal_code" value="{{ old('postal_code', $address->postal_code ?? '') }}" class="form-control">
+                @error('postal_code') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Phone</label>
                     <input type="text" name="phone" value="{{ old('phone', $address->phone ?? '') }}" class="form-control">
+                    @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">
                         <input type="hidden" name="status" value="0"/>
                         <input class="form-check-input" type="checkbox" name="status" value="1"
-                            id="statusSwitch" {{ old('status', $address->status ?? true) ? 'checked' : '' }}>
+                            id="statusSwitch" {{ old('status', $address->status ?? true) ? 'checked' : '' }}/>
                         <label class="form-check-label" for="statusSwitch">Active</label>
                     </div>
                 </div>
