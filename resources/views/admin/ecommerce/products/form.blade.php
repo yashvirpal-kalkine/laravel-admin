@@ -61,7 +61,7 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Categories</label>
-                    <select name="product_category_ids[]" class="form-select" multiple>
+                    <select name="product_category_ids[]" class="form-select select2" multiple>
                         @foreach($categories as $id => $title)
                             <option value="{{ $id }}" @selected(in_array($id, old('product_category_ids', isset($product) ? $product->categories->pluck('id')->toArray() : [])))>{{ $title }}</option>
                         @endforeach
@@ -70,7 +70,7 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Tags</label>
-                    <select name="product_tag_ids[]" class="form-select" multiple>
+                    <select name="product_tag_ids[]" class="form-select select2" multiple>
                         @foreach($tags as $id => $title)
                             <option value="{{ $id }}" @selected(in_array($id, old('product_tag_ids', isset($product) ? $product->tags->pluck('id')->toArray() : [])))>{{ $title }}</option>
                         @endforeach
@@ -79,6 +79,7 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
 
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">
+                        <input type="hidden" name="is_featured" value="0" />
                         <input type="checkbox" name="is_featured" class="form-check-input" value="1" id="is_featured"
                                {{ old('is_featured', $product->is_featured ?? false) ? 'checked' : '' }}>
                         <label for="is_featured" class="form-check-label">Featured Product</label>
@@ -86,10 +87,11 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Status</label>
-                    <input type="hidden" name="status" value="0" />
-                    <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $product->status ?? true) ? 'checked' : '' }} />
-                    <label class="form-check-label" for="statusSwitch">Active</label>
+                    <div class="form-check form-switch mb-3">
+                        <input type="hidden" name="status" value="0" />
+                        <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $product->status ?? true) ? 'checked' : '' }} />
+                        <label class="form-check-label" for="statusSwitch">Active</label>
+                    </div>
                 </div>
             </div>
 
@@ -98,3 +100,4 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
     </div>
 </div>
 @endsection
+@include('components.admin.select2')

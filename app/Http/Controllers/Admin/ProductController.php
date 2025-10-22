@@ -17,17 +17,40 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::query();
+        if ($request->ajax()) {
+            $query = Product::with(['categories', 'tags', 'author'])->latest();
 
-        if ($search = $request->input('search')) {
-            $query->where('title', 'like', "%{$search}%")
-                ->orWhere('slug', 'like', "%{$search}%");
+            return DataTables::of($query)
+                ->addIndexColumn() // Serial number
+                ->addColumn('categories', function ($product) {
+                    return $product->categories->pluck('title')->implode(', ');
+                })
+                ->addColumn('tags', function ($product) {
+                    return $product->tags->pluck('title')->implode(', ');
+                })
+                ->addColumn('price', function ($product) {
+                    return number_format($product->price, 2); // Format price
+                })
+                ->addColumn('status', function ($product) {
+                    return status_badge($product->status); // Your helper
+                })
+                ->addColumn('actions', function ($product) {
+                    $edit = '<a href="' . route('admin.products.edit', $product->id) . '" class="btn btn-sm btn-primary me-1" title="Edit">
+                            <i class="bi bi-pencil-fill"></i>
+                         </a>';
+                    $delete = '<form method="POST" action="' . route('admin.products.destroy', $product->id) . '" style="display:inline;">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')" title="Delete">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                           </form>';
+                    return $edit . $delete;
+                })
+                ->rawColumns(['status', 'actions'])
+                ->make(true);
         }
 
-        $products = $query->with(['categories', 'tags', 'author'])->latest()->paginate(10);
-        $products->appends($request->all());
-
-        return view('admin.ecommerce.products.index', compact('products', 'search'));
+        return view('admin.ecommerce.products.index');
     }
 
     public function create()
