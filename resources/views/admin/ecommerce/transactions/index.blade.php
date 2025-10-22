@@ -6,7 +6,7 @@
     @endphp
     <div class="card card-outline card-primary">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.transactions.create') }}" class="btn btn-sm btn-primary">+ Add Transaction</a>
+            <a href="{{ route('admin.transactions.create') }}" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i> Add Transaction</a>
         </div>
 
         <div class="card-body">

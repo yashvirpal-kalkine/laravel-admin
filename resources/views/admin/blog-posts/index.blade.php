@@ -11,7 +11,7 @@
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.blog-posts.create') }}" class="btn btn-primary btn-sm">+ Add Post</a>
+            <a href="{{ route('admin.blog-posts.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> Add Post</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">

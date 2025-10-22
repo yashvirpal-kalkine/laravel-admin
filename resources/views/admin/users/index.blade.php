@@ -11,7 +11,7 @@
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">+ Add User</a>
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> Add User</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">

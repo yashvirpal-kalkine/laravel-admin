@@ -8,7 +8,7 @@
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.product-tags.create') }}" class="btn btn-primary btn-sm">+ Add Tag</a>
+            <a href="{{ route('admin.product-tags.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> Add Tag</a>
         </div>
 
         <div class="card-body">
