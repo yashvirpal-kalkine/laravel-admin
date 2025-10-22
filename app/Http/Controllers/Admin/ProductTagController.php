@@ -15,17 +15,31 @@ class ProductTagController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ProductTag::query();
+        if ($request->ajax()) {
+            $query = ProductTag::query()->orderByDesc('id');
 
-        if ($search = $request->input('search')) {
-            $query->where('title', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%");
+            return DataTables::of($query)
+                ->addIndexColumn() // Serial number
+                ->addColumn('status', function ($tag) {
+                    return status_badge($tag->status); // use your helper
+                })
+                ->addColumn('actions', function ($tag) {
+                    $edit = '<a href="' . route('admin.product-tags.edit', $tag->id) . '" class="btn btn-sm btn-primary me-1" title="Edit">
+                            <i class="bi bi-pencil-fill"></i>
+                         </a>';
+                    $delete = '<form method="POST" action="' . route('admin.product-tags.destroy', $tag->id) . '" style="display:inline;">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')" title="Delete">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                           </form>';
+                    return $edit . $delete;
+                })
+                ->rawColumns(['status', 'actions'])
+                ->make(true);
         }
 
-        $tags = $query->orderByDesc('id')->paginate(10);
-        $tags->appends($request->all());
-
-        return view('admin.ecommerce.tags.index', compact('tags', 'search'));
+        return view('admin.ecommerce.tags.index');
     }
 
     public function create()
