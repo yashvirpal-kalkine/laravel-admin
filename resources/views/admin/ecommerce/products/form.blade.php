@@ -35,6 +35,11 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                 </div>
 
                 <div class="mb-3 col-md-6">
+                    <label class="form-label">Stock</label>
+                    <input type="number" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" class="form-control">
+                </div>
+
+                <div class="mb-3 col-md-6">
                     <label class="form-label">Price</label>
                     <input type="number" step="0.01" name="price" value="{{ old('price', $product->price ?? 0) }}" class="form-control">
                 </div>
@@ -42,12 +47,7 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Discount Price</label>
                     <input type="number" step="0.01" name="discount_price" value="{{ old('discount_price', $product->discount_price ?? '') }}" class="form-control">
-                </div>
-
-                <div class="mb-3 col-md-6">
-                    <label class="form-label">Stock</label>
-                    <input type="number" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" class="form-control">
-                </div>
+                </div>                
 
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Short Description</label>
@@ -76,6 +76,24 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                         @endforeach
                     </select>
                 </div>
+
+                <div class="mb-3 col-md-6">
+                        <label class="form-label">Meta Title</label>
+                        <input type="text" name="meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Meta Keywords</label>
+                        <input type="text" name="meta_keywords"
+                            value="{{ old('meta_keywords', $product->meta_keywords ?? '') }}" class="form-control">
+                    </div>
+
+                    <div class="mb-3 col-md-12">
+                        <label class="form-label">Meta Description</label>
+                        <textarea name="meta_description" class="form-control"
+                            rows="3">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+                    </div>
 
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">
