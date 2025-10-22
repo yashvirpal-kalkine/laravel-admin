@@ -36,7 +36,7 @@ class ProductSeeder extends Seeder
 
         // 2️⃣ Create Product Tags
         $tags = [
-            ['title' => 'New Arrival', 'slug' => 'new-arrival', true],
+            ['title' => 'New Arrival', 'slug' => 'new-arrival', 'status' =>true],
             ['title' => 'Sale', 'slug' => 'sale', 'status' => true],
             ['title' => 'Popular', 'slug' => 'popular', 'status' => true],
         ];
