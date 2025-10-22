@@ -1,67 +1,64 @@
 @extends('layouts.admin')
 
 @section('content')
+    @php
+        $title = 'Transactions';
+    @endphp
     <div class="card card-outline card-primary">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <form method="GET" class="d-flex">
-                <input type="text" name="search" class="form-control form-control-sm"
-                    placeholder="Search by order or transaction" value="{{ $search ?? '' }}">
-                <button class="btn btn-sm btn-primary ms-2">Search</button>
-            </form>
+        <div class="card-header d-flex justify-content-end align-items-center">
             <a href="{{ route('admin.transactions.create') }}" class="btn btn-sm btn-primary">+ Add Transaction</a>
         </div>
 
         <div class="card-body">
-            <table class="table table-bordered align-middle">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Order</th>
-                        <th>Transaction ID</th>
-                        <th>Amount</th>
-                        <th>Method</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($transactions as $transaction)
+            <div class="table-responsive">
+                <table id="dataTable" class="table table-bordered align-middle">
+                    <thead>
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $transaction->order?->order_number ?? '—' }}</td>
-                            <td>{{ $transaction->transaction_id ?? '—' }}</td>
-                            <td>₹{{ number_format($transaction->amount, 2) }}</td>
-                            <td>{{ ucfirst($transaction->payment_method) ?? 'N/A' }}</td>
-                            <td><span
-                                    class="badge bg-{{ $transaction->status == 'success' ? 'success' : ($transaction->status == 'pending' ? 'warning' : 'danger') }}">{{ ucfirst($transaction->status) }}</span>
-                            </td>
-                            <td>{{ $transaction->created_at->format('Y-m-d') }}</td>
-                            <td class="d-flex gap-1">
-                                <a href="{{ route('admin.transactions.edit', $transaction->id) }}"
-                                    class="btn btn-warning btn-sm"><i class="bi bi-pencil text-white"></i></a>
-                                <a href="{{ route('admin.transactions.invoice', $transaction->id) }}"
-                                    class="btn btn-info btn-sm" target="_blank">
-                                    <i class="bi bi-file-earmark-pdf"></i>
-                                </a>
-                                <form action="{{ route('admin.transactions.destroy', $transaction->id) }}" method="POST"
-                                    onsubmit="return confirm('Delete this transaction?');">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-danger btn-sm"><i class="bi bi-trash text-white"></i></button>
-                                </form>
-                            </td>
+                            <th>#</th>
+                            <th>Order</th>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-center">No transactions found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                </table>
+            </div>
         </div>
 
-        <div class="card-footer">
-            {{ $transactions->links('pagination::bootstrap-5') }}
-        </div>
     </div>
 @endsection
+
+
+
+@push('styles')
+    <!-- DataTables CSS -->
+    <link href="{{ asset('backend/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+@endpush
+@push('scripts')
+    <script src="{{ asset('backend/js/jquery-3.6.0.min.js') }}"></script>
+    <!-- DataTables -->
+    <script src="{{ asset('backend/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('backend/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('#dataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route("admin.transactions.index") !!}',
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'order', name: 'order.order_number' },
+                    { data: 'transaction_id', name: 'transaction_id' },
+                    { data: 'amount', name: 'amount' },
+                    { data: 'method', name: 'payment_method' },
+                    { data: 'status', name: 'status', orderable: false, searchable: false },
+                    { data: 'date', name: 'created_at' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                ]
+            });
+        });
+    </script>
+@endpush

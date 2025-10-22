@@ -6,8 +6,7 @@
     @endphp
 
     <div class="card card-outline card-primary">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>{{ $title }}</h5>
+        <div class="card-header d-flex justify-content-end align-items-center">
             <a href="{{ route('admin.transactions.index') }}" class="btn btn-primary btn-sm">← Back</a>
         </div>
 

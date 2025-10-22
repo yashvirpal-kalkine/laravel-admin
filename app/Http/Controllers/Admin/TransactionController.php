@@ -7,28 +7,80 @@ use App\Http\Requests\TransactionRequest;
 use App\Models\Order;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use PDF; 
+use PDF;
 
 use Yajra\DataTables\Facades\DataTables;
 class TransactionController extends Controller
 {
+
     public function index(Request $request)
     {
-        $query = Transaction::with('order');
+        if ($request->ajax()) {
+            $query = Transaction::with('order')->latest();
 
-        // Search by order number or transaction ID
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('transaction_id', 'like', "%{$search}%")
-                    ->orWhereHas('order', fn($o) => $o->where('order_number', 'like', "%{$search}%"));
-            });
+            return DataTables::of($query)
+                ->addIndexColumn()
+
+                ->addColumn('order', function ($transaction) {
+                    return $transaction->order?->order_number ?? '—';
+                })
+
+                ->addColumn('transaction_id', function ($transaction) {
+                    return $transaction->transaction_id ?? '—';
+                })
+
+                ->addColumn('amount', function ($transaction) {
+                    return currencyformat($transaction->amount);
+                })
+
+                ->addColumn('method', function ($transaction) {
+                    return ucfirst($transaction->payment_method ?? 'N/A');
+                })
+
+                ->addColumn('status', function ($transaction) {
+                    $color = match ($transaction->status) {
+                        'completed' => 'success',
+                        'pending' => 'warning',
+                        'failed' => 'danger',
+                        default => 'secondary',
+                    };
+                    return '<span class="badge bg-' . $color . '">' . ucfirst($transaction->status) . '</span>';
+                })
+
+                ->addColumn('date', function ($transaction) {
+                    return dateFormat($transaction->created_at);
+                })
+
+                ->addColumn('action', function ($transaction) {
+                    $edit = '<a href="' . route('admin.transactions.edit', $transaction->id) . '" 
+                            class="btn btn-sm btn-warning me-1" title="Edit">
+                            <i class="bi bi-pencil text-white"></i>
+                         </a>';
+
+                    $invoice = '<a href="' . route('admin.transactions.invoice', $transaction->id) . '" 
+                            class="btn btn-sm btn-info me-1" target="_blank" title="Invoice">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                         </a>';
+
+                    $delete = '<form action="' . route('admin.transactions.destroy', $transaction->id) . '" 
+                            method="POST" style="display:inline;" 
+                            onsubmit="return confirm(\'Delete this transaction?\');">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button class="btn btn-sm btn-danger" title="Delete">
+                                <i class="bi bi-trash text-white"></i>
+                            </button>
+                           </form>';
+
+                    return $edit . $invoice . $delete;
+                })
+
+                ->rawColumns(['status', 'action'])
+                ->make(true);
         }
 
-        $transactions = $query->orderByDesc('id')->paginate(10);
-        $transactions->appends($request->all());
-
-        return view('admin.ecommerce.transactions.index', compact('transactions', 'search'));
+        return view('admin.ecommerce.transactions.index');
     }
+
 
     public function create()
     {
