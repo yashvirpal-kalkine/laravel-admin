@@ -35,9 +35,9 @@
                         @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <div class="mb-3 col-md-6">
+                    <div class="mb-3 col-md-12">
                         <label class="form-label">Parent Category</label>
-                        <select name="parent_id" class="form-select">
+                        <select name="parent_id" class="form-select select2">
                             <option value="">None</option>
                             @foreach($parents as $id => $title)
                                 <option value="{{ $id }}" {{ old('parent_id', $category->parent_id ?? '') == $id ? 'selected' : '' }}>{{ $title }}</option>
@@ -90,10 +90,11 @@
                     </div>
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label">Status</label>
-                        <input type="hidden" name="status" value="0" />
-                        <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $category->status ?? true) ? 'checked' : '' }} />
-                        <label class="form-check-label" for="statusSwitch">Active</label>
+                        <div class="form-check form-switch mb-3">
+                            <input type="hidden" name="status" value="0" />
+                            <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $category->status ?? true) ? 'checked' : '' }} />
+                            <label class="form-check-label" for="statusSwitch">Active</label>
+                        </div>
                     </div>
                 </div>
 
@@ -103,3 +104,4 @@
         </div>
     </div>
 @endsection
+@include('components.admin.select2')
