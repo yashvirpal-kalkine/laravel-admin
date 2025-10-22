@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'country' => 'Countryland',
                 'postal_code' => '12345',
                 'phone' => '1234567890',
-                'status' => 1,
+                'status' => true,
             ]);
 
             Address::create([
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
                 'country' => 'Countryland',
                 'postal_code' => '67890',
                 'phone' => '0987654321',
-                'status' => 1,
+                'status' => true,
             ]);
         }
 

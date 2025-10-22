@@ -21,9 +21,9 @@ class ProductSeeder extends Seeder
 
         // 1️⃣ Create Product Categories
         $categories = [
-            ['title' => 'Electronics', 'slug' => 'electronics', 'status' => 'published'],
-            ['title' => 'Clothing', 'slug' => 'clothing', 'status' => 'published'],
-            ['title' => 'Home & Kitchen', 'slug' => 'home-kitchen', 'status' => 'published'],
+            ['title' => 'Electronics', 'slug' => 'electronics', 'status' => true],
+            ['title' => 'Clothing', 'slug' => 'clothing', 'status' => true],
+            ['title' => 'Home & Kitchen', 'slug' => 'home-kitchen', 'status' => true],
         ];
 
         foreach ($categories as $cat) {
@@ -36,9 +36,9 @@ class ProductSeeder extends Seeder
 
         // 2️⃣ Create Product Tags
         $tags = [
-            ['title' => 'New Arrival', 'slug' => 'new-arrival', 'status' => 'published'],
-            ['title' => 'Sale', 'slug' => 'sale', 'status' => 'published'],
-            ['title' => 'Popular', 'slug' => 'popular', 'status' => 'published'],
+            ['title' => 'New Arrival', 'slug' => 'new-arrival', true],
+            ['title' => 'Sale', 'slug' => 'sale', 'status' => true],
+            ['title' => 'Popular', 'slug' => 'popular', 'status' => true],
         ];
 
         foreach ($tags as $tag) {
@@ -65,7 +65,7 @@ class ProductSeeder extends Seeder
                     'discount_price' => rand(30, 100),
                     'stock' => rand(10, 100),
                     'is_featured' => rand(0, 1),
-                    'status' => 'published',
+                    'status' => true,
                     'author_id' => $author?->id,
                 ]
             );

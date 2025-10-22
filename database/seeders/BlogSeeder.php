@@ -20,9 +20,9 @@ class BlogSeeder extends Seeder
     {
         // 1️⃣ Create Blog Categories
         $categories = [
-            ['title' => 'Tech', 'slug' => 'tech', 'status' => 'published'],
-            ['title' => 'Lifestyle', 'slug' => 'lifestyle', 'status' => 'published'],
-            ['title' => 'Business', 'slug' => 'business', 'status' => 'published'],
+            ['title' => 'Tech', 'slug' => 'tech', 'status' => true],
+            ['title' => 'Lifestyle', 'slug' => 'lifestyle', 'status' => true],
+            ['title' => 'Business', 'slug' => 'business', 'status' => true],
         ];
 
         foreach ($categories as $cat) {
@@ -36,9 +36,9 @@ class BlogSeeder extends Seeder
 
         // 2️⃣ Create Blog Tags
         $tags = [
-            ['title' => 'Tips', 'slug' => 'tips', 'status' => 'published'],
-            ['title' => 'Tutorial', 'slug' => 'tutorial', 'status' => 'published'],
-            ['title' => 'News', 'slug' => 'news', 'status' => 'published'],
+            ['title' => 'Tips', 'slug' => 'tips', 'status' => true],
+            ['title' => 'Tutorial', 'slug' => 'tutorial', 'status' => true],
+            ['title' => 'News', 'slug' => 'news', 'status' => true],
         ];
 
         foreach ($tags as $tag) {
