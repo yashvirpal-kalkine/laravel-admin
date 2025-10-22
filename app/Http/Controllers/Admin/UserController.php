@@ -26,11 +26,20 @@ class UserController extends Controller
                 ->addColumn('addresses', function ($user) {
                     $viewUrl = route('admin.users.addresses.index', $user->id);
                     $addUrl = route('admin.users.addresses.create', $user->id);
+                    $count = $user->addresses->count();
+
                     return '
-                        <a href="' . $viewUrl . '" class="btn btn-info btn-sm">View (' . $user->addresses->count() . ')</a>
-                        <a href="' . $addUrl . '" class="btn btn-success btn-sm">Add</a>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="' . $viewUrl . '" class="btn btn-outline-primary btn-sm px-2 d-flex align-items-center" title="View Addresses">
+                                <i class="bi bi-eye me-1"></i> <span>(' . $count . ')</span>
+                            </a>
+                            <a href="' . $addUrl . '" class="btn btn-outline-success btn-sm px-2 d-flex align-items-center" title="Add Address">
+                                <i class="bi bi-plus-lg"></i>
+                            </a>
+                        </div>
                     ';
                 })
+
                 ->addColumn('status', function ($user) {
                     return status_badge($user->status);
                 })

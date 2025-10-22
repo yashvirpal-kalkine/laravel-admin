@@ -4,7 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AdminLTE 4 | Login Page</title>
+    <title>Login | {{ config('app.name') }}</title>
 
     <!--begin::Accessibility Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -14,12 +14,11 @@
     <!--end::Accessibility Meta Tags-->
 
     <!--begin::Primary Meta Tags-->
-    <meta name="title" content="AdminLTE 4 | Login Page" />
-    <meta name="author" content="ColorlibHQ" />
-    <meta
-        name="description" content="" />
-    <meta
-        name="keywords" content="" />
+    <meta name="title" content="Yashvir Pal & The Creative Coders">
+    <meta name="author" content="Yashvir Pal & The Creative Coders">
+    <meta name="description" content="Yashvir Pal and The Creative Coders — building modern, creative web solutions.">
+    <meta name="keywords"
+        content="Yashvir Pal, The Creative Coders, Web Development, Laravel, PHP, Creative Web Agency">
     <!--end::Primary Meta Tags-->
 
     <!--begin::Accessibility Features-->
@@ -29,26 +28,18 @@
     <!--end::Accessibility Features-->
 
     <!--begin::Fonts-->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
-        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
-        crossorigin="anonymous"
-        media="print"
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" media="print"
         onload="this.media='all'" />
     <!--end::Fonts-->
 
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
         crossorigin="anonymous" />
     <!--end::Third Party Plugin(OverlayScrollbars)-->
 
     <!--begin::Third Party Plugin(Bootstrap Icons)-->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
         crossorigin="anonymous" />
     <!--end::Third Party Plugin(Bootstrap Icons)-->
 
@@ -73,7 +64,7 @@
                 <form action="{{ route('admin.login.submit') }}" method="post">
                     @csrf
                     @if ($errors->any())
-                    <div class="text-danger pt-1 pb-1">{{ $errors->first() }}</div>
+                        <div class="text-danger pt-1 pb-1">{{ $errors->first() }}</div>
                     @endif
                     <div class="input-group mb-3">
                         <input type="email" name="email" class="form-control" placeholder="Email" />
@@ -116,16 +107,13 @@
     <!-- /.login-box -->
 
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
-    <script
-        src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
         crossorigin="anonymous"></script>
     <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
-    <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         crossorigin="anonymous"></script>
     <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
     <script src="{{ asset('backend/js/adminlte.js')}}">
@@ -138,7 +126,7 @@
             scrollbarAutoHide: 'leave',
             scrollbarClickScroll: true,
         };
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
 
             // Disable OverlayScrollbars on mobile devices to prevent touch interference

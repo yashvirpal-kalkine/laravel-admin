@@ -12,10 +12,11 @@
     <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
 
-    <meta name="title" content="The Creative Coders" />
-    <meta name="author" content="Yashvir Pal" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
+    <meta name="title" content="Yashvir Pal & The Creative Coders">
+    <meta name="author" content="Yashvir Pal & The Creative Coders">
+    <meta name="description" content="Yashvir Pal and The Creative Coders — building modern, creative web solutions.">
+    <meta name="keywords"
+        content="Yashvir Pal, The Creative Coders, Web Development, Laravel, PHP, Creative Web Agency">
 
     <meta name="supported-color-schemes" content="light dark" />
     <link rel="preload" href="{{ asset('backend/css/adminlte.css')}}" as="style" />
