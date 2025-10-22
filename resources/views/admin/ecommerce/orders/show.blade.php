@@ -11,13 +11,12 @@
     @endphp
 
     <div class="card card-primary card-outline mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>{{ $title }}</h5>
-            <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary btn-sm">Back to List</a>
+        <div class="card-header d-flex justify-content-end align-items-center">
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-primary btn-sm">Back to List</a>
         </div>
 
         <div class="card-body">
-            <h6>Order Information</h6>
+            <h4>Order Information</h4>
             <table class="table table-bordered mb-3">
                 <tr>
                     <th>Order Number</th>
@@ -45,23 +44,34 @@
                 </tr>
                 <tr>
                     <th>Status</th>
-                    <td><span class="badge bg-{{ $order->status_badge }}">{{ ucfirst($order->status) }}</span></td>
+                    <td>
+                        @php
+                            $color = match ($order->status) {
+                                'pending' => 'warning',
+                                'processing' => 'info',
+                                'completed' => 'success',
+                                'cancelled' => 'danger',
+                                default => 'secondary',
+                            };
+                        @endphp
+                        <span class="badge bg-{{  $color }} text-capitalize px-3 py-2">{{ $order->status }}</span>
+                    </td>
                 </tr>
                 <tr>
                     <th>Subtotal</th>
-                    <td>₹{{ number_format($order->subtotal, 2) }}</td>
+                    <td>{{ currencyformat($order->subtotal) }}</td>
                 </tr>
                 <tr>
                     <th>Tax</th>
-                    <td>₹{{ number_format($order->tax, 2) }}</td>
+                    <td>{{ currencyformat($order->tax) }}</td>
                 </tr>
                 <tr>
                     <th>Total</th>
-                    <td>₹{{ number_format($order->total, 2) }}</td>
+                    <td>{{ currencyformat($order->total) }}</td>
                 </tr>
             </table>
 
-            <h6>Order Items</h6>
+            <h4>Order Items</h4>
             <table class="table table-bordered mb-3">
                 <thead>
                     <tr>
@@ -77,15 +87,15 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->product->title ?? '-' }}</td>
-                            <td>₹{{ number_format($item->price, 2) }}</td>
+                            <td>{{ currencyformat($item->price) }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>₹{{ number_format($item->total, 2) }}</td>
+                            <td>{{ currencyformat($item->total) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
 
-            <h6>Transaction</h6>
+            <h4>Transaction</h4>
             @if($order->transaction)
                 <table class="table table-bordered">
                     <tr>
@@ -94,7 +104,7 @@
                     </tr>
                     <tr>
                         <th>Amount</th>
-                        <td>₹{{ number_format($order->transaction->amount, 2) }}</td>
+                        <td>{{ currencyformat($order->transaction->amount) }}</td>
                     </tr>
                     <tr>
                         <th>Payment Method</th>
@@ -102,7 +112,22 @@
                     </tr>
                     <tr>
                         <th>Status</th>
-                        <td>{{ ucfirst($order->transaction->status) }}</td>
+                        <td>
+                            @php
+                                $color = match ($order->status) {
+                                    'pending' => 'warning',
+                                    'processing' => 'info',
+                                    'completed' => 'success',
+                                    'cancelled' => 'danger',
+                                    default => 'secondary',
+                                };
+                            @endphp
+
+                            <span class="badge bg-{{  $color }} text-capitalize px-3 py-2">
+                                {{ ucfirst($order->transaction->status) }}
+                            </span>
+
+                        </td>
                     </tr>
                 </table>
             @else

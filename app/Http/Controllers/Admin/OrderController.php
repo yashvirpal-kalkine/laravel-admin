@@ -18,10 +18,52 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::with('user')->latest()->paginate(10);
-        return view('admin.ecommerce.orders.index', compact('orders'));
-    }
+        if ($request->ajax()) {
+            $query = Order::with('user')->latest();
 
+            return DataTables::of($query)
+                ->addIndexColumn() // Serial number
+                ->addColumn('customer', function ($order) {
+                    return $order->user ? $order->user->name : '-';
+                })
+                ->addColumn('total', function ($order) {
+                    return currencyformat($order->total);
+                })
+                ->addColumn('status', function ($order) {
+                    $color = match ($order->status) {
+                        'pending' => 'warning',
+                        'processing' => 'info',
+                        'completed' => 'success',
+                        'cancelled' => 'danger',
+                        default => 'secondary',
+                    };
+
+                    return '<span class="badge bg-' . $color . ' text-capitalize px-3 py-2">' . $order->status . '</span>';
+                })
+                ->addColumn('created', function ($order) {
+                    return dateFormat($order->created_at); // formatted date & time
+                })
+                ->addColumn('action', function ($order) {
+                    $view = '<a href="' . route('admin.orders.show', $order->id) . '" class="btn btn-sm btn-info me-1 text-white" title="View">
+                            <i class="bi bi-eye-fill"></i>
+                         </a>';
+                    $edit = '<a href="' . route('admin.orders.edit', $order->id) . '" class="btn btn-sm btn-warning me-1 text-white" title="Edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>';
+                    $delete = '<form method="POST" action="' . route('admin.orders.destroy', $order->id) . '" style="display:inline;">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')" title="Delete">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                           </form>';
+                    return $view . $edit . $delete;
+                })
+                ->rawColumns(['status', 'action'])
+                ->make(true);
+        }
+
+        return view('admin.ecommerce.orders.index');
+    }
     public function create()
     {
         $products = Product::pluck('title', 'id');

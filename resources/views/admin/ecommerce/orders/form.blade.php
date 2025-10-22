@@ -2,17 +2,18 @@
 
 @section('content')
     @php
-        $title = isset($order) && $order->exists ? 'Edit Order' : 'Create Order';
+        $title2 = isset($order) && $order->exists ? 'Edit Order' : 'Create Order';
         $breadcrumbs = [
             'Home' => route('admin.dashboard'),
             'Orders' => route('admin.orders.index'),
-            $title => ''
+            "$title2" => ""
         ];
+       
     @endphp
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary btn-sm">Back to List</a>
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-primary btn-sm">Back to List</a>
         </div>
 
         <div class="card-body">
