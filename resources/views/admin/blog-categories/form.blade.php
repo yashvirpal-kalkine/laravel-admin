@@ -100,9 +100,9 @@
                     <!-- Status -->
                     <div class="mb-3 col-md-6">
                         <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" name="status" value="published"
-                                id="statusSwitch" {{ old('status', $blogcategory->status ?? 'draft') === 'published' ? 'checked' : '' }}>
-                            <label class="form-check-label" for="statusSwitch">Published</label>
+                            <input type="hidden" name="status" value="0" />
+                            <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $blogcategory->status ?? true) ? 'checked' : '' }} />
+                            <label class="form-check-label" for="statusSwitch">Active</label>
                         </div>
                     </div>
                 </div>

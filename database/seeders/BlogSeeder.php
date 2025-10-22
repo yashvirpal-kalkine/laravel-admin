@@ -53,7 +53,7 @@ class BlogSeeder extends Seeder
         // 3️⃣ Create Blog Posts
         $categoriesAll = BlogCategory::all();
         $tagsAll = BlogTag::all();
-        $author = User::first() ?? Admin::first();
+        $author =Admin::first();
 
         for ($i = 1; $i <= 10; $i++) {
             $title = "Sample Blog Post {$i}";
@@ -63,7 +63,7 @@ class BlogSeeder extends Seeder
                     'title' => $title,
                     'short_description' => "This is a short description for post {$i}.",
                     'description' => "This is a full description for post {$i}. Lorem ipsum dolor sit amet.",
-                    'status' => 'published',
+                    'status' => true,
                     'author_id' => $author?->id,
                     'published_at' => Carbon::now()->subDays(rand(0, 30)),
                 ]

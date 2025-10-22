@@ -8,6 +8,8 @@ use App\Models\BlogTag;
 use App\Http\Requests\BlogTagRequest;
 use Illuminate\Support\Str;
 
+use Yajra\DataTables\Facades\DataTables;
+
 class BlogTagController extends Controller
 {
     public function index(Request $request)

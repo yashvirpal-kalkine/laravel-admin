@@ -23,9 +23,9 @@ return new class extends Migration {
             $table->text('meta_description')->nullable();
 
             // Optional / Additional fields
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->boolean('status')->default(true)->default(1);
             $table->timestamp('published_at')->nullable();
-            $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
 
             $table->timestamps();
         });

@@ -28,7 +28,7 @@ return new class extends Migration {
             $table->foreignId('parent_id')->nullable()->constrained('product_categories')->nullOnDelete();
 
             // Status + Author
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->boolean('status')->default(true)->default(1);
             $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
 
             $table->timestamps();

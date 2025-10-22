@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('code')->unique();
             $table->enum('type', ['fixed', 'percentage']);
             $table->decimal('value', 10, 2);
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->boolean('status')->default(true)->default(1);
             $table->date('valid_from')->nullable();
             $table->date('valid_until')->nullable();
             $table->timestamps();

@@ -34,7 +34,7 @@ return new class extends Migration {
             $table->boolean('is_featured')->default(false);
 
             // Author & status
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->boolean('status')->default(true)->default(1);
             $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
 
             $table->timestamps();

@@ -87,11 +87,9 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Status</label>
-                    <select name="status" class="form-select">
-                        <option value="draft" {{ old('status', $product->status ?? '') == 'draft' ? 'selected' : '' }}>Draft</option>
-                        <option value="published" {{ old('status', $product->status ?? '') == 'published' ? 'selected' : '' }}>Published</option>
-                        <option value="archived" {{ old('status', $product->status ?? '') == 'archived' ? 'selected' : '' }}>Archived</option>
-                    </select>
+                    <input type="hidden" name="status" value="0" />
+                    <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $product->status ?? true) ? 'checked' : '' }} />
+                    <label class="form-check-label" for="statusSwitch">Active</label>
                 </div>
             </div>
 

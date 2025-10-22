@@ -39,7 +39,8 @@
                         <select name="type" class="form-select" required>
                             @foreach(['fixed', 'percentage'] as $type)
                                 <option value="{{ $type }}" @selected(old('type', $coupon->type ?? '') == $type)>
-                                    {{ ucfirst($type) }}</option>
+                                    {{ ucfirst($type) }}
+                                </option>
                             @endforeach
                         </select>
                         @error('type') <small class="text-danger">{{ $message }}</small> @enderror
@@ -54,12 +55,9 @@
 
                     <div class="mb-3 col-md-4">
                         <label class="form-label">Status</label>
-                        <select name="status" class="form-select" required>
-                            @foreach(['active', 'inactive'] as $status)
-                                <option value="{{ $status }}" @selected(old('status', $coupon->status ?? '') == $status)>
-                                    {{ ucfirst($status) }}</option>
-                            @endforeach
-                        </select>
+                        <input type="hidden" name="status" value="0" />
+                        <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $coupon->status ?? true) ? 'checked' : '' }} />
+                        <label class="form-check-label" for="statusSwitch">Active</label>
                         @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 

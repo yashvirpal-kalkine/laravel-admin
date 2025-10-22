@@ -25,7 +25,7 @@ class ProductRequest extends FormRequest
             'discount_price' => 'nullable|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'is_featured' => 'boolean',
-            'status' => 'required|in:draft,published,archived',
+            'status' => 'nullable|boolean',
             'product_category_ids' => 'nullable|array',
             'product_category_ids.*' => 'exists:product_categories,id',
             'product_tag_ids' => 'nullable|array',

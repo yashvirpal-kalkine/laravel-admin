@@ -20,7 +20,7 @@ class CouponRequest extends FormRequest
             'code' => 'required|string|max:50|unique:coupons,code,' . $couponId,
             'type' => 'required|in:fixed,percentage',
             'value' => 'required|numeric|min:0',
-            'status' => 'required|in:active,inactive',
+            'status' => 'nullable|boolean',
             'valid_from' => 'nullable|date',
             'valid_until' => 'nullable|date|after_or_equal:valid_from',
         ];

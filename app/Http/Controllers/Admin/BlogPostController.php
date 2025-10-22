@@ -10,6 +10,9 @@ use App\Models\BlogTag;
 use App\Http\Requests\BlogPostRequest;
 use Illuminate\Support\Str;
 
+use Yajra\DataTables\Facades\DataTables;
+
+
 class BlogPostController extends Controller
 {
     public function index(Request $request)

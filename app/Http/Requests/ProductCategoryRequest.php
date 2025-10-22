@@ -25,7 +25,7 @@ class ProductCategoryRequest extends FormRequest
             'meta_title' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-            'status' => 'required|in:draft,published,archived',
+            'status' => 'nullable|boolean',
             'parent_id' => 'nullable|exists:product_categories,id',
         ];
     }

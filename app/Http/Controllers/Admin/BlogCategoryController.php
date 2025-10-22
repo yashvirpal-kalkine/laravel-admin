@@ -8,21 +8,45 @@ use App\Models\BlogCategory;
 use App\Http\Requests\BlogCategoryRequest;
 use Illuminate\Support\Str;
 
+use Yajra\DataTables\Facades\DataTables;
+
 class BlogCategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = BlogCategory::query();
+        // If AJAX → return JSON for DataTables
+        if ($request->ajax()) {
+            $query = BlogCategory::with('author'); // assuming 'author' relation exists
 
-        if ($search = $request->input('search')) {
-            $query->where('title', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%");
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('status', function ($category) {
+                    return status_badge($category->status);
+                })
+                ->addColumn('author', function ($category) {
+                    return $category->author->name ?? '-';
+                })
+                ->addColumn('actions', function ($category) {
+                    $edit = route('admin.blog-categories.edit', $category->id);
+                    $delete = route('admin.blog-categories.destroy', $category->id);
+
+                    return '
+                        <a href="' . $edit . '" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil text-white"></i>
+                        </a>
+                        <form action="' . $delete . '" method="POST" style="display:inline;" onsubmit="return confirm(\'Delete this category?\')">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash text-white"></i>
+                            </button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['status', 'actions']) // allow HTML
+                ->make(true);
         }
 
-        $categories = $query->orderBy('id', 'desc')->paginate(10);
-        $categories->appends($request->all());
-
-        return view('admin.blog-categories.index', compact('categories', 'search'));
+        return view('admin.blog-categories.index');
     }
 
     public function create()
