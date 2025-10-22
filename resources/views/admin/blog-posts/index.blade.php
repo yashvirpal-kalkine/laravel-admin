@@ -44,7 +44,6 @@
     <link href="{{ asset('backend/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
 @endpush
 @push('scripts')
-    <script src="{{ asset('backend/js/jquery-3.6.0.min.js') }}"></script>
     <!-- DataTables -->
     <script src="{{ asset('backend/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('backend/js/dataTables.bootstrap5.min.js') }}"></script>

@@ -42,7 +42,7 @@
                     <!-- Categories & Tags -->
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Categories</label>
-                        <select name="categories[]" class="form-select" multiple>
+                        <select name="categories[]" class="form-select select2" multiple>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ isset($blogpost) && $blogpost->categories->contains($category->id) ? 'selected' : '' }}>
                                     {{ $category->title }}
@@ -53,7 +53,7 @@
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Tags</label>
-                        <select name="tags[]" class="form-select" multiple>
+                        <select name="tags[]" class="form-select select2" multiple>
                             @foreach($tags as $tag)
                                 <option value="{{ $tag->id }}" {{ isset($blogpost) && $blogpost->tags->contains($tag->id) ? 'selected' : '' }}>
                                     {{ $tag->title }}
@@ -115,18 +115,18 @@
 
                     <!-- Status & Published At -->
                     <div class="mb-3 col-md-6">
-                        <label class="form-label">Status</label>
-                        <input type="hidden" name="status" value="0" />
-                        <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $blogpost->status ?? true) ? 'checked' : '' }} />
-                        <label class="form-check-label" for="statusSwitch">Active</label>
-                        @error('status') <small class="text-danger">{{ $message }}</small> @enderror
+                        <label class="form-label">Published At</label>
+                        <input type="text" name="published_at"
+                            value="{{ old('published_at', isset($blogpost->published_at) ? $blogpost->published_at->format('Y-m-d\TH:i') : '') }}"
+                            class="form-control datetime">
+                        @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                     <div class="mb-3 col-md-6">
-                        <label class="form-label">Published At</label>
-                        <input type="datetime-local" name="published_at"
-                            value="{{ old('published_at', isset($blogpost->published_at) ? $blogpost->published_at->format('Y-m-d\TH:i') : '') }}"
-                            class="form-control">
-                        @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
+                        <div class="form-check form-switch mb-3">
+                            <input type="hidden" name="status" value="0" />
+                            <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $blogpost->status ?? true) ? 'checked' : '' }} />
+                            <label class="form-check-label" for="statusSwitch">Active</label>
+                        </div>
                     </div>
 
                 </div>
@@ -138,3 +138,5 @@
         </div>
     </div>
 @endsection
+@include('components.admin.select2')
+@include('components.admin.datetimepicker')

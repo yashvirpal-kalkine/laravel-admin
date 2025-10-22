@@ -83,6 +83,8 @@
             }
         });
     </script>
+    <script src="{{ asset('backend/js/jquery-3.6.0.min.js') }}"></script>
+
     @stack('scripts')
 </body>
 
