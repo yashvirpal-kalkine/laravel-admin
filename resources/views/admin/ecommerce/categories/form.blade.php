@@ -61,8 +61,7 @@
                         <label class="form-label">Banner</label>
                         <input type="file" name="banner" class="form-control">
                         @if(isset($category) && $category->banner)
-                            <img src="{{ asset('storage/' . $category->banner) }}" alt="{{ $category->alt ?? '' }}"
-                                class="img-thumbnail mt-2" width="150">
+                            <img src="{{ image_url('banner' , $category->banner, 'small') }}" alt="Image" class="mt-2" width="50">
                         @endif
                     </div>
 

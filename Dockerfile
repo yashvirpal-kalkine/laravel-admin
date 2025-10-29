@@ -1,7 +1,15 @@
 FROM php:8.2-fpm
 
-RUN apt-get update && apt-get install -y libsqlite3-dev sqlite3 zip unzip git curl \
-    && docker-php-ext-install pdo pdo_sqlite
+# RUN apt-get update && apt-get install -y libsqlite3-dev sqlite3 zip unzip git curl \
+#     && docker-php-ext-install pdo pdo_sqlite
+RUN apt-get update && apt-get install -y \
+    libsqlite3-dev sqlite3 zip unzip git curl \
+    libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+        --with-webp \
+    && docker-php-ext-install pdo pdo_sqlite gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

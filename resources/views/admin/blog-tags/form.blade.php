@@ -12,7 +12,8 @@
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.blog-tags.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
+            <a href="{{ route('admin.blog-tags.index') }}" class="btn btn-primary btn-sm"><i
+                    class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
         </div>
         <div class="card-body">
             <form
@@ -60,8 +61,7 @@
                         <label class="form-label">Banner Image</label>
                         <input type="file" name="banner" class="form-control">
                         @if(isset($blogtag) && $blogtag->banner)
-                            <img src="{{ asset('storage/' . $blogtag->banner) }}" alt="{{ $blogtag->alt ?? '' }}"
-                                class="img-thumbnail mt-2" width="150">
+                            <img src="{{ image_url('banner', $blogtag->banner, 'small') }}" class="mt-2" width="50">
                         @endif
                         @error('banner') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>

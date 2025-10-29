@@ -55,7 +55,7 @@ $breadcrumbs = [
                     <label class="form-label">Banner Image</label>
                     <input type="file" name="banner" class="form-control">
                     @if(isset($page) && $page->banner)
-                        <img src="{{ asset('storage/' . $page->banner) }}" alt="{{ $page->alt ?? '' }}" class="img-thumbnail mt-2" width="150">
+                        <img src="{{ image_url('banner' , $page->banner, 'small') }}" alt="Image" class="mt-2" width="50">
                     @endif
                     @error('banner') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
