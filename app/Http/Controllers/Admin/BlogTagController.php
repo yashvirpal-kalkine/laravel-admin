@@ -13,7 +13,7 @@ use App\Services\ImageUploadService;
 
 class BlogTagController extends Controller
 {
-     protected $imageService;
+    protected $imageService;
 
     public function __construct(ImageUploadService $imageService)
     {
@@ -100,6 +100,9 @@ class BlogTagController extends Controller
 
     public function destroy(BlogTag $blogtag)
     {
+        if (!empty($blogtag->banner)) {
+            $this->imageService->delete($blogtag->banner, 'banner');
+        }
         $blogtag->delete();
         return redirect()->route('admin.blog-tags.index')->with('success', 'Tag deleted successfully');
     }

@@ -106,6 +106,9 @@ class BlogCategoryController extends Controller
 
     public function destroy(BlogCategory $blogcategory)
     {
+        if (!empty($blogcategory->banner)) {
+            $this->imageService->delete($blogcategory->banner, 'banner');
+        }
         $blogcategory->delete();
         return redirect()->route('admin.blog-categories.index')->with('success', 'Category deleted successfully');
     }

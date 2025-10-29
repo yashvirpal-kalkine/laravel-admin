@@ -76,9 +76,9 @@ class PageController extends Controller
         }
 
         // Handle SEO image upload
-        if ($request->hasFile('seo_image')) {
-            $data['seo_image'] = $request->file('seo_image')->store('pages/seo_images', 'public');
-        }
+        // if ($request->hasFile('seo_image')) {
+        //     $data['seo_image'] = $request->file('seo_image')->store('pages/seo_images', 'public');
+        // }
 
         $data['author_id'] = auth()->id(); // Assign current admin as author
 
@@ -117,6 +117,9 @@ class PageController extends Controller
 
     public function destroy(Page $page)
     {
+        if (!empty($page->banner)) {
+            $this->imageService->delete($page->banner, 'banner');
+        }
         $page->delete();
         return redirect()->route('admin.pages.index')->with('success', 'Page deleted successfully');
     }

@@ -13,7 +13,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Services\ImageUploadService;
 class ProductCategoryController extends Controller
 {
-     protected $imageService;
+    protected $imageService;
 
     public function __construct(ImageUploadService $imageService)
     {
@@ -97,6 +97,9 @@ class ProductCategoryController extends Controller
 
     public function destroy(ProductCategory $product_category)
     {
+        if (!empty($product_category->banner)) {
+            $this->imageService->delete($product_category->banner, 'banner');
+        }
         $product_category->delete();
         return redirect()->route('admin.product-categories.index')->with('success', 'Product category deleted successfully.');
     }

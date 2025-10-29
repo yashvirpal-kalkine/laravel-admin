@@ -16,7 +16,7 @@ use App\Services\ImageUploadService;
 
 class BlogPostController extends Controller
 {
-     protected $imageService;
+    protected $imageService;
 
     public function __construct(ImageUploadService $imageService)
     {
@@ -125,6 +125,9 @@ class BlogPostController extends Controller
 
     public function destroy(BlogPost $blogpost)
     {
+        if (!empty($blogpost->banner)) {
+            $this->imageService->delete($blogpost->banner, 'banner');
+        }
         $blogpost->delete();
         return redirect()->route('admin.blog-posts.index')->with('success', 'Post deleted successfully');
     }
