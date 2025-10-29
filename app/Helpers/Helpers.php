@@ -104,3 +104,38 @@ if (!function_exists('currencyformat')) {
     // <!-- <p>Created at: {{ formatDate($user->created_at) }}</p>  -->
     // <!-- Output: 14 Oct 2025 -->
 }
+
+if (!function_exists('image_url')) {
+    /**
+     * Get public URL of an image by type and size.
+     *
+     * Example:
+     *   image_url('article', 'uuid_medium.webp', 'medium')
+     *
+     * @param string $type       e.g. 'article', 'product'
+     * @param string|null $filename
+     * @param string $size       e.g. 'icon', 'small', 'medium', 'large', 'original'
+     * @return string|null
+     */
+    function image_url(string $type, ?string $filename, string $size = 'medium'): ?string
+    {
+        if (!$filename) {
+            return null;
+        }
+
+        $config = config("images.$type");
+
+        if (!$config) {
+            throw new \Exception("Image type '$type' not found in config/images.php");
+        }
+
+        $folder = $config['path'];
+
+        // Optional subfolder per size (if you saved like /uploads/articles/small/)
+        $sizeFolder = in_array($size, ['icon', 'small', 'medium', 'large', 'original'])
+            ? $folder . '/' . $size
+            : $folder;
+
+        return asset('storage/' . trim($sizeFolder, '/') . '/' . $filename);
+    }
+}
