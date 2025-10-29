@@ -9,9 +9,16 @@ use App\Http\Requests\BlogTagRequest;
 use Illuminate\Support\Str;
 
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ImageUploadService;
 
 class BlogTagController extends Controller
 {
+     protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -58,7 +65,8 @@ class BlogTagController extends Controller
         }
 
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('blog-tags/banners', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         $data['author_id'] = auth()->id();
@@ -81,7 +89,8 @@ class BlogTagController extends Controller
         }
 
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('blog-tags/banners', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         $blogtag->update($data);

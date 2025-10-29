@@ -10,8 +10,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ImageUploadService;
 class ProductCategoryController extends Controller
 {
+     protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -58,7 +65,8 @@ class ProductCategoryController extends Controller
         $data['author_id'] = Auth::id();
 
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('product_categories', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         ProductCategory::create($data);
@@ -78,7 +86,8 @@ class ProductCategoryController extends Controller
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
 
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('product_categories', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         $product_category->update($data);

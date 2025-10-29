@@ -11,10 +11,17 @@ use App\Http\Requests\BlogPostRequest;
 use Illuminate\Support\Str;
 
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ImageUploadService;
 
 
 class BlogPostController extends Controller
 {
+     protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -71,10 +78,13 @@ class BlogPostController extends Controller
     {
         $data = $request->validated();
 
-        if (empty($data['slug']))
+        if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['title']);
-        if ($request->hasFile('banner'))
-            $data['banner'] = $request->file('banner')->store('blog-posts/banners', 'public');
+        }
+        if ($request->hasFile('banner')) {
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
+        }
         $data['author_id'] = auth()->id();
 
         $post = BlogPost::create($data);
@@ -97,11 +107,13 @@ class BlogPostController extends Controller
     {
         $data = $request->validated();
 
-        if (empty($data['slug']))
+        if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['title']);
-        if ($request->hasFile('banner'))
-            $data['banner'] = $request->file('banner')->store('blog-posts/banners', 'public');
-
+        }
+        if ($request->hasFile('banner')) {
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
+        }
         $blogpost->update($data);
 
         // Sync pivot tables

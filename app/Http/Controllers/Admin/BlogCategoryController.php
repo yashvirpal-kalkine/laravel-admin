@@ -9,9 +9,16 @@ use App\Http\Requests\BlogCategoryRequest;
 use Illuminate\Support\Str;
 
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ImageUploadService;
 
 class BlogCategoryController extends Controller
 {
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     public function index(Request $request)
     {
         // If AJAX → return JSON for DataTables
@@ -63,7 +70,8 @@ class BlogCategoryController extends Controller
         }
 
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('blog-categories/banners', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         $data['author_id'] = auth()->id();
@@ -87,7 +95,8 @@ class BlogCategoryController extends Controller
         }
 
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('blog-categories/banners', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         $blogcategory->update($data);

@@ -9,8 +9,15 @@ use App\Http\Requests\PageRequest;
 use Illuminate\Support\Str;
 
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ImageUploadService;
 class PageController extends Controller
 {
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -64,7 +71,8 @@ class PageController extends Controller
 
         // Handle banner upload
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('pages/banners', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         // Handle SEO image upload
@@ -94,7 +102,8 @@ class PageController extends Controller
         }
 
         if ($request->hasFile('banner')) {
-            $data['banner'] = $request->file('banner')->store('pages/banners', 'public');
+            $images = $this->imageService->upload($request->file('banner'), 'banner');
+            $data['banner'] = $images['name'];
         }
 
         if ($request->hasFile('seo_image')) {
