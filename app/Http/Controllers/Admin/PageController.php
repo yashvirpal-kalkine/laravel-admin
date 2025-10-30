@@ -49,11 +49,15 @@ class PageController extends Controller
 
     public function create()
     {
-        $page = null;
-        $allPages = Page::active()->orderBy('title')->get();
-        $excludeIds = [];
-        return view('admin.pages.form', compact('page', 'allPages', 'excludeIds'));
+        $page = new Page();
+        $parents = Page::active()
+            ->whereNull('parent_id')
+            ->with('children')
+            ->orderBy('title')
+            ->get();
+        return view('admin.pages.form', compact('page', 'parents'));
     }
+
 
     public function store(PageRequest $request)
     {
@@ -90,14 +94,27 @@ class PageController extends Controller
 
     public function edit(Page $page)
     {
-        $page->load('allChildren');
+        $excludeIds = collect($page->getDescendantIds())
+            ->push($page->id)
+            ->all();
 
-        $excludeIds = $page->descendantIds();
-        $excludeIds[] = $page->id;
-
-        $allPages = Page::active()->orderBy('title')->get();
-
-        return view('admin.pages.form', compact('page', 'allPages', 'excludeIds'));
+        $parents = Page::active()
+            ->whereNull('parent_id')
+            ->whereNotIn('id', $excludeIds)
+            ->with([
+                'children' => function ($query) use ($excludeIds) {
+                    $query->whereNotIn('id', $excludeIds)
+                        ->with([
+                            'children' => function ($subQuery) use ($excludeIds) {
+                                $subQuery->whereNotIn('id', $excludeIds)
+                                    ->with('children');
+                            }
+                        ]);
+                }
+            ])
+            ->orderBy('title')
+            ->get();
+        return view('admin.pages.form', compact('page', 'parents'));
     }
 
 

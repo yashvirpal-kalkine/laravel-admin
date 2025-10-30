@@ -39,7 +39,7 @@ $breadcrumbs = [
                     <label for="parent_id">Parent Page</label>
                     <select name="parent_id" id="parent_id" class="form-control">
                         <option value="">-- No Parent (Top Level) --</option>
-                        {!! pageTreeOptionsFromCollection($allPages, old('parent_id', $page?->parent_id), $excludeIds) !!}
+                        <x-admin.tree-select :items="$parents" :selected="old('parent_id', $page->parent_id)" />
                     </select>
                 </div>
 

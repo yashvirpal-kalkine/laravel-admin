@@ -21,18 +21,18 @@
             @endif
 
             <div class="row">
-
+{{-- <x-tree-select :items="$categories" />
+                             <x-tree-select :items="$categories" :selected="$category->parent_id" />
+                                <x-tree-select :items="$blogCategories" :selected="$blogCategory->parent_id ?? null" />
+<x-tree-select :items="$pages" :selected="$page->parent_id ?? null" /> --}}
                 
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Parent Category</label>
                     <select name="parent_id" class="form-control">
                         <option value="">-- None (Root Category) --</option>
-                        @foreach($parents as $cat)
-                            <option value="{{ $cat->id }}"
-                                {{ old('parent_id', $blogcategory->parent_id ?? '') == $cat->id ? 'selected' : '' }}>
-                                {{ $cat->title }}
-                            </option>
-                        @endforeach
+                        <x-admin.tree-select :items="$parents" :selected="old('parent_id', $blogcategory->parent_id)" />
+
+
                     </select>
                     @error('parent_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>

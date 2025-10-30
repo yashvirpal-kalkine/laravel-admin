@@ -93,19 +93,13 @@ class Page extends Model
             ->orderBy('title');
     }
 
-    //For Exclude from Drom in admin Edit 
-    public function allChildren()
-    {
-        return $this->hasMany(Page::class, 'parent_id')->with('allChildren');
-    }
-
-    public function descendantIds()
+    public function getDescendantIds()
     {
         $ids = [];
 
-        foreach ($this->allChildren as $child) {
+        foreach ($this->children()->get() as $child) {
             $ids[] = $child->id;
-            $ids = array_merge($ids, $child->descendantIds());
+            $ids = array_merge($ids, $child->getDescendantIds());
         }
 
         return $ids;

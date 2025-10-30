@@ -92,8 +92,19 @@ class BlogCategory extends Model
         return $this->belongsTo(BlogCategory::class, 'parent_id');
     }
 
+    public function activeChildren()
+    {
+        return $this->hasMany(BlogCategory::class, 'parent_id')
+            ->where('status', 1)
+            ->orderBy('title');
+    }
+
     public function author()
     {
         return $this->belongsTo(Admin::class, 'author_id');
+    }
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 }

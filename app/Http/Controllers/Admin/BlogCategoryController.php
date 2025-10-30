@@ -29,7 +29,7 @@ class BlogCategoryController extends Controller
                 ->addIndexColumn()
                 ->addColumn('parent', fn($cat) => $cat->parent?->title ?? '-')
                 ->addColumn('status', fn($cat) => status_badge($cat->status))
-               // ->addColumn('author', fn($cat) => $cat->author->name ?? '-')
+                // ->addColumn('author', fn($cat) => $cat->author->name ?? '-')
                 ->addColumn('actions', function ($category) {
                     $edit = route('admin.blog-categories.edit', $category->id);
                     $delete = route('admin.blog-categories.destroy', $category->id);
@@ -56,11 +56,14 @@ class BlogCategoryController extends Controller
 
     public function create()
     {
-        $parents = BlogCategory::where('status', 1)
+        $blogcategory = new BlogCategory();
+
+        $parents = BlogCategory::active()
+            ->whereNull('parent_id')
+            ->with('children')
             ->orderBy('title')
             ->get();
-
-        return view('admin.blog-categories.form', compact('parents'));
+        return view('admin.blog-categories.form', compact('blogcategory', 'parents'));
     }
 
     public function store(BlogCategoryRequest $request)
@@ -107,23 +110,35 @@ class BlogCategoryController extends Controller
         }
     }
 
-        public function edit(BlogCategory $blog_category)
-        {
-            // Load children for recursion to work
-            $blog_category->load('children');
+    public function edit(BlogCategory $blog_category)
+    {
 
-            // Exclude current category + all descendants
-            $excludeIds = $blog_category->getDescendantIds();
-            $excludeIds[] = $blog_category->id;
+        $blogcategory = $blog_category;
 
-            $parents = BlogCategory::where('status', 1)
-                ->whereNotIn('id', $excludeIds)
-                ->orderBy('title')
-                ->get();
-            $blogcategory=    $blog_category;
+        $excludeIds = collect($blog_category->getDescendantIds())
+            ->push($blog_category->id)
+            ->all();
 
-            return view('admin.blog-categories.form', compact('blogcategory', 'parents'));
-        }
+        $parents = BlogCategory::active()
+            ->whereNull('parent_id')
+            ->whereNotIn('id', $excludeIds)
+            ->with([
+                'children' => function ($query) use ($excludeIds) {
+                    $query->whereNotIn('id', $excludeIds)
+                        ->with([
+                            'children' => function ($subQuery) use ($excludeIds) {
+                                $subQuery->whereNotIn('id', $excludeIds)
+                                    ->with('children');
+                            }
+                        ]);
+                }
+            ])
+            ->orderBy('title')
+            ->get();
+        return view('admin.blog-categories.form', compact('blogcategory', 'parents'));
+    }
+
+
 
     public function update(BlogCategoryRequest $request, BlogCategory $blog_category)
     {
