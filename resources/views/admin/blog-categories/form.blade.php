@@ -21,10 +21,6 @@
             @endif
 
             <div class="row">
-{{-- <x-tree-select :items="$categories" />
-                             <x-tree-select :items="$categories" :selected="$category->parent_id" />
-                                <x-tree-select :items="$blogCategories" :selected="$blogCategory->parent_id ?? null" />
-<x-tree-select :items="$pages" :selected="$page->parent_id ?? null" /> --}}
                 
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Parent Category</label>

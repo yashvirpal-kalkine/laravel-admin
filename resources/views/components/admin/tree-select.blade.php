@@ -9,6 +9,10 @@
         <x-tree-select :items="$item->children" :selected="$selected" :level="$level + 1" />
     @endif
 @endforeach --}}
+{{-- <x-tree-select :items="$categories" />
+                             <x-tree-select :items="$categories" :selected="$category->parent_id" />
+                                <x-tree-select :items="$blogCategories" :selected="$blogCategory->parent_id ?? null" />
+<x-tree-select :items="$pages" :selected="$page->parent_id ?? null" /> --}}
 @props(['items', 'selected' => null, 'level' => 0])
 
 @foreach($items as $item)
