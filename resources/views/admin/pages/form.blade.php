@@ -39,7 +39,7 @@ $breadcrumbs = [
                     <label for="parent_id">Parent Page</label>
                     <select name="parent_id" id="parent_id" class="form-control">
                         <option value="">-- No Parent (Top Level) --</option>
-                        {!! pageTreeOptionsFromCollection($allPages, old('parent_id', $page->parent_id), $excludeIds) !!}
+                        {!! pageTreeOptionsFromCollection($allPages, old('parent_id', $page?->parent_id), $excludeIds) !!}
                     </select>
                 </div>
 
