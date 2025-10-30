@@ -22,35 +22,43 @@ $breadcrumbs = [
             @endif
 
             <div class="row">
-                <!-- Title -->
+                
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Title</label>
+                    <label class="form-label">Title <span class="text-danger">*</span></label>
                     <input type="text" name="title" value="{{ old('title', $page->title ?? '') }}" class="form-control" required>
                     @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- Slug -->
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Slug</label>
                     <input type="text" name="slug" value="{{ old('slug', $page->slug ?? '') }}" class="form-control">
                     @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- Short Description -->
+                <div class="mb-3 col-md-12">
+                    <label for="parent_id">Parent Page</label>
+                    <select name="parent_id" id="parent_id" class="form-control">
+                        <option value="">-- No Parent (Top Level) --</option>
+                        {!! pageTreeOptionsFromCollection($allPages, old('parent_id', $page->parent_id), $excludeIds) !!}
+                    </select>
+                </div>
+
+
+                
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Short Description</label>
                     <textarea name="short_description" class="form-control" rows="2">{{ old('short_description', $page->short_description ?? '') }}</textarea>
                     @error('short_description') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- Description -->
+               
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Description</label>
                     <textarea name="description" class="form-control" rows="5">{{ old('description', $page->description ?? '') }}</textarea>
                     @error('description') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- Banner -->
+                
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Banner Image</label>
                     <input type="file" name="banner" class="form-control">
@@ -60,14 +68,14 @@ $breadcrumbs = [
                     @error('banner') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- Alt text -->
+               
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Alt Text</label>
                     <input type="text" name="alt" value="{{ old('alt', $page->alt ?? '') }}" class="form-control">
                     @error('alt') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <!-- SEO Fields -->
+                
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Meta Title</label>
                     <input type="text" name="meta_title" value="{{ old('meta_title', $page->meta_title ?? '') }}" class="form-control">
@@ -102,19 +110,7 @@ $breadcrumbs = [
                     <input type="url" name="canonical_url" value="{{ old('canonical_url', $page->canonical_url ?? '') }}" class="form-control">
                     @error('canonical_url') <small class="text-danger">{{ $message }}</small> @enderror
                 </div> --}}
-
-               
-
-                <!-- Published At -->
-                {{-- <div class="mb-3 col-md-6">
-                    <label class="form-label">Published At</label>
-                    <input type="text" name="published_at"
-                            value="{{ old('published_at', isset($page->published_at) ? $page->published_at->format('Y-m-d\TH:i') : '') }}"
-                            class="form-control datetime">
-                            @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
-                </div> --}}
-
-                 <!-- Status -->
+                 
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch mb-3">
                         <input type="hidden" name="status" value="0"/>

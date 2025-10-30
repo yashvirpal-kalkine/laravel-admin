@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Illuminate\Support\HtmlString;
 
+use App\Models\Page;
+
 if (!function_exists('isActiveRoute')) {
     /**
      * Check if the current route matches the given route(s)
@@ -117,7 +119,7 @@ if (!function_exists('image_url')) {
      * @param string $size       e.g. 'icon', 'small', 'medium', 'large', 'original'
      * @return string|null
      */
-    function image_url(string $type, ?string $filename, string $size = 'medium'): ?string
+    function image_url(string $type, ?string $filename, string $size = 'original'): ?string
     {
         if (!$filename) {
             return null;
@@ -139,3 +141,47 @@ if (!function_exists('image_url')) {
         return asset('storage/' . trim($sizeFolder, '/') . '/' . $filename);
     }
 }
+
+
+
+if (!function_exists('pageTreeOptionsFromCollection')) {
+    /**
+     * Render <option> list from a flat pages collection.
+     *
+     * @param \Illuminate\Support\Collection $allPages   Collection of Page models
+     * @param int|null $selectedId
+     * @param array $excludeIds
+     * @param int|null $parentId
+     * @param string $prefix
+     * @return string
+     */
+    function pageTreeOptionsFromCollection($allPages, $selectedId = null, $excludeIds = [], $parentId = null, $prefix = '')
+    {
+        $html = '';
+
+        // Normalize parent_id comparison:
+        $children = $allPages->filter(function ($item) use ($parentId) {
+            return ($item->parent_id == $parentId);
+        });
+
+        foreach ($children as $child) {
+            if (in_array($child->id, $excludeIds)) {
+                continue; // skip this branch completely
+            }
+
+            $selected = ($selectedId == $child->id) ? 'selected' : '';
+
+            $html .= '<option value="' . $child->id . '" ' . $selected . '>' . $prefix . e($child->title) . '</option>';
+
+            // Recursive build
+            $html .= pageTreeOptionsFromCollection($allPages, $selectedId, $excludeIds, $child->id, $prefix . '— ');
+        }
+
+        return $html;
+    }
+
+
+
+
+}
+

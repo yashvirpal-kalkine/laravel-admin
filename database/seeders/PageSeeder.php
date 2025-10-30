@@ -24,7 +24,6 @@ class PageSeeder extends Seeder
                 'short_description' => 'Welcome to our website.',
                 'description' => 'This is the Home page. Explore our latest products and updates.',
                 'status' => true,
-                'published_at' => Carbon::now()->subDays(7),
             ],
             [
                 'title' => 'About Us',
@@ -32,7 +31,6 @@ class PageSeeder extends Seeder
                 'short_description' => 'Learn more about our company.',
                 'description' => 'This is the About Us page. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                 'status' => true,
-                'published_at' => Carbon::now()->subDays(5),
             ],
             [
                 'title' => 'Contact Us',
@@ -40,7 +38,6 @@ class PageSeeder extends Seeder
                 'short_description' => 'Get in touch with us.',
                 'description' => 'This is the Contact Us page. You can reach us via email or phone.',
                 'status' => true,
-                'published_at' => Carbon::now()->subDays(3),
             ],
             [
                 'title' => 'Privacy Policy',
@@ -48,7 +45,6 @@ class PageSeeder extends Seeder
                 'short_description' => 'Our privacy practices.',
                 'description' => 'This page explains our privacy policy in detail.',
                 'status' => true,
-                'published_at' => Carbon::now()->subDays(10),
             ],
             [
                 'title' => 'Terms & Conditions',
@@ -56,7 +52,6 @@ class PageSeeder extends Seeder
                 'short_description' => 'Our terms and conditions.',
                 'description' => 'This page outlines our terms and conditions for using our services.',
                 'status' => true,
-                'published_at' => Carbon::now()->subDays(8),
             ],
             [
                 'title' => 'Sitemap',
@@ -64,7 +59,6 @@ class PageSeeder extends Seeder
                 'short_description' => 'Website structure overview.',
                 'description' => 'This page provides a sitemap for easier navigation across the site.',
                 'status' => true,
-                'published_at' => Carbon::now()->subDays(6),
             ],
         ];
 
