@@ -23,7 +23,7 @@ $title => ''
             @endif
             <div class="row">
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">Type<span class="text-danger">*</span></label>
                     <select name="type" class="form-control" required>
                         <option value="">Select Type</option>
                         <option value="billing" {{ old('type', $address->type ?? '') == 'billing' ? 'selected' : '' }}>Billing</option>
@@ -33,7 +33,7 @@ $title => ''
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Address Line 1</label>
+                    <label class="form-label">Address Line 1<span class="text-danger">*</span></label>
                     <input type="text" name="address_line1" value="{{ old('address_line1', $address->address_line1 ?? '') }}" class="form-control" required>
                     @error('address_line1') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -45,32 +45,32 @@ $title => ''
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">City</label>
+                    <label class="form-label">City<span class="text-danger">*</span></label>
                     <input type="text" name="city" value="{{ old('city', $address->city ?? '') }}" class="form-control" required>
                     @error('city') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">State</label>
-                    <input type="text" name="state" value="{{ old('state', $address->state ?? '') }}" class="form-control">
+                    <input type="text" name="state" value="{{ old('state', $address->state ?? '') }}" class="form-control" required>
                     @error('state') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Country</label>
+                    <label class="form-label">Country<span class="text-danger">*</span></label>
                     <input type="text" name="country" value="{{ old('country', $address->country ?? '') }}" class="form-control" required>
                     @error('country') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Postal Code</label>
-                    <input type="text" name="postal_code" value="{{ old('postal_code', $address->postal_code ?? '') }}" class="form-control">
+                    <label class="form-label">Postal Code<span class="text-danger">*</span></label>
+                    <input type="text" name="postal_code" value="{{ old('postal_code', $address->postal_code ?? '') }}" class="form-control" required>
                 @error('postal_code') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Phone</label>
-                    <input type="text" name="phone" value="{{ old('phone', $address->phone ?? '') }}" class="form-control">
+                    <input type="text" name="phone" value="{{ old('phone', $address->phone ?? '') }}" class="form-control" required>
                     @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
                 <div class="mb-3 col-md-6">

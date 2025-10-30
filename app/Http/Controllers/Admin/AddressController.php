@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddressRequest;
 use App\Models\User;
 use App\Models\Address;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class AddressController extends Controller
 {
@@ -34,9 +36,20 @@ class AddressController extends Controller
      */
     public function store(AddressRequest $request, User $user)
     {
-        $user->addresses()->create($request->validated());
+        DB::beginTransaction();
 
-        return redirect()->route('admin.users.addresses.index', $user->id)->with('success', 'Address added successfully.');
+        try {
+            $user->addresses()->create($request->validated());
+
+            DB::commit();
+            return redirect()
+                ->route('admin.users.addresses.index', $user->id)
+                ->with('success', 'Address added successfully.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Something went wrong while saving address.')->withInput();
+        }
     }
 
     /**
@@ -53,9 +66,20 @@ class AddressController extends Controller
      */
     public function update(AddressRequest $request, Address $address)
     {
-        $address->update($request->validated());
+        DB::beginTransaction();
 
-        return redirect()->route('admin.users.addresses.index', $address->user_id)->with('success', 'Address updated successfully.');
+        try {
+            $address->update($request->validated());
+
+            DB::commit();
+            return redirect()
+                ->route('admin.users.addresses.index', $address->user_id)
+                ->with('success', 'Address updated successfully.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Something went wrong while updating address.')->withInput();
+        }
     }
 
     /**
@@ -63,9 +87,20 @@ class AddressController extends Controller
      */
     public function destroy(Address $address)
     {
-        $userId = $address->user_id;
-        $address->delete();
+        DB::beginTransaction();
 
-        return redirect()->route('admin.users.addresses.index', $userId)->with('success', 'Address deleted successfully.');
+        try {
+            $userId = $address->user_id;
+            $address->delete();
+
+            DB::commit();
+            return redirect()
+                ->route('admin.users.addresses.index', $userId)
+                ->with('success', 'Address deleted successfully.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Something went wrong while deleting address.');
+        }
     }
 }

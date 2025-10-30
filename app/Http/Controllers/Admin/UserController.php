@@ -5,24 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Address;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserRequest;
-
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-
 
 class UserController extends Controller
 {
-
     public function index(Request $request)
     {
-        // If AJAX request → return DataTables JSON
         if ($request->ajax()) {
-            $query = User::with('addresses'); // eager load addresses count
+            $query = User::with('addresses');
 
             return DataTables::of($query)
-                ->addIndexColumn() // adds serial number
+                ->addIndexColumn()
                 ->addColumn('addresses', function ($user) {
                     $viewUrl = route('admin.users.addresses.index', $user->id);
                     $addUrl = route('admin.users.addresses.create', $user->id);
@@ -39,10 +35,7 @@ class UserController extends Controller
                         </div>
                     ';
                 })
-
-                ->addColumn('status', function ($user) {
-                    return status_badge($user->status);
-                })
+                ->addColumn('status', fn($user) => status_badge($user->status))
                 ->addColumn('actions', function ($user) {
                     $edit = route('admin.users.edit', $user->id);
                     $delete = route('admin.users.destroy', $user->id);
@@ -54,37 +47,12 @@ class UserController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['addresses', 'status', 'actions']) // allow HTML
+                ->rawColumns(['addresses', 'status', 'actions'])
                 ->make(true);
         }
 
-        // If not AJAX → return view
         return view('admin.users.index');
     }
-
-
-    public function indexx(Request $request)
-    {
-        $query = User::query();
-
-        // Search by name, email, or phone
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
-            });
-        }
-
-        $users = $query->with(['billingAddresses', 'shippingAddresses'])->orderBy('id', 'desc')->paginate(1);
-
-        // Keep the search query in pagination links
-        $users->appends($request->all());
-
-        return view('admin.users.index', compact('users', 'search'));
-    }
-
-
 
     public function create()
     {
@@ -93,15 +61,24 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'password' => Hash::make($request->password),
-            'status' => $request->has('status'),
-        ]);
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => Hash::make($request->password),
+                'status' => $request->has('status'),
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.users.index')->with('success', 'User created successfully');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong!')->withInput();
+        }
     }
 
     public function edit(User $user)
@@ -111,24 +88,44 @@ class UserController extends Controller
 
     public function update(UserRequest $request, User $user)
     {
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'status' => $request->has('status'),
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-            $user->save();
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'status' => $request->has('status'),
+            ]);
+
+            if ($request->filled('password')) {
+                $user->update([
+                    'password' => Hash::make($request->password)
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong!')->withInput();
         }
-
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user)
     {
-        $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+        try {
+            DB::beginTransaction();
+
+            $user->delete();
+
+            DB::commit();
+            return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
     }
 }
