@@ -49,8 +49,10 @@ class PageController extends Controller
 
     public function create()
     {
-        $pages = Page::active()->with('activeChildren')->whereNull('parent_id')->orderBy('title')->get();
-        return view('admin.pages.form', compact('pages'));
+        $page = null;
+        $allPages = Page::active()->orderBy('title')->get();
+        $excludeIds = [];
+        return view('admin.pages.form', compact('page', 'allPages', 'excludeIds'));
     }
 
     public function store(PageRequest $request)
@@ -93,7 +95,7 @@ class PageController extends Controller
         $excludeIds = $page->descendantIds();
         $excludeIds[] = $page->id;
 
-        $allPages = Page::orderBy('title')->get();
+        $allPages = Page::active()->orderBy('title')->get();
 
         return view('admin.pages.form', compact('page', 'allPages', 'excludeIds'));
     }
