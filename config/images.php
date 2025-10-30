@@ -20,22 +20,22 @@ return [
         'path' => 'uploads/product_gallery',
     ],
 
-    'article' => [
+    'blog' => [
         'icon' => ['width' => 64, 'height' => 64],
         'small' => ['width' => 400, 'height' => 200],
         'medium' => ['width' => 800, 'height' => 400],
         'large' => ['width' => 1200, 'height' => 600],
         'original' => ['width' => null, 'height' => null],
-        'path' => 'uploads/articles',
+        'path' => 'uploads/blogs',
     ],
 
-    'category' => [
+    'blogcategory' => [
         'icon' => ['width' => 64, 'height' => 64],
         'small' => ['width' => 400, 'height' => 200],
         'medium' => ['width' => 800, 'height' => 400],
         'large' => ['width' => 1200, 'height' => 600],
         'original' => ['width' => null, 'height' => null],
-        'path' => 'uploads/categories',
+        'path' => 'uploads/blog-categories',
     ],
 
     'page' => [
@@ -80,6 +80,14 @@ return [
         'large' => ['width' => 400, 'height' => 200],
         'original' => ['width' => null, 'height' => null],
         'path' => 'uploads/footer_logo',
+    ],
+    'seo' => [
+        'icon' => ['width' => 64, 'height' => 32],
+        'small' => ['width' => 150, 'height' => 60],
+        'medium' => ['width' => 250, 'height' => 120],
+        'large' => ['width' => 400, 'height' => 200],
+        'original' => ['width' => null, 'height' => null],
+        'path' => 'uploads/seo',
     ],
 
 ];

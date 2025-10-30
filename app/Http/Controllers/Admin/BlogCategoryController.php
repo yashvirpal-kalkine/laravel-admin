@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\BlogCategory;
 use App\Http\Requests\BlogCategoryRequest;
+use App\Models\BlogCategory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-
 use Yajra\DataTables\Facades\DataTables;
 use App\Services\ImageUploadService;
 
@@ -19,20 +19,17 @@ class BlogCategoryController extends Controller
     {
         $this->imageService = $imageService;
     }
+
     public function index(Request $request)
     {
-        // If AJAX → return JSON for DataTables
         if ($request->ajax()) {
-            $query = BlogCategory::with('author'); // assuming 'author' relation exists
+            $query = BlogCategory::with('author');
 
             return DataTables::of($query)
                 ->addIndexColumn()
-                ->addColumn('status', function ($category) {
-                    return status_badge($category->status);
-                })
-                ->addColumn('author', function ($category) {
-                    return $category->author->name ?? '-';
-                })
+                ->addColumn('parent', fn($cat) => $cat->parent?->title ?? '-')
+                ->addColumn('status', fn($cat) => status_badge($cat->status))
+               // ->addColumn('author', fn($cat) => $cat->author->name ?? '-')
                 ->addColumn('actions', function ($category) {
                     $edit = route('admin.blog-categories.edit', $category->id);
                     $delete = route('admin.blog-categories.destroy', $category->id);
@@ -41,7 +38,8 @@ class BlogCategoryController extends Controller
                         <a href="' . $edit . '" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil text-white"></i>
                         </a>
-                        <form action="' . $delete . '" method="POST" style="display:inline;" onsubmit="return confirm(\'Delete this category?\')">
+                        <form action="' . $delete . '" method="POST" style="display:inline;" 
+                              onsubmit="return confirm(\'Delete this category?\')">
                             ' . csrf_field() . method_field('DELETE') . '
                             <button class="btn btn-danger btn-sm">
                                 <i class="bi bi-trash text-white"></i>
@@ -49,7 +47,7 @@ class BlogCategoryController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['status', 'actions']) // allow HTML
+                ->rawColumns(['status', 'actions'])
                 ->make(true);
         }
 
@@ -58,58 +56,137 @@ class BlogCategoryController extends Controller
 
     public function create()
     {
-        return view('admin.blog-categories.form');
+        $parents = BlogCategory::where('status', 1)
+            ->orderBy('title')
+            ->get();
+
+        return view('admin.blog-categories.form', compact('parents'));
     }
 
     public function store(BlogCategoryRequest $request)
     {
-        $data = $request->validated();
+        DB::beginTransaction();
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+        try {
+            $data = $request->validated();
+
+            // Auto slug
+            if (empty($data['slug'])) {
+                $data['slug'] = BlogCategory::generateSlug($data['title']);
+            }
+
+            // Upload Banner
+            if ($request->hasFile('banner')) {
+                $images = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $images['name'];
+            }
+
+            // Upload Main Image
+            if ($request->hasFile('image')) {
+                $images = $this->imageService->upload($request->file('image'), 'blogcategory');
+                $data['image'] = $images['name'];
+            }
+
+            // Upload SEO Image
+            if ($request->hasFile('seo_image')) {
+                $images = $this->imageService->upload($request->file('seo_image'), 'seo');
+                $data['seo_image'] = $images['name'];
+            }
+
+            $data['author_id'] = auth()->id();
+
+            BlogCategory::create($data);
+
+            DB::commit();
+            return redirect()->route('admin.blog-categories.index')
+                ->with('success', 'Category created successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage())->withInput();
         }
-
-        if ($request->hasFile('banner')) {
-            $images = $this->imageService->upload($request->file('banner'), 'banner');
-            $data['banner'] = $images['name'];
-        }
-
-        $data['author_id'] = auth()->id();
-
-        BlogCategory::create($data);
-
-        return redirect()->route('admin.blog-categories.index')->with('success', 'Category created successfully');
     }
 
-    public function edit(BlogCategory $blogcategory)
-    {
-        return view('admin.blog-categories.form', compact('blogcategory'));
-    }
+        public function edit(BlogCategory $blog_category)
+        {
+            // Load children for recursion to work
+            $blog_category->load('children');
 
-    public function update(BlogCategoryRequest $request, BlogCategory $blogcategory)
-    {
-        $data = $request->validated();
+            // Exclude current category + all descendants
+            $excludeIds = $blog_category->getDescendantIds();
+            $excludeIds[] = $blog_category->id;
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+            $parents = BlogCategory::where('status', 1)
+                ->whereNotIn('id', $excludeIds)
+                ->orderBy('title')
+                ->get();
+            $blogcategory=    $blog_category;
+
+            return view('admin.blog-categories.form', compact('blogcategory', 'parents'));
         }
 
-        if ($request->hasFile('banner')) {
-            $images = $this->imageService->upload($request->file('banner'), 'banner');
-            $data['banner'] = $images['name'];
+    public function update(BlogCategoryRequest $request, BlogCategory $blog_category)
+    {
+        DB::beginTransaction();
+
+        try {
+            $data = $request->validated();
+
+            if (empty($data['slug'])) {
+                $data['slug'] = BlogCategory::generateSlug($data['title']);
+            }
+
+            // Banner Update
+            if ($request->hasFile('banner')) {
+                $this->imageService->delete($blog_category->banner, 'banner');
+                $images = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $images['name'];
+            }
+
+            // Main Image
+            if ($request->hasFile('image')) {
+                $this->imageService->delete($blog_category->image, 'blogcategory');
+                $images = $this->imageService->upload($request->file('image'), 'blogcategory');
+                $data['image'] = $images['name'];
+            }
+
+            // SEO Image
+            if ($request->hasFile('seo_image')) {
+                $this->imageService->delete($blog_category->seo_image, 'seo');
+                $images = $this->imageService->upload($request->file('seo_image'), 'seo');
+                $data['seo_image'] = $images['name'];
+            }
+
+            $blog_category->update($data);
+
+            DB::commit();
+            return redirect()->route('admin.blog-categories.index')
+                ->with('success', 'Category updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage())->withInput();
         }
-
-        $blogcategory->update($data);
-
-        return redirect()->route('admin.blog-categories.index')->with('success', 'Category updated successfully');
     }
 
     public function destroy(BlogCategory $blogcategory)
     {
-        if (!empty($blogcategory->banner)) {
+        DB::beginTransaction();
+
+        try {
             $this->imageService->delete($blogcategory->banner, 'banner');
+            $this->imageService->delete($blogcategory->image, 'category');
+            $this->imageService->delete($blogcategory->seo_image, 'seo');
+
+            $blogcategory->delete();
+
+            DB::commit();
+            return redirect()->route('admin.blog-categories.index')
+                ->with('success', 'Category deleted successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
         }
-        $blogcategory->delete();
-        return redirect()->route('admin.blog-categories.index')->with('success', 'Category deleted successfully');
     }
 }

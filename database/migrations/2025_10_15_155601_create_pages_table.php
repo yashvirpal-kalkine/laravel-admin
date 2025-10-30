@@ -15,7 +15,7 @@ return new class extends Migration {
 
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('parent_id')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('pages')->onDelete('cascade');
             $table->string('template')->nullable();
             $table->string('short_description')->nullable();
             $table->longText('description')->nullable();
@@ -26,8 +26,8 @@ return new class extends Migration {
             $table->string('meta_keywords')->nullable();
             $table->text('meta_description')->nullable();
             $table->string('seo_image')->nullable();
-
             $table->string('canonical_url')->nullable();
+
             $table->boolean('status')->default(true)->default(1);
             $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
 

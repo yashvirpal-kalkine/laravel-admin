@@ -117,9 +117,10 @@ class PageController extends Controller
                 $images = $this->imageService->upload($request->file('banner'), 'banner');
                 $data['banner'] = $images['name'];
             }
-
             if ($request->hasFile('seo_image')) {
-                $data['seo_image'] = $request->file('seo_image')->store('pages/seo_images', 'public');
+                $this->imageService->delete($page->seo_image, 'seo_image');
+                $images = $this->imageService->upload($request->file('seo_image'), 'seo_image');
+                $data['seo_image'] = $images['name'];
             }
 
             $page->update($data);

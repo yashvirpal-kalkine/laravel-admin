@@ -22,7 +22,7 @@
                             <th>Title</th>
                             <th>Slug</th>
                             <th>Status</th>
-                            <th>Author</th>
+                            {{-- <th>Author</th> --}}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -55,7 +55,7 @@
                     { data: 'title', name: 'title' },
                     { data: 'slug', name: 'slug' },
                     { data: 'status', name: 'status', orderable: false, searchable: false },
-                    { data: 'author', name: 'author.name', defaultContent: '-' },
+                   // { data: 'author', name: 'author.name', defaultContent: '-' },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false }
                 ],
                 order: [[1, 'asc']]
