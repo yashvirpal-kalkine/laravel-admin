@@ -15,13 +15,19 @@ class BlogPost extends Model
         'short_description',
         'description',
         'banner',
-        'alt',
+        'banner_alt',
+        'image',
+        'image_alt',
         'meta_title',
         'meta_keywords',
         'meta_description',
+        'seo_image',
+        'canonical_url',
+        'custom_field',
+        'is_featured',
         'status',
-        'published_at',
         'author_id',
+        'published_at'
     ];
 
     protected $casts = [

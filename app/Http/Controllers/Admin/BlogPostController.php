@@ -8,11 +8,11 @@ use App\Models\BlogPost;
 use App\Models\BlogCategory;
 use App\Models\BlogTag;
 use App\Http\Requests\BlogPostRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-
 use Yajra\DataTables\Facades\DataTables;
 use App\Services\ImageUploadService;
-
 
 class BlogPostController extends Controller
 {
@@ -22,6 +22,8 @@ class BlogPostController extends Controller
     {
         $this->imageService = $imageService;
     }
+
+    // ----------------------------------------------------------------
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -29,21 +31,28 @@ class BlogPostController extends Controller
 
             return DataTables::of($posts)
                 ->addIndexColumn()
-                ->addColumn('categories', function ($post) {
-                    return $post->categories->pluck('title')->map(fn($c) => "<span class='badge bg-info text-dark me-1'>$c</span>")->implode(' ');
-                })
-                ->addColumn('tags', function ($post) {
-                    return $post->tags->pluck('title')->map(fn($t) => "<span class='badge bg-secondary me-1'>$t</span>")->implode(' ');
-                })
-                ->addColumn('status', function ($post) {
-                    return status_badge($post->status);
-                })
-                // ->addColumn('published_at', function ($post) {
-                //     return $post->published_at ? $post->published_at->format('d M Y, h:i A') : '-';
-                // })
-                // ->addColumn('author', function ($post) {
-                //     return $post->author?->name ?? '-';
-                // })
+                ->addColumn(
+                    'categories',
+                    fn($post) =>
+                    $post->categories->pluck('title')->map(
+                        fn($c) =>
+                        "<span class='badge bg-info text-dark me-1'>$c</span>"
+                    )->implode(' ')
+                )
+                ->addColumn(
+                    'tags',
+                    fn($post) =>
+                    $post->tags->pluck('title')->map(
+                        fn($t) =>
+                        "<span class='badge bg-secondary me-1'>$t</span>"
+                    )->implode(' ')
+                )
+                ->addColumn(
+                    'featured',
+                    fn($post) =>
+                    $post->is_featured ? "<span class='badge bg-success'>Yes</span>" : "<span class='badge bg-secondary'>No</span>"
+                )
+                ->addColumn('status', fn($post) => status_badge($post->status))
                 ->addColumn('actions', function ($post) {
                     $editUrl = route('admin.blog-posts.edit', $post->id);
                     $deleteUrl = route('admin.blog-posts.destroy', $post->id);
@@ -60,75 +69,173 @@ class BlogPostController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['categories', 'tags', 'status', 'actions'])
+                ->rawColumns(['categories', 'tags', 'featured', 'status', 'actions'])
                 ->make(true);
         }
 
         return view('admin.blog-posts.index');
     }
 
+    // ----------------------------------------------------------------
     public function create()
     {
-        $categories = BlogCategory::all();
-        $tags = BlogTag::all();
-        return view('admin.blog-posts.form', compact('categories', 'tags'));
+        $categories = BlogCategory::where('status', 1)
+            ->whereNull('parent_id') // start from root
+            ->with([
+                'children' => function ($query) {
+                    $query->where('status', 1)
+                        ->with([
+                            'children' => function ($query) {
+                                $query->where('status', 1)
+                                    ->with('children'); // recursive depth
+                            }
+                        ]);
+                }
+            ])
+            ->orderBy('title')
+            ->get();
+        $tags = BlogTag::active()->get();
+
+        $blogpost = new BlogPost();
+        return view('admin.blog-posts.form', compact('categories', 'tags', 'blogpost'));
     }
 
+    // ----------------------------------------------------------------
     public function store(BlogPostRequest $request)
     {
-        $data = $request->validated();
+        DB::beginTransaction();
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+        try {
+            $data = $request->validated();
+
+            // Generate slug if not provided
+            $data['slug'] = $data['slug'] ?? Str::slug($data['title']);
+            $data['author_id'] = auth()->id();
+
+            // Handle images
+            if ($request->hasFile('banner')) {
+                $banner = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $banner['name'];
+            }
+
+            if ($request->hasFile('image')) {
+                $image = $this->imageService->upload($request->file('image'), 'blogpost');
+                $data['image'] = $image['name'];
+            }
+
+            if ($request->hasFile('seo_image')) {
+                $seo = $this->imageService->upload($request->file('seo_image'), 'seo');
+                $data['seo_image'] = $seo['name'];
+            }
+
+            $post = BlogPost::create($data);
+
+            // Sync relationships
+            $post->categories()->sync($data['categories'] ?? []);
+            $post->tags()->sync($data['tags'] ?? []);
+
+            DB::commit();
+            return redirect()->route('admin.blog-posts.index')->with('success', 'Post created successfully');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('BlogPost create failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return back()->with('error', 'Failed to create post. Please try again.')->withInput();
         }
-        if ($request->hasFile('banner')) {
-            $images = $this->imageService->upload($request->file('banner'), 'banner');
-            $data['banner'] = $images['name'];
-        }
-        $data['author_id'] = auth()->id();
-
-        $post = BlogPost::create($data);
-
-        // Sync pivot tables
-        $post->categories()->sync($data['categories'] ?? []);
-        $post->tags()->sync($data['tags'] ?? []);
-
-        return redirect()->route('admin.blog-posts.index')->with('success', 'Post created successfully');
     }
 
-    public function edit(BlogPost $blogpost)
+    // ----------------------------------------------------------------
+    public function edit(BlogPost $blog_post)
     {
-        $categories = BlogCategory::all();
-        $tags = BlogTag::all();
+        $categories = BlogCategory::where('status', 1)
+            ->whereNull('parent_id') // start from root
+            ->with([
+                'children' => function ($query) {
+                    $query->where('status', 1)
+                        ->with([
+                            'children' => function ($query) {
+                                $query->where('status', 1)
+                                    ->with('children'); // recursive depth
+                            }
+                        ]);
+                }
+            ])
+            ->orderBy('title')
+            ->get();
+        $tags = BlogTag::active()->get();
+        $blogpost = $blog_post;
+
         return view('admin.blog-posts.form', compact('blogpost', 'categories', 'tags'));
     }
 
-    public function update(BlogPostRequest $request, BlogPost $blogpost)
+    // ----------------------------------------------------------------
+    public function update(BlogPostRequest $request, BlogPost $blog_post)
     {
-        $data = $request->validated();
+        DB::beginTransaction();
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+        try {
+            $data = $request->validated();
+            $data['slug'] = $data['slug'] ?? Str::slug($data['title']);
+
+            // Handle images
+            if ($request->hasFile('banner')) {
+                $this->imageService->delete($blog_post->banner, 'banner');
+                $banner = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $banner['name'];
+            }
+
+            if ($request->hasFile('image')) {
+                $this->imageService->delete($blog_post->image, 'blogpost');
+                $image = $this->imageService->upload($request->file('image'), 'blogpost');
+                $data['image'] = $image['name'];
+            }
+
+            if ($request->hasFile('seo_image')) {
+                $this->imageService->delete($blog_post->seo_image, 'seo');
+                $seo = $this->imageService->upload($request->file('seo_image'), 'seo');
+                $data['seo_image'] = $seo['name'];
+            }
+
+            $blog_post->update($data);
+
+            // Sync relationships
+            $blog_post->categories()->sync($data['categories'] ?? []);
+            $blog_post->tags()->sync($data['tags'] ?? []);
+
+            DB::commit();
+            return redirect()->route('admin.blog-posts.index')->with('success', 'Post updated successfully');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('BlogPost update failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return back()->with('error', 'Failed to update post. Please try again.')->withInput();
         }
-        if ($request->hasFile('banner')) {
-            $images = $this->imageService->upload($request->file('banner'), 'banner');
-            $data['banner'] = $images['name'];
-        }
-        $blogpost->update($data);
-
-        // Sync pivot tables
-        $blogpost->categories()->sync($data['categories'] ?? []);
-        $blogpost->tags()->sync($data['tags'] ?? []);
-
-        return redirect()->route('admin.blog-posts.index')->with('success', 'Post updated successfully');
     }
 
-    public function destroy(BlogPost $blogpost)
+    // ----------------------------------------------------------------
+    public function destroy(BlogPost $blog_post)
     {
-        if (!empty($blogpost->banner)) {
-            $this->imageService->delete($blogpost->banner, 'banner');
+        DB::beginTransaction();
+
+        try {
+            if (!empty($blog_post->banner)) {
+                $this->imageService->delete($blog_post->banner, 'banner');
+            }
+            if (!empty($blog_post->image)) {
+                $this->imageService->delete($blog_post->image, 'blogpost');
+            }
+            if (!empty($blog_post->seo_image)) {
+                $this->imageService->delete($blog_post->seo_image, 'seo');
+            }
+
+            $blog_post->categories()->detach();
+            $blog_post->tags()->detach();
+            $blog_post->delete();
+
+            DB::commit();
+            return redirect()->route('admin.blog-posts.index')->with('success', 'Post deleted successfully');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('BlogPost delete failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return back()->with('error', 'Failed to delete post.');
         }
-        $blogpost->delete();
-        return redirect()->route('admin.blog-posts.index')->with('success', 'Post deleted successfully');
     }
 }

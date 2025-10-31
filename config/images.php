@@ -20,7 +20,7 @@ return [
         'path' => 'uploads/product_gallery',
     ],
 
-    'blog' => [
+    'blogpost' => [
         'icon' => ['width' => 64, 'height' => 64],
         'small' => ['width' => 400, 'height' => 200],
         'medium' => ['width' => 800, 'height' => 400],

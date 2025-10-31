@@ -11,39 +11,55 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->foreignId('category_id')->nullable()->constrained('blog_categories')->nullOnDelete();
+
+            // Remove: $table->foreignId('category_id')->nullable()->constrained('blog_categories')->nullOnDelete();
+
             $table->string('short_description')->nullable();
             $table->longText('description')->nullable();
+
             $table->string('banner')->nullable();
-            $table->string('alt')->nullable();
+            $table->string('banner_alt')->nullable();
+            $table->string('image')->nullable();
+            $table->string('image_alt')->nullable();
 
             // SEO fields
             $table->string('meta_title')->nullable();
             $table->string('meta_keywords')->nullable();
             $table->text('meta_description')->nullable();
+            $table->string('seo_image')->nullable();
+            $table->string('canonical_url')->nullable();
 
-            // Optional / Additional fields
-            $table->boolean('status')->default(true)->default(1);
-            $table->timestamp('published_at')->nullable();
+            $table->string('custom_field')->nullable();
+
+            // ✅ New flag
+            $table->boolean('is_featured')->default(false);
+
+            $table->boolean('status')->default(true);
             $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
 
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
 
-        // Pivot: blog-post-category
+
+        // blog_post_category
         Schema::create('blog_post_category', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained('blog_posts')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('blog_categories')->cascadeOnDelete();
             $table->timestamps();
+            $table->unique(['post_id', 'category_id']);
         });
-        // Pivot: blog-post-tag
+
+        // blog_post_tag
         Schema::create('blog_post_tag', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained('blog_posts')->cascadeOnDelete();
             $table->foreignId('tag_id')->constrained('blog_tags')->cascadeOnDelete();
             $table->timestamps();
+            $table->unique(['post_id', 'tag_id']);
         });
+
     }
 
     public function down(): void

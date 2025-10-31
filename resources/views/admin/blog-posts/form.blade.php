@@ -12,8 +12,9 @@
 
     <div class="card card-primary card-outline mb-4">
         <div class="card-header d-flex justify-content-end align-items-center">
-            <a href="{{ route('admin.blog-posts.index') }}" class="btn btn-primary btn-sm"><i
-                    class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
+            <a href="{{ route('admin.blog-posts.index') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-arrow-left-circle me-1"></i> Back To List
+            </a>
         </div>
 
         <div class="card-body">
@@ -26,7 +27,6 @@
                 @endif
 
                 <div class="row">
-                    <!-- Title & Slug -->
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Title</label>
                         <input type="text" name="title" value="{{ old('title', $blogpost->title ?? '') }}"
@@ -40,18 +40,35 @@
                         @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Categories & Tags -->
+
+                    @php
+                        function renderCategoryOptions($categories, $selectedCategories, $prefix = '')
+                        {
+                            foreach ($categories as $category) {
+                                $selected = in_array($category->id, $selectedCategories) ? 'selected' : '';
+                                echo "<option value='{$category->id}' {$selected}>{$prefix}{$category->title}</option>";
+
+                                if ($category->children && $category->children->count()) {
+                                    renderCategoryOptions($category->children, $selectedCategories, $prefix . '-- ');
+                                }
+                            }
+                        }
+                    @endphp
+
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Categories</label>
                         <select name="categories[]" class="form-select select2" multiple>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ isset($blogpost) && $blogpost->categories->contains($category->id) ? 'selected' : '' }}>
-                                    {{ $category->title }}
-                                </option>
-                            @endforeach
+                            @php
+                                $selectedCategories = isset($blogpost)
+                                    ? $blogpost->categories->pluck('id')->toArray()
+                                    : [];
+                                renderCategoryOptions($categories, $selectedCategories);
+                            @endphp
                         </select>
                         @error('categories') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
+
+
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Tags</label>
                         <select name="tags[]" class="form-select select2" multiple>
@@ -64,7 +81,7 @@
                         @error('tags') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Short Description & Description -->
+
                     <div class="mb-3 col-md-12">
                         <label class="form-label">Short Description</label>
                         <textarea name="short_description" class="form-control"
@@ -78,22 +95,39 @@
                         @error('description') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Banner & Alt -->
+
                     <div class="mb-3 col-md-6">
-                        <label class="form-label">Banner</label>
+                        <label class="form-label">Banner Image</label>
                         <input type="file" name="banner" class="form-control">
                         @if(isset($blogpost) && $blogpost->banner)
-                            <img src="{{ image_url('banner', $blogpost->banner, 'small') }}" class="mt-2" width="50">
+                            <img src="{{ image_url('banner', $blogpost->banner, 'small') }}" class="mt-2" width="80">
                         @endif
                         @error('banner') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                     <div class="mb-3 col-md-6">
-                        <label class="form-label">Alt Text</label>
-                        <input type="text" name="alt" value="{{ old('alt', $blogpost->alt ?? '') }}" class="form-control">
-                        @error('alt') <small class="text-danger">{{ $message }}</small> @enderror
+                        <label class="form-label">Banner Alt Text</label>
+                        <input type="text" name="banner_alt" value="{{ old('banner_alt', $blogpost->banner_alt ?? '') }}"
+                            class="form-control">
+                        @error('banner_alt') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- SEO Fields -->
+
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Main Image</label>
+                        <input type="file" name="image" class="form-control">
+                        @if(isset($blogpost) && $blogpost->image)
+                            <img src="{{ image_url('blogpost', $blogpost->image, 'small') }}" class="mt-2" width="80">
+                        @endif
+                        @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Image Alt Text</label>
+                        <input type="text" name="image_alt" value="{{ old('image_alt', $blogpost->image_alt ?? '') }}"
+                            class="form-control">
+                        @error('image_alt') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Meta Title</label>
                         <input type="text" name="meta_title" value="{{ old('meta_title', $blogpost->meta_title ?? '') }}"
@@ -113,14 +147,38 @@
                         @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Status & Published At -->
+
+                    {{-- <div class="mb-3 col-md-6">
+                        <label class="form-label">SEO Image</label>
+                        <input type="file" name="seo_image" class="form-control">
+                        @if(isset($blogpost) && $blogpost->seo_image)
+                        <img src="{{ image_url('seo', $blogpost->seo_image, 'small') }}" class="mt-2" width="80">
+                        @endif
+                        @error('seo_image') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Canonical URL</label>
+                        <input type="url" name="canonical_url"
+                            value="{{ old('canonical_url', $blogpost->canonical_url ?? '') }}" class="form-control">
+                        @error('canonical_url') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Custom Field</label>
+                        <input type="text" name="custom_field"
+                            value="{{ old('custom_field', $blogpost->custom_field ?? '') }}" class="form-control">
+                        @error('custom_field') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Published At</label>
-                        <input type="text" name="published_at"
+                        <input type="datetime-local" name="published_at"
                             value="{{ old('published_at', isset($blogpost->published_at) ? $blogpost->published_at->format('Y-m-d\TH:i') : '') }}"
-                            class="form-control datetime">
+                            class="form-control">
                         @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
+
+                    --}}
                     <div class="mb-3 col-md-6">
                         <div class="form-check form-switch mb-3">
                             <input type="hidden" name="status" value="0" />
@@ -138,5 +196,6 @@
         </div>
     </div>
 @endsection
+
 @include('components.admin.select2')
 @include('components.admin.datetimepicker')
