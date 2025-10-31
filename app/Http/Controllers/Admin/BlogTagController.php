@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BlogTag;
 use App\Http\Requests\BlogTagRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-
 use Yajra\DataTables\Facades\DataTables;
 use App\Services\ImageUploadService;
 
@@ -19,6 +20,7 @@ class BlogTagController extends Controller
     {
         $this->imageService = $imageService;
     }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -26,15 +28,12 @@ class BlogTagController extends Controller
 
             return DataTables::of($tags)
                 ->addIndexColumn()
-                ->addColumn('status', function ($tag) {
-                    return status_badge($tag->status);
-                })
-                ->addColumn('author', function ($tag) {
-                    return $tag->author?->name ?? '-';
-                })
+                ->addColumn('status', fn($tag) => status_badge($tag->status))
+                //->addColumn('author', fn($tag) => $tag->author?->name ?? '-')
                 ->addColumn('actions', function ($tag) {
                     $editUrl = route('admin.blog-tags.edit', $tag->id);
                     $deleteUrl = route('admin.blog-tags.destroy', $tag->id);
+
                     return '
                         <a href="' . $editUrl . '" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil text-white"></i>
@@ -54,56 +53,94 @@ class BlogTagController extends Controller
 
     public function create()
     {
-        return view('admin.blog-tags.form');
+        $blogtag = new BlogTag();
+        return view('admin.blog-tags.form', compact('blogtag'));
     }
 
     public function store(BlogTagRequest $request)
     {
-        $data = $request->validated();
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+        DB::beginTransaction();
+
+        try {
+            $data = $request->validated();
+
+            // Generate slug if not provided
+            if (empty($data['slug'])) {
+                $data['slug'] = Str::slug($data['title']);
+            }
+
+            // Handle image upload
+            if ($request->hasFile('banner')) {
+                $images = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $images['name'];
+            }
+            $data['author_id'] = auth()->id();
+            BlogTag::create($data);
+            DB::commit();
+            return redirect()->route('admin.blog-tags.index')->with('success', 'Tag created successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            //Log::error('BlogTag Store Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->withInput()->with('error', 'Failed to create tag. Please try again.');
         }
-
-        if ($request->hasFile('banner')) {
-            $images = $this->imageService->upload($request->file('banner'), 'banner');
-            $data['banner'] = $images['name'];
-        }
-
-        $data['author_id'] = auth()->id();
-
-        BlogTag::create($data);
-
-        return redirect()->route('admin.blog-tags.index')->with('success', 'Tag created successfully');
     }
 
-    public function edit(BlogTag $blogtag)
+    public function edit(BlogTag $blog_tag)
     {
+        $blogtag = $blog_tag;
         return view('admin.blog-tags.form', compact('blogtag'));
     }
 
-    public function update(BlogTagRequest $request, BlogTag $blogtag)
+    public function update(BlogTagRequest $request, BlogTag $blog_tag)
     {
-        $data = $request->validated();
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+        DB::beginTransaction();
+
+        try {
+            $data = $request->validated();
+
+            if (empty($data['slug'])) {
+                $data['slug'] = Str::slug($data['title']);
+            }
+
+            if ($request->hasFile('banner')) {
+                // Delete old banner
+                if (!empty($blogtag->banner)) {
+                    $this->imageService->delete($blog_tag->banner, 'banner');
+                }
+                // Upload new banner
+                $images = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $images['name'];
+            }
+
+            $blog_tag->update($data);
+
+            DB::commit();
+
+            return redirect()->route('admin.blog-tags.index')->with('success', 'Tag updated successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            // Log::error('BlogTag Update Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->withInput()->with('error', 'Failed to update tag. Please try again.');
         }
-
-        if ($request->hasFile('banner')) {
-            $images = $this->imageService->upload($request->file('banner'), 'banner');
-            $data['banner'] = $images['name'];
-        }
-
-        $blogtag->update($data);
-
-        return redirect()->route('admin.blog-tags.index')->with('success', 'Tag updated successfully');
     }
 
-    public function destroy(BlogTag $blogtag)
+    public function destroy(BlogTag $blog_tag)
     {
-        if (!empty($blogtag->banner)) {
-            $this->imageService->delete($blogtag->banner, 'banner');
+        DB::beginTransaction();
+
+        try {
+            if (!empty($blog_tag->banner)) {
+                $this->imageService->delete($blog_tag->banner, 'banner');
+            }
+
+            $blog_tag->delete();
+
+            DB::commit();
+            return redirect()->route('admin.blog-tags.index')->with('success', 'Tag deleted successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            // Log::error('BlogTag Delete Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->route('admin.blog-tags.index')->with('error', 'Failed to delete tag. Please try again.');
         }
-        $blogtag->delete();
-        return redirect()->route('admin.blog-tags.index')->with('success', 'Tag deleted successfully');
     }
 }

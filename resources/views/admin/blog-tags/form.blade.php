@@ -25,22 +25,19 @@
                 @endif
 
                 <div class="row">
-                    <!-- Title -->
                     <div class="mb-3 col-md-6">
-                        <label class="form-label">Title</label>
+                        <label class="form-label">Title <span class="text-danger">*</span></label>
                         <input type="text" name="title" value="{{ old('title', $blogtag->title ?? '') }}"
                             class="form-control" required>
                         @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Slug -->
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Slug</label>
                         <input type="text" name="slug" value="{{ old('slug', $blogtag->slug ?? '') }}" class="form-control">
                         @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Short Description -->
                     <div class="mb-3 col-md-12">
                         <label class="form-label">Short Description</label>
                         <textarea name="short_description" class="form-control"
@@ -48,7 +45,6 @@
                         @error('short_description') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Description -->
                     <div class="mb-3 col-md-12">
                         <label class="form-label">Description</label>
                         <textarea name="description" class="form-control"
@@ -56,7 +52,6 @@
                         @error('description') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Banner -->
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Banner Image</label>
                         <input type="file" name="banner" class="form-control">
@@ -66,14 +61,12 @@
                         @error('banner') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Alt text -->
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Alt Text</label>
                         <input type="text" name="alt" value="{{ old('alt', $blogtag->alt ?? '') }}" class="form-control">
                         @error('alt') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- SEO Fields -->
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Meta Title</label>
                         <input type="text" name="meta_title" value="{{ old('meta_title', $blogtag->meta_title ?? '') }}"
@@ -95,7 +88,6 @@
                         @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Status -->
                     <div class="mb-3 col-md-6">
                         <div class="form-check form-switch mb-3">
                             <input type="hidden" name="status" value="0" />

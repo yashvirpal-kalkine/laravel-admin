@@ -11,18 +11,25 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->foreignId('parent_id')->nullable()->constrained('blog_tags')->onDelete('cascade');
             $table->string('short_description')->nullable();
             $table->longText('description')->nullable();
             $table->string('banner')->nullable();
-            $table->string('alt')->nullable();
+            $table->string('banner_alt')->nullable();
 
-            // SEO fields
+            $table->string('image')->nullable();
+            $table->string('image_alt')->nullable();
+
             $table->string('meta_title')->nullable();
             $table->string('meta_keywords')->nullable();
             $table->text('meta_description')->nullable();
+            $table->string('seo_image')->nullable();
+            $table->string('canonical_url')->nullable();
 
             $table->boolean('status')->default(true)->default(1);
             $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
+
+            $table->string('custom_field')->nullable();
 
             $table->timestamps();
         });
