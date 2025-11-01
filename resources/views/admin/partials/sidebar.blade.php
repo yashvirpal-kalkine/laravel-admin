@@ -106,7 +106,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.calculators.index') }}" class="nav-link {{ isActiveRoute('admin.calculators.*') }}">
-                        <i class="nav-icon bi bi-file-text"></i>
+                        <i class="nav-icon bi bi-calculator"></i>
                         <p>Remedy Calculators</p>
                     </a>
                 </li>

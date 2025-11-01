@@ -45,6 +45,8 @@ class CalculatorRequest extends FormRequest
             'faqs' => ['nullable', 'array'],
             'faqs.*.question' => ['required_with:faqs.*.answer', 'string', 'max:500'],
             'faqs.*.answer' => ['required_with:faqs.*.question', 'string'],
+            
+            'form_type' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

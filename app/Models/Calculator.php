@@ -28,6 +28,7 @@ class Calculator extends Model
         'author_id',
         'custom_field',
         'faqs',
+        'form_type'
     ];
 
     protected $casts = [

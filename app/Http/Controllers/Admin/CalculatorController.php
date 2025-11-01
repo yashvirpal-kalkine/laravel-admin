@@ -50,7 +50,9 @@ class CalculatorController extends Controller
     public function create()
     {
         $calculator = new Calculator();
-        return view('admin.calculators.form', compact('calculator'));
+        $formTypes = collect(config('calculators'))->map(fn($item) => $item['label']);
+
+        return view('admin.calculators.form', compact('calculator', 'formTypes'));
     }
 
     public function store(CalculatorRequest $request)
@@ -95,7 +97,9 @@ class CalculatorController extends Controller
     public function edit(Calculator $calculator)
     {
         // dd($calculator);
-        return view('admin.calculators.form', compact('calculator'));
+        $formTypes = collect(config('calculators'))->map(fn($item) => $item['label']);
+
+        return view('admin.calculators.form', compact('calculator', 'formTypes'));
     }
 
     public function update(CalculatorRequest $request, Calculator $calculator)

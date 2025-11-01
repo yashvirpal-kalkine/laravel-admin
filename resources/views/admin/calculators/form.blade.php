@@ -40,6 +40,16 @@ $breadcrumbs = [
                     @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
+                <div class="mb-3">
+                    <label for="form_type" class="form-label">Form Type</label>
+                    <select name="form_type" id="form_type" class="form-select">
+                        <option value="">-- Select Form Type --</option>
+                        @foreach ($formTypes as $key => $label)
+                            <option value="{{ $key }}" @selected(old('form_type') == $key)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Short Description</label>
                     <textarea name="short_description" class="form-control" rows="2">{{ old('short_description', $calculator->short_description ?? '') }}</textarea>

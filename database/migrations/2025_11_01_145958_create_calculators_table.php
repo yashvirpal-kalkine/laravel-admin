@@ -14,6 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->string('form_type')->nullable();
+
             $table->string('short_description')->nullable();
             $table->longText('description')->nullable();
 
