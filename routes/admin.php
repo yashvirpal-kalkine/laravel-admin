@@ -56,6 +56,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
 
 
+        Route::resource('calculators', \App\Http\Controllers\Admin\CalculatorController::class);
+
         //Route::resource('settings', \App\Http\Controllers\Admin\SettingController::class);
         Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
         Route::post('settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');

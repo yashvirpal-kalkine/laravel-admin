@@ -105,6 +105,12 @@
                     </ul>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('admin.calculators.index') }}" class="nav-link {{ isActiveRoute('admin.calculators.*') }}">
+                        <i class="nav-icon bi bi-file-text"></i>
+                        <p>Remedy Calculators</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.pages.index') }}" class="nav-link {{ isActiveRoute('admin.pages.*') }}">
                         <i class="nav-icon bi bi-file-text"></i>
                         <p>Pages</p>
