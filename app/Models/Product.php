@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -13,24 +14,41 @@ class Product extends Model
         'title',
         'slug',
         'sku',
+        'regular_price',
+        'sale_price',
+        'stock',
         'short_description',
         'description',
-        'featured_image',
-        'alt',
+        'banner',
+        'banner_alt',
+        'image',
+        'image_alt',
         'meta_title',
         'meta_keywords',
         'meta_description',
-        'price',
-        'discount_price',
-        'stock',
+        'seo_image',
+        'canonical_url',
+        'custom_field',
         'is_featured',
         'status',
         'author_id',
+        'brand_id',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
 
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 
     public function categories()
@@ -41,5 +59,26 @@ class Product extends Model
     public function tags()
     {
         return $this->belongsToMany(ProductTag::class, 'product_product_tag');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductGallery::class)->orderBy('sort_order');
+    }
+
+    public function mainImage()
+    {
+        return $this->hasOne(ProductGallery::class)->where('is_default', true);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    public function finalPrice()
+    {
+        return $this->sale_price ?: $this->regular_price;
     }
 }

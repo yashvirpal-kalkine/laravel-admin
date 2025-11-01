@@ -2,25 +2,34 @@
 
 @section('content')
 @php
-$title = isset($product) && $product->exists ? 'Edit Product' : 'Create Product';
-$breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.products.index'), $title => ''];
+    $isEdit = isset($product) && $product->exists;
+    $title = $isEdit ? 'Edit Product' : 'Create Product';
+    $breadcrumbs = [
+        'Home' => route('admin.dashboard'),
+        'Products' => route('admin.products.index'),
+        $title => ''
+    ];
 @endphp
 
 <div class="card card-primary card-outline mb-4">
     <div class="card-header d-flex justify-content-end align-items-center">
-        <a href="{{ route('admin.products.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Back To List</a>
+        <a href="{{ route('admin.products.index') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-arrow-left-circle me-1"></i> Back To List
+        </a>
     </div>
 
     <div class="card-body">
-        <form action="{{ isset($product) && $product->exists ? route('admin.products.update', $product->id) : route('admin.products.store') }}" method="POST">
+        <form action="{{ $isEdit ? route('admin.products.update', $product->id) : route('admin.products.store') }}"
+              method="POST" enctype="multipart/form-data">
             @csrf
-            @if(isset($product) && $product->exists)
+            @if($isEdit)
                 @method('PUT')
             @endif
 
             <div class="row">
+
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Title</label>
+                    <label class="form-label">Title <span class="text-danger">*</span></label>
                     <input type="text" name="title" value="{{ old('title', $product->title ?? '') }}" class="form-control" required>
                     @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -44,16 +53,16 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Price</label>
-                    <input type="number" step="0.01" name="price" value="{{ old('price', $product->price ?? 0) }}" class="form-control">
-                    @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+                    <label class="form-label">Regular Price</label>
+                    <input type="number" step="0.01" name="regular_price" value="{{ old('regular_price', $product->regular_price ?? 0) }}" class="form-control">
+                    @error('regular_price') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Discount Price</label>
-                    <input type="number" step="0.01" name="discount_price" value="{{ old('discount_price', $product->discount_price ?? '') }}" class="form-control">
-                    @error('discount_price') <small class="text-danger">{{ $message }}</small> @enderror
-                </div>                
+                    <label class="form-label">Sale Price</label>
+                    <input type="number" step="0.01" name="sale_price" value="{{ old('sale_price', $product->sale_price ?? '') }}" class="form-control">
+                    @error('sale_price') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
 
                 <div class="mb-3 col-md-12">
                     <label class="form-label">Short Description</label>
@@ -68,69 +77,142 @@ $breadcrumbs = ['Home' => route('admin.dashboard'), 'Products' => route('admin.p
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Categories</label>
-                    <select name="product_category_ids[]" class="form-select select2" multiple>
-                        @foreach($categories as $id => $title)
-                            <option value="{{ $id }}" @selected(in_array($id, old('product_category_ids', isset($product) ? $product->categories->pluck('id')->toArray() : [])))>{{ $title }}</option>
-                        @endforeach
-                    </select>
-                    @error('product_category_ids') <small class="text-danger">{{ $message }}</small> @enderror
+                    <label class="form-label">Banner Image</label>
+                    <input type="file" name="banner" class="form-control">
+                    @if($isEdit && $product->banner)
+                        <img src="{{ image_url('banner', $product->banner, 'small') }}" class="mt-2" width="60">
+                    @endif
+                    @error('banner') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Banner Alt</label>
+                    <input type="text" name="banner_alt" value="{{ old('banner_alt', $product->banner_alt ?? '') }}" class="form-control">
+                    @error('banner_alt') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Image</label>
+                    <input type="file" name="image" class="form-control">
+                    @if($isEdit && $product->image)
+                        <img src="{{ image_url('productcategory', $product->image, 'small') }}" class="mt-2" width="60">
+                    @endif
+                    @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Image Alt</label>
+                    <input type="text" name="image_alt" value="{{ old('image_alt', $product->image_alt ?? '') }}" class="form-control">
+                    @error('image_alt') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="mb-3 col-md-12">
+                    <label class="form-label">Gallery Images</label>
+                    <input type="file" name="gallery[]" class="form-control" multiple>
+                    @error('gallery') <small class="text-danger d-block">{{ $message }}</small> @enderror
+                    @error('gallery.*') <small class="text-danger d-block">{{ $message }}</small> @enderror
+
+                    @if($isEdit && $product->images->count())
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            @foreach($product->images as $img)
+                                <div class="text-center">
+                                    <img src="{{ image_url('product_gallery', $img->image, 'small') }}" width="80" class="img-thumbnail mb-1">
+                                    <div>
+                                        <label class="small text-muted">
+                                            <input type="checkbox" name="remove_gallery[]" value="{{ $img->id }}"> Remove
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                @php
+    /**
+     * Recursive function to render nested categories as tree dropdown
+     */
+    function renderCategoryOptions($categories, $selectedId = null, $prefix = '') {
+        foreach ($categories as $category) {
+            $isSelected = ($selectedId == $category->id) ? 'selected' : '';
+            echo '<option value="'.$category->id.'" '.$isSelected.'>'.$prefix.$category->title.'</option>';
+
+            if ($category->children && $category->children->count()) {
+                renderCategoryOptions($category->children, $selectedId, $prefix.'— ');
+            }
+        }
+    }
+@endphp
+
+<div class="form-group mb-3">
+    <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
+    <select name="category_id" id="category_id" class="form-select">
+        <option value="">Select Category</option>
+        @php
+            renderCategoryOptions($categories, old('category_id', $product->category_id ?? null));
+        @endphp
+    </select>
+    @error('category_id')
+        <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+
 
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Tags</label>
                     <select name="product_tag_ids[]" class="form-select select2" multiple>
                         @foreach($tags as $id => $title)
-                            <option value="{{ $id }}" @selected(in_array($id, old('product_tag_ids', isset($product) ? $product->tags->pluck('id')->toArray() : [])))>{{ $title }}</option>
+                            <option value="{{ $id }}" @selected(in_array($id, old('product_tag_ids', $isEdit ? $product->tags->pluck('id')->toArray() : [])))>
+                                {{ $title }}
+                            </option>
                         @endforeach
                     </select>
                     @error('product_tag_ids') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
-                        <label class="form-label">Meta Title</label>
-                        <input type="text" name="meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}"
-                            class="form-control">
-                            @error('meta_title') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
+                    <label class="form-label">Meta Title</label>
+                    <input type="text" name="meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}" class="form-control">
+                    @error('meta_title') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
 
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Meta Keywords</label>
-                        <input type="text" name="meta_keywords"
-                            value="{{ old('meta_keywords', $product->meta_keywords ?? '') }}" class="form-control">
-                            @error('meta_keywords') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Meta Keywords</label>
+                    <input type="text" name="meta_keywords" value="{{ old('meta_keywords', $product->meta_keywords ?? '') }}" class="form-control">
+                    @error('meta_keywords') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
 
-                    <div class="mb-3 col-md-12">
-                        <label class="form-label">Meta Description</label>
-                        <textarea name="meta_description" class="form-control"
-                            rows="3">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
-                            @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
+                <div class="mb-3 col-md-12">
+                    <label class="form-label">Meta Description</label>
+                    <textarea name="meta_description" class="form-control" rows="3">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+                    @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
 
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">
-                        <input type="hidden" name="is_featured" value="0" />
+                        <input type="hidden" name="is_featured" value="0">
                         <input type="checkbox" name="is_featured" class="form-check-input" value="1" id="is_featured"
                                {{ old('is_featured', $product->is_featured ?? false) ? 'checked' : '' }}>
                         <label for="is_featured" class="form-check-label">Featured Product</label>
-                        @error('is_featured') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <div class="form-check form-switch mb-3">
-                        <input type="hidden" name="status" value="0" />
-                        <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch" {{ old('status', $product->status ?? true) ? 'checked' : '' }} />
+                    <div class="form-check form-switch">
+                        <input type="hidden" name="status" value="0">
+                        <input class="form-check-input" type="checkbox" name="status" value="1" id="statusSwitch"
+                               {{ old('status', $product->status ?? true) ? 'checked' : '' }}>
                         <label class="form-check-label" for="statusSwitch">Active</label>
-                        @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">{{ isset($product) && $product->exists ? 'Update' : 'Create' }}</button>
+            <button type="submit" class="btn btn-primary">
+                {{ $isEdit ? 'Update Product' : 'Create Product' }}
+            </button>
         </form>
     </div>
 </div>
 @endsection
+
 @include('components.admin.select2')
