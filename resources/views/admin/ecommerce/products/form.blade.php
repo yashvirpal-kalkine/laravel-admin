@@ -46,6 +46,18 @@
                     @error('sku') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
+                {{-- Brand --}}
+                {{-- <div class="mb-3 col-md-6">
+                    <label class="form-label">Brand</label>
+                    <select name="brand_id" class="form-select">
+                        <option value="">-- Select Brand --</option>
+                        @foreach($brands as $id => $name)
+                            <option value="{{ $id }}" @selected(old('brand_id', $product->brand_id ?? '') == $id)>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    @error('brand_id') <small class="text-danger">{{ $message }}</small> @enderror
+                </div> --}}
+
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Stock</label>
                     <input type="number" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" class="form-control">
@@ -95,7 +107,7 @@
                     <label class="form-label">Image</label>
                     <input type="file" name="image" class="form-control">
                     @if($isEdit && $product->image)
-                        <img src="{{ image_url('productcategory', $product->image, 'small') }}" class="mt-2" width="60">
+                        <img src="{{ image_url('product', $product->image, 'small') }}" class="mt-2" width="60">
                     @endif
                     @error('image') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -112,9 +124,9 @@
                     @error('gallery') <small class="text-danger d-block">{{ $message }}</small> @enderror
                     @error('gallery.*') <small class="text-danger d-block">{{ $message }}</small> @enderror
 
-                    @if($isEdit && $product->images->count())
+                    @if($isEdit && $product->galleries->count())
                         <div class="d-flex flex-wrap gap-2 mt-2">
-                            @foreach($product->images as $img)
+                            @foreach($product->galleries as $img)
                                 <div class="text-center">
                                     <img src="{{ image_url('product_gallery', $img->image, 'small') }}" width="80" class="img-thumbnail mb-1">
                                     <div>
@@ -129,33 +141,31 @@
                 </div>
 
                 @php
-    /**
-     * Recursive function to render nested categories as tree dropdown
-     */
-    function renderCategoryOptions($categories, $selectedId = null, $prefix = '') {
-        foreach ($categories as $category) {
-            $isSelected = ($selectedId == $category->id) ? 'selected' : '';
-            echo '<option value="'.$category->id.'" '.$isSelected.'>'.$prefix.$category->title.'</option>';
+                function renderCategoryOptions($categories, $selectedIds = [], $prefix = '') {
+                    foreach ($categories as $category) {
+                        $isSelected = in_array($category->id, $selectedIds) ? 'selected' : '';
+                        echo "<option value='{$category->id}' {$isSelected}>{$prefix}{$category->title}</option>";
 
-            if ($category->children && $category->children->count()) {
-                renderCategoryOptions($category->children, $selectedId, $prefix.'— ');
-            }
-        }
-    }
-@endphp
+                        if ($category->children->isNotEmpty()) {
+                            renderCategoryOptions($category->children, $selectedIds, $prefix . '— ');
+                        }
+                    }
+                }
+                @endphp
 
-<div class="form-group mb-3">
-    <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
-    <select name="category_id" id="category_id" class="form-select">
-        <option value="">Select Category</option>
-        @php
-            renderCategoryOptions($categories, old('category_id', $product->category_id ?? null));
-        @endphp
-    </select>
-    @error('category_id')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
+                @php
+                $selectedCategories = old('product_category_ids', isset($product) ? $product->categories->pluck('id')->toArray() : []);
+                @endphp
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Categories</label>
+                    <select name="product_category_ids[]" class="form-select select2" multiple>
+                        @php renderCategoryOptions($categories, $selectedCategories); @endphp
+                    </select>
+                    @error('product_category_ids') 
+                        <small class="text-danger">{{ $message }}</small> 
+                    @enderror
+                </div>
 
 
                 <div class="mb-3 col-md-6">
@@ -187,6 +197,27 @@
                     <textarea name="meta_description" class="form-control" rows="3">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
                     @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
+
+                {{-- <div class="mb-3 col-md-6">
+                    <label class="form-label">SEO Image</label>
+                    <input type="file" name="seo_image" class="form-control">
+                    @if($isEdit && $product->seo_image)
+                        <img src="{{ image_url('seo', $product->seo_image, 'small') }}" class="mt-2" width="60">
+                    @endif
+                    @error('seo_image') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Canonical URL</label>
+                    <input type="text" name="canonical_url" value="{{ old('canonical_url', $product->canonical_url ?? '') }}" class="form-control">
+                    @error('canonical_url') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Custom Field</label>
+                    <input type="text" name="custom_field" value="{{ old('custom_field', $product->custom_field ?? '') }}" class="form-control">
+                    @error('custom_field') <small class="text-danger">{{ $message }}</small> @enderror
+                </div> --}}
 
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">

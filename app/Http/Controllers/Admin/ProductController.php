@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Services\ImageUploadService;
+
 class ProductController extends Controller
 {
     protected $imageService;
@@ -23,6 +24,9 @@ class ProductController extends Controller
         $this->imageService = $imageService;
     }
 
+    /**
+     * Display a listing of products
+     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -53,14 +57,28 @@ class ProductController extends Controller
         return view('admin.ecommerce.products.index');
     }
 
+    /**
+     * Show the form for creating a new product
+     */
     public function create()
     {
-        $categories = ProductCategory::pluck('title', 'id');
-        $tags = ProductTag::pluck('title', 'id');
+        $categories = ProductCategory::where('status', 1)
+            ->whereNull('parent_id')
+            ->with('children')
+            ->get();
 
-        return view('admin.ecommerce.products.form', compact('categories', 'tags'));
+        $tags = ProductTag::where('status', 1)->pluck('title', 'id');
+
+        return view('admin.ecommerce.products.form', [
+            'product' => null,
+            'categories' => $categories,
+            'tags' => $tags,
+        ]);
     }
 
+    /**
+     * Store a newly created product in storage
+     */
     public function store(ProductRequest $request)
     {
         DB::beginTransaction();
@@ -70,14 +88,14 @@ class ProductController extends Controller
             $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
             $data['author_id'] = Auth::id();
 
-            // Upload images BEFORE saving (so we can set in $data)
+            // Upload images
             if ($request->hasFile('banner')) {
                 $banner = $this->imageService->upload($request->file('banner'), 'banner');
                 $data['banner'] = $banner['name'];
             }
 
             if ($request->hasFile('image')) {
-                $image = $this->imageService->upload($request->file('image'), 'productcategory');
+                $image = $this->imageService->upload($request->file('image'), 'product');
                 $data['image'] = $image['name'];
             }
 
@@ -86,18 +104,18 @@ class ProductController extends Controller
                 $data['seo_image'] = $seo['name'];
             }
 
-            // Create product first (we need $product->id for gallery)
+            // Create product
             $product = Product::create($data);
 
-            // Sync relations
+            // Sync categories and tags
             $product->categories()->sync($request->product_category_ids ?? []);
             $product->tags()->sync($request->product_tag_ids ?? []);
 
-            // Gallery upload (after product exists)
+            // Gallery upload
             if ($request->hasFile('gallery')) {
                 foreach ($request->file('gallery') as $index => $file) {
                     $uploaded = $this->imageService->upload($file, 'product_gallery');
-                    $product->images()->create([
+                    $product->galleries()->create([
                         'image' => $uploaded['name'],
                         'alt' => $request->input('gallery_alt.' . $index, ''),
                         'sort_order' => $index,
@@ -108,27 +126,35 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return redirect()
-                ->route('admin.products.index')
-                ->with('success', '✅ Product created successfully.');
+            return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Product store failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
-            return redirect()->back()->withInput()->with('error', '❌ Something went wrong while creating the product.');
+            return back()->withInput()->with('error', 'Something went wrong while creating the product.');
         }
     }
 
+    /**
+     * Show the form for editing the specified product
+     */
     public function edit(Product $product)
     {
-        $product->load(['images', 'categories', 'tags']); // eager-load relations
+        $product->load(['galleries', 'categories', 'tags']);
 
-        $categories = ProductCategory::whereNull('parent_id')->where('status', 1)->with('children')->get();
-        $tags = ProductTag::pluck('title', 'id');
+        $categories = ProductCategory::where('status', 1)
+            ->whereNull('parent_id')
+            ->with('children')
+            ->get();
+
+        $tags = ProductTag::where('status', 1)->pluck('title', 'id');
 
         return view('admin.ecommerce.products.form', compact('product', 'categories', 'tags'));
     }
 
+    /**
+     * Update the specified product in storage
+     */
     public function update(ProductRequest $request, Product $product)
     {
         DB::beginTransaction();
@@ -137,16 +163,18 @@ class ProductController extends Controller
             $data = $request->validated();
             $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
 
+            // Remove selected gallery images
             if ($request->filled('remove_gallery')) {
                 foreach ($request->remove_gallery as $imageId) {
-                    $image = $product->images()->find($imageId);
+                    $image = $product->galleries()->find($imageId);
                     if ($image) {
                         $this->imageService->delete($image->image, 'product_gallery');
                         $image->delete();
                     }
                 }
             }
-            // Upload & replace images
+
+            // Upload & replace individual images
             if ($request->hasFile('banner')) {
                 $this->imageService->delete($product->banner ?? null, 'banner');
                 $banner = $this->imageService->upload($request->file('banner'), 'banner');
@@ -154,8 +182,8 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('image')) {
-                $this->imageService->delete($product->image ?? null, 'productcategory');
-                $image = $this->imageService->upload($request->file('image'), 'productcategory');
+                $this->imageService->delete($product->image ?? null, 'product');
+                $image = $this->imageService->upload($request->file('image'), 'product');
                 $data['image'] = $image['name'];
             }
 
@@ -165,19 +193,18 @@ class ProductController extends Controller
                 $data['seo_image'] = $seo['name'];
             }
 
-            // Update product
+            // Update main product data
             $product->update($data);
 
-            // Sync relations
+            // Sync relationships
             $product->categories()->sync($request->product_category_ids ?? []);
             $product->tags()->sync($request->product_tag_ids ?? []);
 
-            // Handle gallery
+            // Handle new gallery uploads
             if ($request->hasFile('gallery')) {
-                // Optional: remove old images or handle updates here
                 foreach ($request->file('gallery') as $index => $file) {
                     $uploaded = $this->imageService->upload($file, 'product_gallery');
-                    $product->images()->create([
+                    $product->galleries()->create([
                         'image' => $uploaded['name'],
                         'alt' => $request->input('gallery_alt.' . $index, ''),
                         'sort_order' => $index,
@@ -186,37 +213,44 @@ class ProductController extends Controller
                 }
             }
 
+            // Update default gallery image if chosen
+            if ($request->filled('default_gallery')) {
+                $product->galleries()->update(['is_default' => false]);
+                $product->galleries()->where('id', $request->default_gallery)->update(['is_default' => true]);
+            }
+
             DB::commit();
 
-            return redirect()
-                ->route('admin.products.index')->with('success', '✅ Product updated successfully.');
+            return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Product update failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
-            return redirect()->back()->withInput()->with('error', '❌ Something went wrong while updating the product.');
+            return back()->withInput()->with('error', 'Something went wrong while updating the product.');
         }
     }
 
+    /**
+     * Remove the specified product from storage
+     */
     public function destroy(Product $product)
     {
         try {
-            // Optional: delete related gallery images
-            foreach ($product->images as $img) {
+            foreach ($product->galleries as $img) {
                 $this->imageService->delete($img->image, 'product_gallery');
             }
 
+            $this->imageService->delete($product->banner ?? null, 'banner');
+            $this->imageService->delete($product->image ?? null, 'product');
+            $this->imageService->delete($product->seo_image ?? null, 'seo');
+
             $product->delete();
 
-            return redirect()
-                ->route('admin.products.index')
-                ->with('success', '🗑️ Product deleted successfully.');
+            return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
         } catch (\Throwable $e) {
             Log::error('Product delete failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
-            return redirect()
-                ->back()
-                ->with('error', '❌ Unable to delete product.');
+            return redirect()->back()->with('error', 'Unable to delete product.');
         }
     }
 }

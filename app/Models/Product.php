@@ -48,7 +48,7 @@ class Product extends Model
 
     public function brand()
     {
-        return $this->belongsTo(Brand::class, 'brand_id');
+        return $this->belongsTo(ProductBrand::class, 'brand_id');
     }
 
     public function categories()
@@ -61,7 +61,7 @@ class Product extends Model
         return $this->belongsToMany(ProductTag::class, 'product_product_tag');
     }
 
-    public function images()
+    public function galleries()
     {
         return $this->hasMany(ProductGallery::class)->orderBy('sort_order');
     }
@@ -79,6 +79,36 @@ class Product extends Model
 
     public function finalPrice()
     {
-        return $this->sale_price ?: $this->regular_price;
+        return $this->sale_price && $this->sale_price < $this->regular_price
+            ? $this->sale_price
+            : $this->regular_price;
     }
+    public function discountPercentage()
+    {
+        if (!$this->sale_price || $this->regular_price == 0)
+            return 0;
+        return round((($this->regular_price - $this->sale_price) / $this->regular_price) * 100, 2);
+    }
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
+    //$featuredProducts = Product::featured()->take(10)->get();
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? Storage::url($this->image) : asset('images/default-product.png');
+    }
+    public function getBannerUrlAttribute()
+    {
+        return $this->banner ? Storage::url($this->banner) : asset('images/default-banner.png');
+    }
+
+
 }
