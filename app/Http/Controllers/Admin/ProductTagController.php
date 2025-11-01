@@ -3,37 +3,46 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductTagRequest;
-use App\Models\ProductTag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\ProductTag;
+use App\Http\Requests\ProductTagRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ImageUploadService;
 
 class ProductTagController extends Controller
 {
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = ProductTag::query()->orderByDesc('id');
+            $tags = ProductTag::with('author')->select('product_tags.*');
 
-            return DataTables::of($query)
-                ->addIndexColumn() // Serial number
-                ->addColumn('status', function ($tag) {
-                    return status_badge($tag->status); // use your helper
-                })
+            return DataTables::of($tags)
+                ->addIndexColumn()
+                ->addColumn('status', fn($tag) => status_badge($tag->status))
+                //->addColumn('author', fn($tag) => $tag->author?->name ?? '-')
                 ->addColumn('actions', function ($tag) {
-                    $edit = '<a href="' . route('admin.product-tags.edit', $tag->id) . '" class="btn btn-sm btn-primary me-1" title="Edit">
-                            <i class="bi bi-pencil-fill"></i>
-                         </a>';
-                    $delete = '<form method="POST" action="' . route('admin.product-tags.destroy', $tag->id) . '" style="display:inline;">
+                    $editUrl = route('admin.product-tags.edit', $tag->id);
+                    $deleteUrl = route('admin.product-tags.destroy', $tag->id);
+
+                    return '
+                        <a href="' . $editUrl . '" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil text-white"></i>
+                        </a>
+                        <form action="' . $deleteUrl . '" method="POST" class="d-inline" onsubmit="return confirm(\'Delete this tag?\')">
                             ' . csrf_field() . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')" title="Delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                           </form>';
-                    return $edit . $delete;
+                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash text-white"></i></button>
+                        </form>
+                    ';
                 })
                 ->rawColumns(['status', 'actions'])
                 ->make(true);
@@ -44,38 +53,96 @@ class ProductTagController extends Controller
 
     public function create()
     {
-        return view('admin.ecommerce.tags.form');
+        $ProductTag = new ProductTag();
+        return view('admin.ecommerce.tags.form', ['tag' => $ProductTag]);
+
     }
 
     public function store(ProductTagRequest $request)
     {
-        $data = $request->validated();
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
-        $data['author_id'] = Auth::id();
+        DB::beginTransaction();
 
-        ProductTag::create($data);
+        try {
+            $data = $request->validated();
 
-        return redirect()->route('admin.product-tags.index')->with('success', 'Product tag created successfully.');
+            // Generate slug if not provided
+            if (empty($data['slug'])) {
+                $data['slug'] = Str::slug($data['title']);
+            }
+
+            // Handle image upload
+            if ($request->hasFile('banner')) {
+                $images = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $images['name'];
+            }
+            $data['author_id'] = auth()->id();
+            ProductTag::create($data);
+            DB::commit();
+            return redirect()->route('admin.product-tags.index')->with('success', 'Tag created successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            //Log::error('ProductTag Store Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->withInput()->with('error', 'Failed to create tag. Please try again.');
+        }
     }
 
     public function edit(ProductTag $product_tag)
     {
+
         return view('admin.ecommerce.tags.form', ['tag' => $product_tag]);
+
     }
 
     public function update(ProductTagRequest $request, ProductTag $product_tag)
     {
-        $data = $request->validated();
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
+        DB::beginTransaction();
 
-        $product_tag->update($data);
+        try {
+            $data = $request->validated();
 
-        return redirect()->route('admin.product-tags.index')->with('success', 'Product tag updated successfully.');
+            if (empty($data['slug'])) {
+                $data['slug'] = Str::slug($data['title']);
+            }
+
+            if ($request->hasFile('banner')) {
+                // Delete old banner
+                if (!empty($ProductTag->banner)) {
+                    $this->imageService->delete($product_tag->banner, 'banner');
+                }
+                // Upload new banner
+                $images = $this->imageService->upload($request->file('banner'), 'banner');
+                $data['banner'] = $images['name'];
+            }
+
+            $product_tag->update($data);
+
+            DB::commit();
+
+            return redirect()->route('admin.product-tags.index')->with('success', 'Tag updated successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            // Log::error('ProductTag Update Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->withInput()->with('error', 'Failed to update tag. Please try again.');
+        }
     }
 
     public function destroy(ProductTag $product_tag)
     {
-        $product_tag->delete();
-        return redirect()->route('admin.product-tags.index')->with('success', 'Product tag deleted successfully.');
+        DB::beginTransaction();
+
+        try {
+            if (!empty($product_tag->banner)) {
+                $this->imageService->delete($product_tag->banner, 'banner');
+            }
+
+            $product_tag->delete();
+
+            DB::commit();
+            return redirect()->route('admin.product-tags.index')->with('success', 'Tag deleted successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            // Log::error('ProductTag Delete Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->route('admin.product-tags.index')->with('error', 'Failed to delete tag. Please try again.');
+        }
     }
 }
