@@ -171,9 +171,9 @@
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Tags</label>
                     <select name="product_tag_ids[]" class="form-select select2" multiple>
-                        @foreach($tags as $id => $title)
+                        @foreach($tags as $id => $tag)
                             <option value="{{ $id }}" @selected(in_array($id, old('product_tag_ids', $isEdit ? $product->tags->pluck('id')->toArray() : [])))>
-                                {{ $title }}
+                                {{ $tag }}
                             </option>
                         @endforeach
                     </select>

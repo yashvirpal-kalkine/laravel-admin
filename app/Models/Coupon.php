@@ -23,8 +23,8 @@ class Coupon extends Model
         'valid_until' => 'datetime',
     ];
 
-    public function getStatusBadgeAttribute(): string
+    public function scopeActive($query)
     {
-        return $this->status === 'active' ? 'success' : 'secondary';
+        return $query->where('status', 1);
     }
 }

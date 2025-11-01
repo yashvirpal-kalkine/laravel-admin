@@ -21,7 +21,7 @@ class CouponFactory extends Factory
             'code' => strtoupper(Str::random(8)),
             'type' => $type,
             'value' => $value,
-            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'status' => $this->faker->randomElement([1,0]),
             'valid_from' => Carbon::now()->subDays(rand(0, 10)),
             'valid_until' => Carbon::now()->addDays(rand(5, 30)),
         ];
