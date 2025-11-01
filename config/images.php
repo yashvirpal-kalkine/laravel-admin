@@ -1,6 +1,22 @@
 <?php
 
 return [
+    'productcategory' => [
+        'icon' => ['width' => 64, 'height' => 64],
+        'small' => ['width' => 200, 'height' => 200],
+        'medium' => ['width' => 600, 'height' => 600],
+        'large' => ['width' => 1000, 'height' => 1000],
+        'original' => ['width' => null, 'height' => null], // No resize
+        'path' => 'uploads/product-category',
+    ],
+    'producttag' => [
+        'icon' => ['width' => 64, 'height' => 64],
+        'small' => ['width' => 200, 'height' => 200],
+        'medium' => ['width' => 600, 'height' => 600],
+        'large' => ['width' => 1000, 'height' => 1000],
+        'original' => ['width' => null, 'height' => null], // No resize
+        'path' => 'uploads/product-tag',
+    ],
 
     'product' => [
         'icon' => ['width' => 64, 'height' => 64],
@@ -17,7 +33,7 @@ return [
         'medium' => ['width' => 800, 'height' => 800],
         'large' => ['width' => 1200, 'height' => 1200],
         'original' => ['width' => null, 'height' => null],
-        'path' => 'uploads/product_gallery',
+        'path' => 'uploads/product-gallery',
     ],
 
     'blogpost' => [

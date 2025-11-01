@@ -28,6 +28,7 @@ return new class extends Migration {
 
             $table->boolean('status')->default(true)->default(1);
             $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->boolean('is_featured')->default(false);
 
             $table->string('custom_field')->nullable();
 

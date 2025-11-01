@@ -9,27 +9,28 @@ return new class extends Migration {
     {
         Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
-
             $table->string('title');
             $table->string('slug')->unique();
+            $table->foreignId('parent_id')->nullable()->constrained('product_categories')->onDelete('cascade');
             $table->string('short_description')->nullable();
             $table->longText('description')->nullable();
-
-            // Image fields
             $table->string('banner')->nullable();
-            $table->string('alt')->nullable();
+            $table->string('banner_alt')->nullable();
 
-            // SEO fields
+            $table->string('image')->nullable();
+            $table->string('image_alt')->nullable();
+
             $table->string('meta_title')->nullable();
             $table->string('meta_keywords')->nullable();
             $table->text('meta_description')->nullable();
+            $table->string('seo_image')->nullable();
+            $table->string('canonical_url')->nullable();
 
-            // Hierarchy
-            $table->foreignId('parent_id')->nullable()->constrained('product_categories')->nullOnDelete();
-
-            // Status + Author
             $table->boolean('status')->default(true)->default(1);
-            $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->boolean('is_featured')->default(false);
+
+            $table->string('custom_field')->nullable();
 
             $table->timestamps();
         });
