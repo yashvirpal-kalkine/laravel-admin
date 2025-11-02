@@ -53,7 +53,7 @@ class OrderSeeder extends Seeder
 
             foreach ($selectedProducts as $product) {
                 $quantity = rand(1, 3);
-                $price = $product->discount_price ?? $product->price;
+                $price = $product->sale_price ?: $product->regular_price ?: 0;
                 $total = $price * $quantity;
                 $subtotal += $total;
 
@@ -84,7 +84,7 @@ class OrderSeeder extends Seeder
                 'transaction_id' => 'TXN-' . strtoupper(Str::random(10)),
                 'amount' => $total,
                 'payment_method' => ['cash', 'card', 'upi', 'wallet'][rand(0, 3)],
-                'status' => ['pending', 'completed', 'failed'][rand(0, 2)],
+                'status' => ['success', 'failed'][rand(0, 1)],
             ]);
         }
 

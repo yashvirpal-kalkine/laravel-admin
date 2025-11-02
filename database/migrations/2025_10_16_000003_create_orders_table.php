@@ -47,7 +47,7 @@ return new class extends Migration {
             $table->string('transaction_id')->unique();
             $table->decimal('amount', 10, 2);
             $table->enum('payment_method', ['cash', 'card', 'upi', 'wallet'])->default('cash');
-            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
+            $table->boolean('status')->default(false); // false = failed, true = success
             $table->timestamps();
         });
     }
