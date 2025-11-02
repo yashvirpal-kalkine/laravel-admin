@@ -31,7 +31,7 @@
                     </a>
                 </li>
                 <li
-                    class="nav-item {{ request()->routeIs('admin.products.*', 'admin.product-categories.*', 'admin.product-tags.*', 'admin.orders.*',  'admin.coupons.*') ? 'menu-open' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.products.*', 'admin.product-categories.*', 'admin.product-tags.*', 'admin.orders.*', 'admin.coupons.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->routeIs('admin.ecommerce.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-cart4"></i>
                         <p>E-Commerce <i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -105,7 +105,8 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.calculators.index') }}" class="nav-link {{ isActiveRoute('admin.calculators.*') }}">
+                    <a href="{{ route('admin.calculators.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.calculators.*') }}">
                         <i class="nav-icon bi bi-calculator"></i>
                         <p>Remedy Calculators</p>
                     </a>
@@ -116,6 +117,14 @@
                         <p>Pages</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.testimonials.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.testimonials.*') }}">
+                        <i class="nav-icon bi bi-chat-quote"></i>
+                        <p>Testimonials</p>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('admin.settings.index') }}"
                         class="nav-link {{ isActiveRoute('admin.settings.*') }}">

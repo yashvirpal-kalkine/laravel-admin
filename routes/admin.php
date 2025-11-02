@@ -47,16 +47,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Invoices
         Route::get('transactions/{transaction}/invoice', [\App\Http\Controllers\Admin\TransactionController::class, 'invoice'])->name('transactions.invoice');
+        Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
 
         Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
         Route::resource('blog-tags', \App\Http\Controllers\Admin\BlogTagController::class);
         Route::resource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class);
 
         Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
-        Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
-
-
         Route::resource('calculators', \App\Http\Controllers\Admin\CalculatorController::class);
+        Route::resource('testimonials', App\Http\Controllers\Admin\TestimonialController::class);
+
 
         //Route::resource('settings', \App\Http\Controllers\Admin\SettingController::class);
         Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
