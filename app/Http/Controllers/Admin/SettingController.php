@@ -5,10 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Storage;
+use App\Services\ImageUploadService;
 
 class SettingController extends Controller
 {
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     public function index()
     {
         $currencies = config('settings.currencies');
@@ -56,9 +62,12 @@ class SettingController extends Controller
         // Handle file uploads
         foreach (['header_logo', 'footer_logo', 'favicon'] as $fileKey) {
             if ($request->hasFile($fileKey)) {
-                $file = $request->file($fileKey);
-                $path = $file->store('settings', 'public');
-                Setting::set($fileKey, $path);
+                // $file = $request->file($fileKey);
+                // $path = $file->store('settings', 'setting');
+
+                $path = $this->imageService->upload($request->file($fileKey), 'setting');
+
+                Setting::set($fileKey, $path['name']);
             }
         }
 

@@ -43,21 +43,24 @@
                                 <label class="form-label fw-semibold">Favicon</label>
                                 <input type="file" name="favicon" class="form-control">
                                 @if(!empty($settings['favicon']))
-                                    <img src="{{ asset('storage/' . $settings['favicon']) }}" class="mt-2" height="30">
+                                    <img src="{{ image_url('setting', $settings['favicon'], 'small') }}" class="mt-2"
+                                        height="30">
                                 @endif
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold">Header Logo</label>
                                 <input type="file" name="header_logo" class="form-control">
                                 @if(!empty($settings['header_logo']))
-                                    <img src="{{ asset('storage/' . $settings['header_logo']) }}" class="mt-2" height="50">
+                                    <img src="{{ image_url('setting', $settings['header_logo'], 'small') }}" class="mt-2"
+                                        height="50">
                                 @endif
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold">Footer Logo</label>
                                 <input type="file" name="footer_logo" class="form-control">
                                 @if(!empty($settings['footer_logo']))
-                                    <img src="{{ asset('storage/' . $settings['footer_logo']) }}" class="mt-2" height="50">
+                                    <img src="{{ image_url('setting', $settings['footer_logo'], 'small') }}" class="mt-2"
+                                        height="50">
                                 @endif
                             </div>
                             <div class="col-md-3 mb-3">

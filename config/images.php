@@ -71,14 +71,13 @@ return [
         'original' => ['width' => null, 'height' => null],
         'path' => 'uploads/banners',
     ],
-
-    'logo' => [
+    'setting' => [
         'icon' => ['width' => 64, 'height' => 32],
         'small' => ['width' => 150, 'height' => 60],
         'medium' => ['width' => 250, 'height' => 120],
         'large' => ['width' => 400, 'height' => 200],
         'original' => ['width' => null, 'height' => null],
-        'path' => 'uploads/logo',
+        'path' => 'uploads/settings',
     ],
     'author' => [
         'icon' => ['width' => 64, 'height' => 32],
@@ -87,15 +86,6 @@ return [
         'large' => ['width' => 400, 'height' => 200],
         'original' => ['width' => null, 'height' => null],
         'path' => 'uploads/authors',
-    ],
-
-    'footer_logo' => [
-        'icon' => ['width' => 64, 'height' => 32],
-        'small' => ['width' => 150, 'height' => 60],
-        'medium' => ['width' => 250, 'height' => 120],
-        'large' => ['width' => 400, 'height' => 200],
-        'original' => ['width' => null, 'height' => null],
-        'path' => 'uploads/footer_logo',
     ],
     'seo' => [
         'icon' => ['width' => 64, 'height' => 32],
