@@ -26,9 +26,6 @@ class TestimonialController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
-                ->addColumn('photo', fn($item) => $item->photo
-                    ? '<img src="' . asset('storage/testimonials/' . $item->photo) . '" width="50">'
-                    : '-')
                 ->addColumn('status', fn($item) => status_badge($item->status))
                 ->addColumn('actions', function ($item) {
                     $edit = route('admin.testimonials.edit', $item->id);
@@ -41,7 +38,7 @@ class TestimonialController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['photo', 'status', 'actions'])
+                ->rawColumns(['image', 'status', 'actions'])
                 ->make(true);
         }
 
