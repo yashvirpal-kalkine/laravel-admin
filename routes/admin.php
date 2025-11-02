@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,9 +14,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     Route::middleware('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Route::get('/dashboard', function () {
+        //     return view('admin.dashboard');
+        // })->name('dashboard');
 
         // 🧍‍♂️ Admin Profile
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

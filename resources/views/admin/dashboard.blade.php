@@ -1,83 +1,131 @@
 @extends('layouts.admin')
+
 @section('content')
-@php
-    $title = 'Dashboard v22';
-    $breadcrumbs = [
-        'Home' => route('admin.dashboard'),
-        'Dashboard v2s' => ''
-    ];
-@endphp
-
-<!-- Info boxes -->
-<div class="row">
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon text-bg-primary shadow-sm">
-                <i class="bi bi-gear-fill"></i>
-            </span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">CPU Traffic</span>
-                <span class="info-box-number">
-                    10
-                    <small>%</small>
-                </span>
+    <div class="row">
+        {{-- Stats Overview --}}
+        <div class="col-md-3">
+            <div class="info-box text-bg-primary shadow-sm">
+                <span class="info-box-icon"><i class="bi bi-people-fill"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Users</span>
+                    <span class="info-box-number">{{ $totalUsers }}</span>
+                </div>
             </div>
-            <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon text-bg-danger shadow-sm">
-                <i class="bi bi-hand-thumbs-up-fill"></i>
-            </span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Likes</span>
-                <span class="info-box-number">41,410</span>
+        <div class="col-md-3">
+            <div class="info-box text-bg-success shadow-sm">
+                <span class="info-box-icon"><i class="bi bi-box-seam"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Products</span>
+                    <span class="info-box-number">{{ $totalProducts }}</span>
+                </div>
             </div>
-            <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
 
-    <!-- fix for small devices only -->
-    <!-- <div class="clearfix hidden-md-up"></div> -->
-
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon text-bg-success shadow-sm">
-                <i class="bi bi-cart-fill"></i>
-            </span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Sales</span>
-                <span class="info-box-number">760</span>
+        <div class="col-md-3">
+            <div class="info-box text-bg-warning shadow-sm">
+                <span class="info-box-icon"><i class="bi bi-cart-check-fill"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Orders</span>
+                    <span class="info-box-number">{{ $totalOrders }}</span>
+                </div>
             </div>
-            <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon text-bg-warning shadow-sm">
-                <i class="bi bi-people-fill"></i>
-            </span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">New Members</span>
-                <span class="info-box-number">2,000</span>
+        <div class="col-md-3">
+            <div class="info-box text-bg-danger shadow-sm">
+                <span class="info-box-icon"><i class="bi bi-currency-rupee"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Sales</span>
+                    <span class="info-box-number">₹{{ number_format($totalSales, 2) }}</span>
+                </div>
             </div>
-            <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
     </div>
-    <!-- /.col -->
-</div>
+
+    {{-- Monthly Summary --}}
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header fw-bold">This Month Summary</div>
+                <div class="card-body">
+                    <p><strong>Orders:</strong> {{ $monthlyOrders }}</p>
+                    <p><strong>Sales:</strong> ₹{{ number_format($monthlySales, 2) }}</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Sales Chart --}}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header fw-bold">Last 7 Days Sales</div>
+                <div class="card-body">
+                    <canvas id="salesChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Recent Users / Orders --}}
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header fw-bold">Recent Users</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach ($latestUsers as $user)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ $user->name }}
+                                <small class="text-muted">{{ $user->created_at->diffForHumans() }}</small>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header fw-bold">Recent Orders</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach ($latestOrders as $order)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                #{{ $order->order_number }} — ₹{{ number_format($order->total_amount, 2) }}
+                                <span
+                                    class="badge bg-{{ $order->status === 'completed' ? 'success' : 'secondary' }}">{{ ucfirst($order->status) }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('salesChart');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @json($chartLabels),
+                datasets: [{
+                    label: 'Sales (₹)',
+                    data: @json($chartValues),
+                    borderWidth: 2,
+                    borderColor: '#0d6efd',
+                    fill: true,
+                    tension: 0.4
+                }]
+            }
+        });
+    </script>
+@endsection
+
 <!-- /.row -->
 {{--
 <!--begin::Row-->
@@ -93,10 +141,7 @@
                         <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
                     </button>
                     <div class="btn-group">
-                        <button
-                            type="button"
-                            class="btn btn-tool dropdown-toggle"
-                            data-bs-toggle="dropdown">
+                        <button type="button" class="btn btn-tool dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="bi bi-wrench"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" role="menu">
@@ -236,18 +281,11 @@
 
                         <div class="card-tools">
                             <span title="3 New Messages" class="badge text-bg-warning"> 3 </span>
-                            <button
-                                type="button"
-                                class="btn btn-tool"
-                                data-lte-toggle="card-collapse">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
                                 <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
                                 <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
                             </button>
-                            <button
-                                type="button"
-                                class="btn btn-tool"
-                                title="Contacts"
-                                data-lte-toggle="chat-pane">
+                            <button type="button" class="btn btn-tool" title="Contacts" data-lte-toggle="chat-pane">
                                 <i class="bi bi-chat-text-fill"></i>
                             </button>
                             <button type="button" class="btn btn-tool" data-lte-toggle="card-remove">
@@ -266,9 +304,7 @@
                                     <span class="direct-chat-timestamp float-end"> 23 Jan 2:00 pm </span>
                                 </div>
                                 <!-- /.direct-chat-infos -->
-                                <img
-                                    class="direct-chat-img"
-                                    src="./assets/img/user1-128x128.jpg"
+                                <img class="direct-chat-img" src="./assets/img/user1-128x128.jpg"
                                     alt="message user image" />
                                 <!-- /.direct-chat-img -->
                                 <div class="direct-chat-text">
@@ -287,9 +323,7 @@
                                     </span>
                                 </div>
                                 <!-- /.direct-chat-infos -->
-                                <img
-                                    class="direct-chat-img"
-                                    src="./assets/img/user3-128x128.jpg"
+                                <img class="direct-chat-img" src="./assets/img/user3-128x128.jpg"
                                     alt="message user image" />
                                 <!-- /.direct-chat-img -->
                                 <div class="direct-chat-text">You better believe it!</div>
@@ -304,9 +338,7 @@
                                     <span class="direct-chat-timestamp float-end"> 23 Jan 5:37 pm </span>
                                 </div>
                                 <!-- /.direct-chat-infos -->
-                                <img
-                                    class="direct-chat-img"
-                                    src="./assets/img/user1-128x128.jpg"
+                                <img class="direct-chat-img" src="./assets/img/user1-128x128.jpg"
                                     alt="message user image" />
                                 <!-- /.direct-chat-img -->
                                 <div class="direct-chat-text">
@@ -325,9 +357,7 @@
                                     </span>
                                 </div>
                                 <!-- /.direct-chat-infos -->
-                                <img
-                                    class="direct-chat-img"
-                                    src="./assets/img/user3-128x128.jpg"
+                                <img class="direct-chat-img" src="./assets/img/user3-128x128.jpg"
                                     alt="message user image" />
                                 <!-- /.direct-chat-img -->
                                 <div class="direct-chat-text">I would love to.</div>
@@ -342,9 +372,7 @@
                             <ul class="contacts-list">
                                 <li>
                                     <a href="#">
-                                        <img
-                                            class="contacts-list-img"
-                                            src="./assets/img/user1-128x128.jpg"
+                                        <img class="contacts-list-img" src="./assets/img/user1-128x128.jpg"
                                             alt="User Avatar" />
 
                                         <div class="contacts-list-info">
@@ -362,9 +390,7 @@
                                 <!-- End Contact Item -->
                                 <li>
                                     <a href="#">
-                                        <img
-                                            class="contacts-list-img"
-                                            src="./assets/img/user7-128x128.jpg"
+                                        <img class="contacts-list-img" src="./assets/img/user7-128x128.jpg"
                                             alt="User Avatar" />
 
                                         <div class="contacts-list-info">
@@ -380,9 +406,7 @@
                                 <!-- End Contact Item -->
                                 <li>
                                     <a href="#">
-                                        <img
-                                            class="contacts-list-img"
-                                            src="./assets/img/user3-128x128.jpg"
+                                        <img class="contacts-list-img" src="./assets/img/user3-128x128.jpg"
                                             alt="User Avatar" />
 
                                         <div class="contacts-list-info">
@@ -398,9 +422,7 @@
                                 <!-- End Contact Item -->
                                 <li>
                                     <a href="#">
-                                        <img
-                                            class="contacts-list-img"
-                                            src="./assets/img/user5-128x128.jpg"
+                                        <img class="contacts-list-img" src="./assets/img/user5-128x128.jpg"
                                             alt="User Avatar" />
 
                                         <div class="contacts-list-info">
@@ -416,9 +438,7 @@
                                 <!-- End Contact Item -->
                                 <li>
                                     <a href="#">
-                                        <img
-                                            class="contacts-list-img"
-                                            src="./assets/img/user6-128x128.jpg"
+                                        <img class="contacts-list-img" src="./assets/img/user6-128x128.jpg"
                                             alt="User Avatar" />
 
                                         <div class="contacts-list-info">
@@ -434,9 +454,7 @@
                                 <!-- End Contact Item -->
                                 <li>
                                     <a href="#">
-                                        <img
-                                            class="contacts-list-img"
-                                            src="./assets/img/user8-128x128.jpg"
+                                        <img class="contacts-list-img" src="./assets/img/user8-128x128.jpg"
                                             alt="User Avatar" />
 
                                         <div class="contacts-list-info">
@@ -459,11 +477,7 @@
                     <div class="card-footer">
                         <form action="#" method="post">
                             <div class="input-group">
-                                <input
-                                    type="text"
-                                    name="message"
-                                    placeholder="Type Message ..."
-                                    class="form-control" />
+                                <input type="text" name="message" placeholder="Type Message ..." class="form-control" />
                                 <span class="input-group-append">
                                     <button type="button" class="btn btn-warning">Send</button>
                                 </span>
@@ -484,10 +498,7 @@
 
                         <div class="card-tools">
                             <span class="badge text-bg-danger"> 8 New Members </span>
-                            <button
-                                type="button"
-                                class="btn btn-tool"
-                                data-lte-toggle="card-collapse">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
                                 <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
                                 <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
                             </button>
@@ -500,97 +511,65 @@
                     <div class="card-body p-0">
                         <div class="row text-center m-1">
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user1-128x128.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user1-128x128.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     Alexander Pierce
                                 </a>
                                 <div class="fs-8">Today</div>
                             </div>
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user1-128x128.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user1-128x128.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     Norman
                                 </a>
                                 <div class="fs-8">Yesterday</div>
                             </div>
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user7-128x128.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user7-128x128.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     Jane
                                 </a>
                                 <div class="fs-8">12 Jan</div>
                             </div>
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user6-128x128.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user6-128x128.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     John
                                 </a>
                                 <div class="fs-8">12 Jan</div>
                             </div>
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user2-160x160.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user2-160x160.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     Alexander
                                 </a>
                                 <div class="fs-8">13 Jan</div>
                             </div>
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user5-128x128.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user5-128x128.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     Sarah
                                 </a>
                                 <div class="fs-8">14 Jan</div>
                             </div>
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user4-128x128.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user4-128x128.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     Nora
                                 </a>
                                 <div class="fs-8">15 Jan</div>
                             </div>
                             <div class="col-3 p-2">
-                                <img
-                                    class="img-fluid rounded-circle"
-                                    src="./assets/img/user3-128x128.jpg"
+                                <img class="img-fluid rounded-circle" src="./assets/img/user3-128x128.jpg"
                                     alt="User Image" />
-                                <a
-                                    class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0"
-                                    href="#">
+                                <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
                                     Nadia
                                 </a>
                                 <div class="fs-8">15 Jan</div>
@@ -600,9 +579,9 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer text-center">
-                        <a
-                            href="javascript:"
-                            class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">View All Users</a>
+                        <a href="javascript:"
+                            class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">View
+                            All Users</a>
                     </div>
                     <!-- /.card-footer -->
                 </div>
@@ -642,8 +621,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
+                                    <a href="pages/examples/invoice.html"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR9842</a>
                                 </td>
                                 <td>Call of Duty IV</td>
@@ -656,8 +634,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
+                                    <a href="pages/examples/invoice.html"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR1848</a>
                                 </td>
                                 <td>Samsung Smart TV</td>
@@ -670,8 +647,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
+                                    <a href="pages/examples/invoice.html"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a>
                                 </td>
                                 <td>iPhone 6 Plus</td>
@@ -684,8 +660,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
+                                    <a href="pages/examples/invoice.html"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a>
                                 </td>
                                 <td>Samsung Smart TV</td>
@@ -698,8 +673,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
+                                    <a href="pages/examples/invoice.html"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR1848</a>
                                 </td>
                                 <td>Samsung Smart TV</td>
@@ -712,8 +686,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
+                                    <a href="pages/examples/invoice.html"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a>
                                 </td>
                                 <td>iPhone 6 Plus</td>
@@ -726,8 +699,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
+                                    <a href="pages/examples/invoice.html"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR9842</a>
                                 </td>
                                 <td>Call of Duty IV</td>
@@ -888,10 +860,7 @@
                 <div class="px-2">
                     <div class="d-flex border-top py-2 px-1">
                         <div class="col-2">
-                            <img
-                                src="./assets/img/default-150x150.png"
-                                alt="Product Image"
-                                class="img-size-50" />
+                            <img src="./assets/img/default-150x150.png" alt="Product Image" class="img-size-50" />
                         </div>
                         <div class="col-10">
                             <a href="javascript:void(0)" class="fw-bold">
@@ -904,10 +873,7 @@
                     <!-- /.item -->
                     <div class="d-flex border-top py-2 px-1">
                         <div class="col-2">
-                            <img
-                                src="./assets/img/default-150x150.png"
-                                alt="Product Image"
-                                class="img-size-50" />
+                            <img src="./assets/img/default-150x150.png" alt="Product Image" class="img-size-50" />
                         </div>
                         <div class="col-10">
                             <a href="javascript:void(0)" class="fw-bold">
@@ -922,10 +888,7 @@
                     <!-- /.item -->
                     <div class="d-flex border-top py-2 px-1">
                         <div class="col-2">
-                            <img
-                                src="./assets/img/default-150x150.png"
-                                alt="Product Image"
-                                class="img-size-50" />
+                            <img src="./assets/img/default-150x150.png" alt="Product Image" class="img-size-50" />
                         </div>
                         <div class="col-10">
                             <a href="javascript:void(0)" class="fw-bold">
@@ -940,10 +903,7 @@
                     <!-- /.item -->
                     <div class="d-flex border-top py-2 px-1">
                         <div class="col-2">
-                            <img
-                                src="./assets/img/default-150x150.png"
-                                alt="Product Image"
-                                class="img-size-50" />
+                            <img src="./assets/img/default-150x150.png" alt="Product Image" class="img-size-50" />
                         </div>
                         <div class="col-10">
                             <a href="javascript:void(0)" class="fw-bold">
@@ -973,10 +933,8 @@
 
 @push('scripts')
 <!-- apexcharts -->
-<script
-    src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-    integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8="
-    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+    integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
 
 <script>
     // NOTICE!! DO NOT USE ANY OF THIS JAVASCRIPT
@@ -994,13 +952,13 @@
 
     const sales_chart_options = {
         series: [{
-                name: 'Digital Goods',
-                data: [28, 48, 40, 19, 86, 27, 90],
-            },
-            {
-                name: 'Electronics',
-                data: [65, 59, 80, 81, 56, 55, 40],
-            },
+            name: 'Digital Goods',
+            data: [28, 48, 40, 19, 86, 27, 90],
+        },
+        {
+            name: 'Electronics',
+            data: [65, 59, 80, 81, 56, 55, 40],
+        },
         ],
         chart: {
             height: 180,
@@ -1137,4 +1095,3 @@
 </form> -->
 
 --}}
-@endsection
