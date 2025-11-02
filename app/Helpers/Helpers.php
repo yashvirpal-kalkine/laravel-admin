@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Cache;
+use App\Models\Setting;
 
-use App\Models\Page;
 
 if (!function_exists('isActiveRoute')) {
     /**
@@ -59,54 +60,50 @@ if (!function_exists('flashMessage')) {
 
 if (!function_exists('currencyformat')) {
     /**
-     * Format a number as currency
+     * Format a number as currency using saved settings.
      *
      * @param float|int $amount
-     * @param string $symbol
-     * @param int $decimals
+     * @param bool $with_symbol Whether to include the currency symbol
      * @return string
      */
-    function currencyformat($amount, $symbol = '$', $decimals = 2)
+    function currencyformat($amount, $with_symbol = true)
     {
-        return $symbol . number_format($amount, $decimals, '.', ',');
+        // Get symbol from settings (fallback to ₹)
+        $symbol = setting('currency_symbol', '₹');
+
+        $formatted = number_format($amount, 2, '.', ',');
+
+        return $with_symbol ? $symbol . $formatted : $formatted;
     }
+    //     {{ currencyformat(1500) }}  
+// {{-- Output: ₹1,500.00 (if your saved currency symbol is ₹) --}}
+// {{ currencyformat(1500, false) }}
+// {{-- Output: 1,500.00 --}}
 
-    if (!function_exists('status_badge')) {
-        function status_badge($status): HtmlString
-        {
-            $statuses = [
-                1 => ['Active', 'success'],
-                0 => ['Inactive', 'danger'],
-                2 => ['Suspended', 'warning'],
-            ];
-
-            [$label, $color] = $statuses[$status] ?? ['Unknown', 'secondary'];
-
-            return new HtmlString("<span class='badge bg-{$color}'>{$label}</span>");
-        }
-    }
-
-    //     <!-- <a href="{{ route('admin.dashboard') }}" class="nav-link {{ isActiveRoute('admin.dashboard') }}">
-    //     <i class="nav-icon bi bi-speedometer2"></i>
-    //     <p>Dashboard</p>
-    // </a> -->
-
-    // <!-- Flash messages -->
-    // <!-- @if(session('message'))
-    //     <div class="alert alert-{{ session('message_type', 'success') }}">
-    //         {{ session('message') }}
-    //     </div>
-    // @endif -->
-
-    // <!-- Currency formatting -->
-    // <!-- <p>Total: {{ formatCurrency(12345.678) }}</p>  -->
-    // <!-- Output: $12,345.68 -->
-
-    // <!-- Date formatting -->
-    // <!-- <p>Created at: {{ formatDate($user->created_at) }}</p>  -->
-    // <!-- Output: 14 Oct 2025 -->
 }
 
+
+if (!function_exists('status_badge')) {
+    function status_badge($status): HtmlString
+    {
+        $statuses = [
+            1 => ['Active', 'success'],
+            0 => ['Inactive', 'danger'],
+            2 => ['Suspended', 'warning'],
+        ];
+
+        [$label, $color] = $statuses[$status] ?? ['Unknown', 'secondary'];
+
+        return new HtmlString("<span class='badge bg-{$color}'>{$label}</span>");
+    }
+}
+if (!function_exists('setting')) {
+    function setting($key, $default = null)
+    {
+        return Setting::get($key, $default);
+    }
+    //  {{ setting('currency_symbol') }}
+}
 if (!function_exists('image_url')) {
     /**
      * Get public URL of an image by type and size.

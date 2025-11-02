@@ -35,10 +35,11 @@
 
         <div class="col-md-3">
             <div class="info-box text-bg-danger shadow-sm">
-                <span class="info-box-icon"><i class="bi bi-currency-rupee"></i></span>
+                <span class="info-box-icon"><i class="bi bi-cash"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Total Sales</span>
-                    <span class="info-box-number">₹{{ number_format($totalSales, 2) }}</span>
+                    <span
+                        class="info-box-number">{{ currencyformat($totalSales) }}</span>
                 </div>
             </div>
         </div>
@@ -51,7 +52,7 @@
                 <div class="card-header fw-bold">This Month Summary</div>
                 <div class="card-body">
                     <p><strong>Orders:</strong> {{ $monthlyOrders }}</p>
-                    <p><strong>Sales:</strong> ₹{{ number_format($monthlySales, 2) }}</p>
+                    <p><strong>Sales:</strong> {{ currencyformat($monthlySales) }}</p>
                 </div>
             </div>
         </div>
@@ -92,7 +93,7 @@
                     <ul class="list-group">
                         @foreach ($latestOrders as $order)
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                #{{ $order->order_number }} — ₹{{ number_format($order->total_amount, 2) }}
+                                #{{ $order->order_number }} — {{ currencyformat($order->total_amount) }}
                                 <span
                                     class="badge bg-{{ $order->status === 'completed' ? 'success' : 'secondary' }}">{{ ucfirst($order->status) }}</span>
                             </li>

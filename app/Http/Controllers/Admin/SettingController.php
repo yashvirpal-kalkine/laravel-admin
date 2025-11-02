@@ -17,6 +17,9 @@ class SettingController extends Controller
 
         $settings = Setting::all()->pluck('value', 'key')->toArray();
 
+        if (!empty($settings['currency']) && !empty($settings['currency_symbol'])) {
+            $settings['currency'] = $settings['currency'] . ',' . $settings['currency_symbol'];
+        }
         // Decode JSON fields if they exist
         $settings['social'] = !empty($settings['social']) && is_string($settings['social'])
             ? json_decode($settings['social'], true)
@@ -37,6 +40,12 @@ class SettingController extends Controller
     public function update(SettingRequest $request)
     {
         $data = $request->except(['header_logo', 'footer_logo', 'favicon']);
+        // If currency is in the format "INR,₹"
+        if (!empty($data['currency']) && str_contains($data['currency'], ',')) {
+            [$code, $symbol] = explode(',', $data['currency']);
+            $data['currency'] = $code;
+            $data['currency_symbol'] = $symbol;
+        }
         $socialData = $request->input('social', []);
         $paymentData = $request->input('payment_gateway', []);
 

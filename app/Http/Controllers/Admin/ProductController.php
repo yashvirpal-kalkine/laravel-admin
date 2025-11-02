@@ -36,7 +36,7 @@ class ProductController extends Controller
                 ->addIndexColumn()
                 ->addColumn('categories', fn($p) => $p->categories->pluck('title')->implode(', '))
                 ->addColumn('tags', fn($p) => $p->tags->pluck('title')->implode(', '))
-                ->addColumn('price', fn($p) => number_format($p->regular_price, 2))
+                ->addColumn('price', fn($p) => currencyformat($p->regular_price))
                 ->addColumn('status', fn($p) => status_badge($p->status))
                 ->addColumn('actions', function ($p) {
                     $edit = '<a href="' . route('admin.products.edit', $p->id) . '" class="btn btn-sm btn-primary me-1" title="Edit">
