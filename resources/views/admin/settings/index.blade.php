@@ -1,6 +1,13 @@
 @extends('layouts.admin')
 
 @section('content')
+    @php
+        $title = 'Settings';
+        $breadcrumbs = [
+            'Home' => route('admin.dashboard'),
+            'Settings' => ''
+        ];
+    @endphp
     <div class="card card-primary card-outline mb-4">
         <div class="card-header">
             <h5>Settings</h5>
@@ -43,23 +50,24 @@
                                 <label class="form-label fw-semibold">Favicon</label>
                                 <input type="file" name="favicon" class="form-control">
                                 @if(!empty($settings['favicon']))
-                                    <img src="{{ image_url('setting', $settings['favicon'], 'small') }}" class="mt-2"
-                                        height="30">
+                                    <img src="{{  $settings['favicon_url'] ?? '' }} " class="mt-2" alt="Header Logo"
+                                        height="50">
                                 @endif
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold">Header Logo</label>
                                 <input type="file" name="header_logo" class="form-control">
                                 @if(!empty($settings['header_logo']))
-                                    <img src="{{ image_url('setting', $settings['header_logo'], 'small') }}" class="mt-2"
+                                    <img src="{{  $settings['header_logo_url'] ?? '' }} " class="mt-2" alt="Header Logo"
                                         height="50">
                                 @endif
+
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold">Footer Logo</label>
                                 <input type="file" name="footer_logo" class="form-control">
                                 @if(!empty($settings['footer_logo']))
-                                    <img src="{{ image_url('setting', $settings['footer_logo'], 'small') }}" class="mt-2"
+                                    <img src="{{  $settings['footer_logo_url'] ?? '' }} " class="mt-2" alt="Footer Logo"
                                         height="50">
                                 @endif
                             </div>

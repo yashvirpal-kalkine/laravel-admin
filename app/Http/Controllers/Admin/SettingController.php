@@ -21,8 +21,10 @@ class SettingController extends Controller
         $socialPlatforms = config('settings.social_platforms');
         $paymentGateways = config('settings.payment_gateways');
 
-        $settings = Setting::all()->pluck('value', 'key')->toArray();
+        // $settings = Setting::all()->pluck('value', 'key')->toArray();
 
+        $settings = Setting::allWithUrls();
+        // print_r($settings);
         if (!empty($settings['currency']) && !empty($settings['currency_symbol'])) {
             $settings['currency'] = $settings['currency'] . ',' . $settings['currency_symbol'];
         }
