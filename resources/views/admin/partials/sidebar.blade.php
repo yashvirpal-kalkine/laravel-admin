@@ -2,121 +2,136 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
     <div class="sidebar-brand">
         <a href="./index.html" class="brand-link">
-            <img src="{{ asset('backend/assets/img/AdminLTELogo.png') }}" alt="{{ config('app.name') }}" class="brand-image opacity-75 shadow" />
+            <img src="{{ asset('backend/assets/img/AdminLTELogo.png') }}" alt="{{ config('app.name') }}"
+                class="brand-image opacity-75 shadow" />
             <span class="brand-text fw-light">{{ config('app.name') }}</span>
         </a>
-
     </div>
-
     <div class="sidebar-wrapper">
         <nav class="mt-2">
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
+                aria-label="Main navigation" data-accordion="false" id="navigation">
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}" class="nav-link {{ isActiveRoute('admin.dashboard') }}">
                         <i class="nav-icon bi bi-speedometer2"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
-
                 <li class="nav-item">
                     <a href="{{ route('admin.users.index') }}" class="nav-link {{ isActiveRoute('admin.users.*') }}">
                         <i class="nav-icon bi bi-people"></i>
                         <p>Users</p>
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a href="{{ route('admin.transactions.index') }}" class="nav-link {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.transactions.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.transactions.*')}}">
                         <i class="nav-icon bi bi-currency-dollar"></i>
                         <p>Transactions</p>
                     </a>
                 </li>
-
-                <li class="nav-item {{ request()->routeIs('admin.ecommerce.*') ? 'menu-open' : '' }}">
+                <li
+                    class="nav-item {{ request()->routeIs('admin.products.*', 'admin.product-categories.*', 'admin.product-tags.*', 'admin.orders.*', 'admin.coupons.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->routeIs('admin.ecommerce.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-cart4"></i>
                         <p>E-Commerce <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
-                    <ul class="nav nav-treeview">
+                    <ul class="nav nav-treeview ps-3">
                         <li class="nav-item">
-                            <a href="{{ route('admin.categories.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-tags"></i>
-                                <p>Categories</p>
+                            <a href="{{ route('admin.product-categories.index') }}"
+                                class="nav-link {{ isActiveRoute('admin.product-categories.*') }}">
+                                <i class="bi bi-boxes"></i>
+                                <p>Product Categories</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.tags.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-tag"></i>
-                                <p>Tags</p>
+                            <a href="{{ route('admin.product-tags.index') }}"
+                                class="nav-link {{ isActiveRoute('admin.product-tags.*') }}">
+                                <i class="nav-icon bi bi-tags"></i>
+                                <p>Product Tags</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.products.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                                class="nav-link {{ isActiveRoute('admin.products.*') }}">
                                 <i class="nav-icon bi bi-box-seam"></i>
                                 <p>Products</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.orders.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                                class="nav-link {{ isActiveRoute('admin.orders.*') }}">
                                 <i class="nav-icon bi bi-bag-check"></i>
                                 <p>Orders</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.invoices.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-receipt"></i>
-                                <p>Invoices</p>
+                            <a href="{{ route('admin.coupons.index') }}"
+                                class="nav-link {{ isActiveRoute('admin.coupons.*')  }}">
+                                <i class="nav-icon bi bi-ticket-perforated"></i>
+                                <p>Coupon</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-
-               
-                <li class="nav-item {{ request()->routeIs('admin.blog.*') ? 'menu-open' : '' }}">
+                <li
+                    class="nav-item {{ request()->routeIs('admin.blog-posts.*', 'admin.blog-categories.*', 'admin.blog-tags.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-journal-text"></i>
+                        <i class="nav-icon bi bi-pencil-square"></i>
                         <p>Blogs <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
-                    <ul class="nav nav-treeview">
+                    <ul class="nav nav-treeview ps-3">
                         <li class="nav-item">
-                            <a href="{{ route('admin.bcategories.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.bcategories.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.blog-categories.index') }}"
+                                class="nav-link {{ isActiveRoute('admin.blog-categories.*') }}">
                                 <i class="nav-icon bi bi-folder2-open"></i>
-                                <p>Categories</p>
+                                <p>Blog Categories</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.btags.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.btags.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.blog-tags.index') }}"
+                                class="nav-link {{ isActiveRoute('admin.blog-tags.*') }}">
                                 <i class="nav-icon bi bi-tags"></i>
-                                <p>Tags</p>
+                                <p>Blog Tags</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.posts.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.blog-posts.index') }}"
+                                class="nav-link {{ isActiveRoute('admin.blog-posts.*') }}">
                                 <i class="nav-icon bi bi-file-earmark-text"></i>
                                 <p>Posts</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-
-                
                 <li class="nav-item">
-                    <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-layout-text-window-reverse"></i>
+                    <a href="{{ route('admin.calculators.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.calculators.*') }}">
+                        <i class="nav-icon bi bi-calculator"></i>
+                        <p>Remedy Calculators</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.pages.index') }}" class="nav-link {{ isActiveRoute('admin.pages.*') }}">
+                        <i class="nav-icon bi bi-file-text"></i>
                         <p>Pages</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.testimonials.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.testimonials.*') }}">
+                        <i class="nav-icon bi bi-chat-quote"></i>
+                        <p>Testimonials</p>
+                    </a>
+                </li>
 
-
-
+                <li class="nav-item">
+                    <a href="{{ route('admin.settings.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.settings.*') }}">
+                        <i class="nav-icon bi bi-gear"></i>
+                        <p>Settings</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

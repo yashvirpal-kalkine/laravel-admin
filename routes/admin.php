@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,9 +14,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     Route::middleware('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Route::get('/dashboard', function () {
+        //     return view('admin.dashboard');
+        // })->name('dashboard');
 
         // 🧍‍♂️ Admin Profile
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -28,27 +31,38 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users.addresses', \App\Http\Controllers\Admin\AddressController::class)->shallow();
 
 
+
+
         // Categories
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+        Route::resource('product-categories', \App\Http\Controllers\Admin\ProductCategoryController::class);
 
-    // Tags
-    Route::resource('tags', \App\Http\Controllers\Admin\TagController::class);
+        // Tags
+        Route::resource('product-tags', \App\Http\Controllers\Admin\ProductTagController::class);
 
-    // Products
-    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+        // Products
+        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 
-    // Orders
-    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+        // Orders
+        Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
 
-    // Invoices
-    Route::resource('invoices', \App\Http\Controllers\Admin\InvoiceController::class);
+        // Coupons
+        Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
 
-      Route::resource('bcategories', \App\Http\Controllers\Admin\BlogCategoryController::class);
-    Route::resource('btags', \App\Http\Controllers\Admin\BlogTagController::class);
-    Route::resource('posts', \App\Http\Controllers\Admin\BlogPostController::class);
+        // Invoices
+        Route::get('transactions/{transaction}/invoice', [\App\Http\Controllers\Admin\TransactionController::class, 'invoice'])->name('transactions.invoice');
+        Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
 
-    Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
-    Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
+        Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+        Route::resource('blog-tags', \App\Http\Controllers\Admin\BlogTagController::class);
+        Route::resource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class);
 
+        Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
+        Route::resource('calculators', \App\Http\Controllers\Admin\CalculatorController::class);
+        Route::resource('testimonials', App\Http\Controllers\Admin\TestimonialController::class);
+
+
+        //Route::resource('settings', \App\Http\Controllers\Admin\SettingController::class);
+        Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+        Route::post('settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
     });
 });

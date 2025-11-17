@@ -17,7 +17,7 @@ class UserRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email' . ($userId ? ',' . $userId : ''),
+            'email' => 'required|email:rfc,dns|unique:users,email' . ($userId ? ',' . $userId : ''),
             'phone' => 'required|string|unique:users,phone' . ($userId ? ',' . $userId : ''),
             'password' => $userId ? 'nullable|string|min:8|confirmed' : 'required|string|min:8|confirmed',
             'status' => 'nullable|boolean',

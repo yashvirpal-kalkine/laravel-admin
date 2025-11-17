@@ -5,34 +5,54 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Address;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query();
+        if ($request->ajax()) {
+            $query = User::with('addresses');
 
-        // Search by name, email, or phone
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
-            });
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('addresses', function ($user) {
+                    $viewUrl = route('admin.users.addresses.index', $user->id);
+                    $addUrl = route('admin.users.addresses.create', $user->id);
+                    $count = $user->addresses->count();
+
+                    return '
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="' . $viewUrl . '" class="btn btn-outline-primary btn-sm px-2 d-flex align-items-center" title="View Addresses">
+                                <i class="bi bi-eye me-1"></i> <span>(' . $count . ')</span>
+                            </a>
+                            <a href="' . $addUrl . '" class="btn btn-outline-success btn-sm px-2 d-flex align-items-center" title="Add Address">
+                                <i class="bi bi-plus-lg"></i>
+                            </a>
+                        </div>
+                    ';
+                })
+                ->addColumn('status', fn($user) => status_badge($user->status))
+                ->addColumn('actions', function ($user) {
+                    $edit = route('admin.users.edit', $user->id);
+                    $delete = route('admin.users.destroy', $user->id);
+                    return '
+                        <a href="' . $edit . '" class="btn btn-warning btn-sm"><i class="bi bi-pencil text-white"></i></a>
+                        <form action="' . $delete . '" method="POST" style="display:inline;" onsubmit="return confirm(\'Delete this user?\')">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button class="btn btn-danger btn-sm"><i class="bi bi-trash text-white"></i></button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['addresses', 'status', 'actions'])
+                ->make(true);
         }
 
-        $users = $query->with(['billingAddresses', 'shippingAddresses'])->orderBy('id', 'desc')->paginate(1);
-
-        // Keep the search query in pagination links
-        $users->appends($request->all());
-
-        return view('admin.users.index', compact('users', 'search'));
+        return view('admin.users.index');
     }
-
-
 
     public function create()
     {
@@ -41,15 +61,24 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'password' => Hash::make($request->password),
-            'status' => $request->has('status'),
-        ]);
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => Hash::make($request->password),
+                'status' => $request->has('status'),
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.users.index')->with('success', 'User created successfully');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong!')->withInput();
+        }
     }
 
     public function edit(User $user)
@@ -59,24 +88,44 @@ class UserController extends Controller
 
     public function update(UserRequest $request, User $user)
     {
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'status' => $request->has('status'),
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-            $user->save();
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'status' => $request->has('status'),
+            ]);
+
+            if ($request->filled('password')) {
+                $user->update([
+                    'password' => Hash::make($request->password)
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong!')->withInput();
         }
-
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user)
     {
-        $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+        try {
+            DB::beginTransaction();
+
+            $user->delete();
+
+            DB::commit();
+            return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
     }
 }

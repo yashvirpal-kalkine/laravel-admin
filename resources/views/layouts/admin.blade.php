@@ -12,23 +12,20 @@
     <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
 
-    <meta name="title" content="The Creative Coders" />
-    <meta name="author" content="Yashvir Pal" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
+    <meta name="title" content="Yashvir Pal & The Creative Coders">
+    <meta name="author" content="Yashvir Pal & The Creative Coders">
+    <meta name="description" content="Yashvir Pal and The Creative Coders — building modern, creative web solutions.">
+    <meta name="keywords"
+        content="Yashvir Pal, The Creative Coders, Web Development, Laravel, PHP, Creative Web Agency">
 
     <meta name="supported-color-schemes" content="light dark" />
     <link rel="preload" href="{{ asset('backend/css/adminlte.css')}}" as="style" />
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" media="print" onload="this.media='all'" />
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css" crossorigin="anonymous" />
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" crossorigin="anonymous" />
-
-    <link rel="stylesheet" href="{{ asset('backend/css/adminlte.css')}}" />
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="{{ asset('backend/css/index.css') }}" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="{{ asset('backend/css/overlayscrollbars.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('backend/css/bootstrap-icons.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('backend/css/adminlte.css') }}" />
+    <link rel="stylesheet" href="{{ asset('backend/css/apexcharts.css') }}" />
+    @stack('styles')
 </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-mini bg-body-tertiary">
@@ -49,14 +46,15 @@
         <!--end::App Main-->
         <!--begin::Footer-->
         <footer class="app-footer">
-            <div class="float-end d-none d-sm-inline">D&D <a href="https://yashvirpal.com" class="text-decoration-none">yashvirpal.com</a>.</div>
+            <div class="float-end d-none d-sm-inline">D&D <a href="https://yashvirpal.com"
+                    class="text-decoration-none">yashvirpal.com</a>.</div>
             <strong> Copyright &copy; 2014-2025&nbsp; {{ config('app.name') }} </strong> All rights reserved.
         </footer>
         <!--end::Footer-->
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('backend/js/overlayscrollbars.browser.es6.min.js') }}"></script>
+    <script src="{{ asset('backend/js/popper.min.js') }}"></script>
+    <script src="{{ asset('backend/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('backend/js/adminlte.js')}}"></script>
     <script>
         const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
@@ -65,7 +63,7 @@
             scrollbarAutoHide: 'leave',
             scrollbarClickScroll: true,
         };
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
 
             // Disable OverlayScrollbars on mobile devices to prevent touch interference
@@ -86,6 +84,8 @@
             }
         });
     </script>
+    <script src="{{ asset('backend/js/jquery-3.6.0.min.js') }}"></script>
+
     @stack('scripts')
 </body>
 

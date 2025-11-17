@@ -32,6 +32,10 @@ class User extends Authenticatable
         ];
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
     // 🔹 All addresses
     public function addresses()
     {
@@ -49,4 +53,33 @@ class User extends Authenticatable
     {
         return $this->hasMany(Address::class)->where('type', 'shipping');
     }
+
+    public function getInitialsAttribute()
+    {
+        $name = trim($this->name);
+        $words = preg_split('/\s+/', $name);
+
+        // If name has 3 or more words → take first letter of first 3 words
+        if (count($words) >= 3) {
+            return strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1) . substr($words[2], 0, 1));
+        }
+
+        // If name has 2 words → take first letters of both
+        if (count($words) == 2) {
+            return strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+        }
+
+        // If name is single word → take first 2 letters
+        return strtoupper(substr($words[0], 0, 2));
+    }
+    public function getProfileImageUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return asset('storage/users/' . $this->profile_image);
+        }
+
+        return null;
+    }
+
+
 }

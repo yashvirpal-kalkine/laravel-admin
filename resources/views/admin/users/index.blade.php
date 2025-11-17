@@ -1,77 +1,68 @@
 @extends('layouts.admin')
 
 @section('content')
-@php
-$title = 'Users List';
-$breadcrumbs = [
-'Home' => route('admin.dashboard'),
-'Users' => ''
-];
-@endphp
+    @php
+        $title = 'Users List';
+        $breadcrumbs = [
+            'Home' => route('admin.dashboard'),
+            'Users' => ''
+        ];
+    @endphp
 
-<div class="card card-primary card-outline mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <form action="{{ route('admin.users.index') }}" method="GET" class="d-flex">
-            <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by name, email, phone" value="{{ $search ?? '' }}">
-            <button type="submit" class="btn btn-sm btn-primary ms-2">Search</button>
-        </form>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">+ Add User</a>
-    </div>
-    <div class="card-body">
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Addresses</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($users as $user)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->phone }}</td>
-                    <td>
-                        <a href="{{ route('admin.users.addresses.index', $user->id) }}" class="btn btn-info btn-sm">
-                            View ({{ $user->addresses->count() }})
-                        </a>
-                        <a href="{{ route('admin.users.addresses.create', $user->id) }}" class="btn btn-success btn-sm">
-                            Add
-                        </a>
-                    </td>
-                    <td>{!! status_badge($user->status) !!}</td>
-                    <td class="d-flex gap-1">
-                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil text-white"></i>
-                        </a>
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Delete this user?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">
-                                <i class="bi bi-trash text-white"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="text-center">No users found.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="card card-primary card-outline mb-4">
+        <div class="card-header d-flex justify-content-end align-items-center">
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> Add User</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="usersTable" class="table table-bordered table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Addresses</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
 
-    </div>
-    <div class="card-footer">
-        <div class="d-flex justify-content-end">
-            {{ $users->links('pagination::bootstrap-5') }}
+        </div>
+        <div class="card-footer">
+
         </div>
     </div>
-</div>
 @endsection
+@push('styles')
+    <!-- DataTables CSS -->
+    <link href="{{ asset('backend/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+@endpush
+@push('scripts')
+    <script src="{{ asset('backend/js/jquery-3.6.0.min.js') }}"></script>
+    <!-- DataTables -->
+    <script src="{{ asset('backend/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('backend/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script>
+
+        $(function () {
+            $('#usersTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('admin.users.index') }}",
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'name', name: 'name' },
+                    { data: 'email', name: 'email' },
+                    { data: 'phone', name: 'phone' },
+                    { data: 'addresses', name: 'addresses', orderable: false, searchable: false },
+                    { data: 'status', name: 'status', orderable: false, searchable: false },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false }
+                ],
+                order: [[1, 'asc']]
+            });
+        });
+    </script>
+@endpush

@@ -22,6 +22,15 @@ class Address extends Model
         'status',
     ];
 
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class);

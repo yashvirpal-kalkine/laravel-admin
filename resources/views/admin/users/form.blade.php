@@ -12,7 +12,7 @@ $title => ''
 
 <div class="card card-primary card-outline mb-4">
     <div class="card-header d-flex justify-content-end align-items-center">
-        <a href="{{ route('admin.users.index') }}" class="btn btn-primary btn-sm">+ Back to List</a>
+        <a href="{{ route('admin.users.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i> Back to List</a>
     </div>
     <div class="card-body">
         <form action="{{ isset($user) && $user->exists ? route('admin.users.update', $user->id) : route('admin.users.store') }}" method="POST">
@@ -22,19 +22,19 @@ $title => ''
             @endif
             <div class="row">
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Name</label>
+                    <label class="form-label">Name<span class="text-danger">*</span></label>
                     <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" class="form-control" required>
                     @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">Phone</label>
+                    <label class="form-label">Phone<span class="text-danger">*</span></label>
                     <input type="text" name="phone" value="{{ old('phone', $user->phone ?? '') }}" class="form-control" required>
                     @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-3 col-md-12">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">Email<span class="text-danger">*</span></label>
                     <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" class="form-control" required>
                     @error('email') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
