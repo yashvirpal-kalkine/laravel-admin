@@ -60,6 +60,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('calculators', \App\Http\Controllers\Admin\CalculatorController::class);
         Route::resource('testimonials', App\Http\Controllers\Admin\TestimonialController::class);
         Route::resource('sliders', App\Http\Controllers\Admin\SliderController::class);
+        Route::resource('global-sections', App\Http\Controllers\Admin\GlobalSectionController::class);
 
 
         //Route::resource('settings', \App\Http\Controllers\Admin\SettingController::class);

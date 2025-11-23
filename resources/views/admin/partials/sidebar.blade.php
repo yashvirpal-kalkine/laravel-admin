@@ -132,6 +132,13 @@
                         <p>Sliders</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.global-sections.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.global-sections.*') }}">
+                        <i class="nav-icon bi bi-layout-text-window-reverse"></i>
+                        <p>Global Sections</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.settings.index') }}"
