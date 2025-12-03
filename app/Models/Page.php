@@ -133,20 +133,19 @@ class Page extends Model
         return !empty($filename) ? image_url('page', $filename, 'large') : null;
     }
 
-    /**
-     * Dynamically create accessors for *_url attributes.
-     */
-    public function __get($key)
+    public function getImageUrlAttribute(): ?string
     {
-        // If accessing one of our *_url attributes dynamically
-        if (Str::endsWith($key, '_url')) {
-            $baseField = Str::beforeLast($key, '_url');
-            if (in_array($baseField, self::$imageFields)) {
-                return $this->generateImageUrl($this->{$baseField});
-            }
-        }
+        return $this->generateImageUrl($this->image);
+    }
 
-        return parent::__get($key);
+    public function getBannerUrlAttribute(): ?string
+    {
+        return $this->generateImageUrl($this->banner);
+    }
+
+    public function getSeoImageUrlAttribute(): ?string
+    {
+        return $this->generateImageUrl($this->seo_image);
     }
 
 }

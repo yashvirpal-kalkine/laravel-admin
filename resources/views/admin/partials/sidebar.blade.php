@@ -104,13 +104,13 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('admin.calculators.index') }}"
                         class="nav-link {{ isActiveRoute('admin.calculators.*') }}">
                         <i class="nav-icon bi bi-calculator"></i>
                         <p>Remedy Calculators</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a href="{{ route('admin.pages.index') }}" class="nav-link {{ isActiveRoute('admin.pages.*') }}">
                         <i class="nav-icon bi bi-file-text"></i>
@@ -122,6 +122,21 @@
                         class="nav-link {{ isActiveRoute('admin.testimonials.*') }}">
                         <i class="nav-icon bi bi-chat-quote"></i>
                         <p>Testimonials</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.sliders.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.sliders.*') }}">
+                        <i class="nav-icon bi bi-images"></i>
+                        <p>Sliders</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.global-sections.index') }}"
+                        class="nav-link {{ isActiveRoute('admin.global-sections.*') }}">
+                        <i class="nav-icon bi bi-layout-text-window-reverse"></i>
+                        <p>Global Sections</p>
                     </a>
                 </li>
 

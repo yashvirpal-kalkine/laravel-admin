@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Page;
+use App\Models\GlobalSection;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -71,10 +72,49 @@ class PageSeeder extends Seeder
             $this->command->info("✅ Page created/exists: {$record->title}");
         }
 
-        // Optional: create demo pages via factory if defined
-        if (class_exists(\Database\Factories\PageFactory::class)) {
-            Page::factory()->count(5)->create();
-            $this->command->info("✅ 5 additional pages created via factory");
+        $globalsections = [
+
+            [
+                'title' => 'Money Magnet Pyramid',
+                'slug' => Str::slug('Money Magnet Pyramid'),
+                'short_description' => 'Activate Money Flow Energy In Your Life',
+                'description' => '<p>Activate Money Flow Energy In Your Life</p>',
+                'image' => null,
+                'image_alt' => 'Money Magnet Pyramid Image',
+                'button_text' => 'Shop Now',
+                'button_link' => '/shop',
+                'template' => 'banner',
+                'page_id' => 1,
+                'custom_field' => null,
+                'status' => 1,
+            ],
+
+            [
+                'title' => 'Rose Quartz Palm Stone',
+                'slug' => Str::slug('Rose Quartz Palm Stone'),
+                'short_description' => 'Attract love, peace & emotional healing naturally.',
+                'description' => '<p>Attract love, peace & emotional healing naturally.</p>',
+                'image' => null,
+                'image_alt' => 'Rose Quartz Palm Stone Image',
+                'button_text' => 'Shop Now',
+                'button_link' => '/shop',
+                'template' => 'banner',
+                'page_id' => 1,
+                'custom_field' => null,
+                'status' => 1,
+            ],
+
+        ];
+
+        foreach ($globalsections as $globalsection) {
+            $record = GlobalSection::updateOrCreate(
+                ['slug' => $globalsection['slug']],
+                $globalsection
+            );
+
+            $this->command->info("🔄 Global Section inserted/updated: {$record->title}");
         }
+
+
     }
 }

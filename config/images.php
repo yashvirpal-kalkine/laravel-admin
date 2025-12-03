@@ -112,4 +112,22 @@ return [
         'path' => 'uploads/testimonials',
     ],
 
+    'slider' => [
+        'icon' => ['width' => 64, 'height' => 32],
+        'small' => ['width' => 150, 'height' => 60],
+        'medium' => ['width' => 250, 'height' => 120],
+        'large' => ['width' => 400, 'height' => 200],
+        'original' => ['width' => null, 'height' => null],
+        'path' => 'uploads/sliders',
+    ],
+
+    'global-sections' => [
+        'icon' => ['width' => 64, 'height' => 32],
+        'small' => ['width' => 150, 'height' => 60],
+        'medium' => ['width' => 250, 'height' => 120],
+        'large' => ['width' => 400, 'height' => 200],
+        'original' => ['width' => null, 'height' => null],
+        'path' => 'uploads/global-sections',
+    ],
+
 ];
