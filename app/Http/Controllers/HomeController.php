@@ -12,6 +12,7 @@ use App\Models\Page;
 use App\Models\Slider;
 use App\Models\ProductCategory;
 use App\Models\Product;
+use App\Models\GlobalSection;
 use App\Models\ContactSubmission;
 use App\Models\Newsletter;
 use App\Models\SearchMeta;
@@ -24,10 +25,12 @@ class HomeController extends Controller
     {
         // $page = Page::where('slug', 'home')->first();
         // $sliders = Slider::active();
-        //$featuredCategories=ProductCategory::active()->where('is_featured',true)->get(10);
-        //$popularProducts=Product::active()->where('is_featured',true)->get(10);
-        //$braceletProducts=Product::active()->where('is_featured',true)->get(10);
-         //$newProducts=Product::active()->where('is_featured',true)->get(10);
+        // $featuredCategories = ProductCategory::active()->where('is_featured', true)->get(10);
+        // $popularProducts = Product::active()->where('is_featured', true)->get(10);
+        // $braceletProducts = Product::active()->where('is_featured', true)->get(10);
+        // $newProducts = Product::active()->where('is_featured', true)->get(10);
+        // $globalSection = GlobalSection::active()->where('page_id', 1)->get();
+        // $customizeBracelet = Product::active()->where('id', 1)->get();
 
         // return view('frontend.home', compact('page', 'sliders'));
 
