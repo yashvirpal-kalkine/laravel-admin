@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,10 +11,12 @@ require __DIR__ . '/admin.php';
 
 
 
-Route::get('/', function () {
-    return view('frontend.home');
-    
-});
+// Home page
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Dynamic page route
+Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
