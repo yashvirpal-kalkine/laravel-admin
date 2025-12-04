@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/magnific-popup.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/all.min.css') }}">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 
 
     <link rel="stylesheet" as="style" type="text/css" href="{{ asset('frontend/assets/css/style.css') }}" media="all" />
@@ -29,17 +29,17 @@
 
 <body>
     @include('frontend.partials.header')
-    <main class="mx-auto px-6 py-8">
-        @if(!request()->is('/'))
+    <main class="">
+        {{-- @if(!request()->is('/'))
             @include('frontend.partials.breadcrumb')
-        @endif
+        @endif --}}
         @yield('content')
     </main>
-   
+
     @include('frontend.partials.footer')
 
 
-    <script src="{{ asset('frontend/assets/jsjquery.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/lightbox.min.js') }}"></script>
