@@ -33,3 +33,6 @@ docker exec laravel_admin_app chmod -R 775 /var/www/html/storage
 docker exec laravel_admin_app chown -R www-data:www-data /var/www/html/bootstrap/cache
 docker exec laravel_admin_app chmod -R 775 /var/www/html/bootstrap/cache
 
+
+sudo chown -R $(whoami):$(whoami) .
+

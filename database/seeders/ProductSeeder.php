@@ -150,6 +150,33 @@ class ProductSeeder extends Seeder
         $tagsAll = ProductTag::all();
 
         for ($i = 1; $i <= 10; $i++) {
+            if ($i == 1) {
+                $title = "Customised Bracelets";
+                $product = Product::firstOrCreate(
+                    ['slug' => Str::slug($title)],
+                    [
+                        'title' => $title,
+                        'short_description' => "Short description for {$title}",
+                        'description' => "Full description for {$title}. Lorem ipsum dolor sit amet.",
+                        'regular_price' => rand(50, 500),
+                        'sale_price' => rand(30, 100),
+                        'stock' => rand(10, 100),
+                        'is_featured' => rand(0, 1),
+                        'status' => true,
+                        'author_id' => $author?->id,
+                    ]
+                );
+
+                // 4️⃣ Attach random categories
+                $product->categories()->sync(
+                    $categoriesAll->random(rand(1, 2))->pluck('id')->toArray()
+                );
+
+                // 5️⃣ Attach random tags
+                $product->tags()->sync(
+                    $tagsAll->random(rand(1, 2))->pluck('id')->toArray()
+                );
+            }
             $title = "Sample Product {$i}";
             $product = Product::firstOrCreate(
                 ['slug' => Str::slug($title)],
