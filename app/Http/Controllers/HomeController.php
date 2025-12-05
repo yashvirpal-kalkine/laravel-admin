@@ -23,32 +23,78 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // $page = Page::where('slug', 'home')->first();
-        // $sliders = Slider::active();
-        // $featuredCategories = ProductCategory::active()->where('is_featured', true)->get(10);
-        // $popularProducts = Product::active()->where('is_featured', true)->get(10);
-        // $braceletProducts = Product::active()->where('is_featured', true)->get(10);
-        // $newProducts = Product::active()->where('is_featured', true)->get(10);
-        // $globalSection = GlobalSection::active()->where('page_id', 1)->get();
-        // $customizeBracelet = Product::active()->where('id', 1)->get();
+        // Load home page
+        $page = Page::where('template', 'home')->first();
 
-        // return view('frontend.home', compact('page', 'sliders'));
+        // Active sliders
+        $sliders = Slider::active()->get();
+
+        // Featured categories (limit 10)
+        $featuredCategories = ProductCategory::active()
+            ->where('is_featured', true)
+            ->take(10)
+            ->get();
+
+        // Popular products (limit 10)
+        $popularProducts = Product::active()
+            ->where('is_featured', true)
+            ->take(10)
+            ->get();
+
+        // Bracelet products (limit 10)
+        $braceletCategory = ProductCategory::where('slug', 'bracelets')->first();
+        $braceletProducts = Product::active()
+            ->where('is_featured', true)
+            ->whereHas('categories', function ($q) use ($braceletCategory) {
+                $q->where('product_categories.id', $braceletCategory->id);
+            })
+            ->take(10)
+            ->get();
 
 
-        return view('frontend.home');
-        // return view('frontend.cart');
-        // return view('frontend.checkout');
-        // return view('frontend.contact');
-        // return view('frontend.login');
-        // return view('frontend.register');
-        // return view('frontend.page');
-        // return view('frontend.product-category');
-        // return view('frontend.product-details');
-        // return view('frontend.register');
-        // return view('frontend.search');
-        // return view('frontend.shop');
-        // return view('frontend.sitemap');
+        // Latest 10 products
+        $newProducts = Product::active()
+            ->orderBy('id', 'desc')
+            ->take(10)
+            ->get();
+
+        $whyChooseSections = GlobalSection::active()
+            ->where('template', 0)
+            ->orderBy('id', 'asc')
+            ->take(4) // get first 2 sections
+            ->get();
+
+        $globalSections = GlobalSection::active()
+            ->where('template', 1)
+            ->orderBy('id', 'asc')
+            ->take(2) // get first 2 sections
+            ->get();
+
+        // Assign separately for clarity
+        $globalSectionFirst = $globalSections->first();
+        $globalSectionSecond = $globalSections->skip(1)->first();
+
+        // Customize Bracelet (single product)
+        $customizeBracelet = Product::active()
+            ->find(1);
+
+        return view(
+            'frontend.home',
+            compact(
+                'page',
+                'sliders',
+                'featuredCategories',
+                'popularProducts',
+                'braceletProducts',
+                'newProducts',
+                'globalSectionFirst',
+                'globalSectionSecond',
+                'customizeBracelet',
+                'whyChooseSections',
+            )
+        );
     }
+
 
     public function page($slug)
     {
@@ -60,14 +106,15 @@ class HomeController extends Controller
         if (!view()->exists("frontend.$template")) {
             $template = 'default';
         }
-
+        if ($page->template == "shop") {
+            $products = Product::active()->paginate(12);
+            return view("frontend.$template", compact('page', 'products'));
+        }
         return view("frontend.$template", compact('page'));
     }
     public function search(Request $request)
     {
         $query = $request->input('q');
-
-        // Example: search articles, products, etc.
         $results = Page::where('title', 'like', "%{$query}%")
             ->orWhere('description', 'like', "%{$query}%")
             ->paginate(10);
@@ -75,27 +122,33 @@ class HomeController extends Controller
         return view("frontend.search", compact('results', 'query'));
     }
 
-    // --- Product List (Category/Sub-category) ---
     public function productList($categories = null)
     {
         $segments = $categories ? explode('/', $categories) : [];
         $categorySlug = end($segments);
 
-        $category = ProductCategory::where('slug', $categorySlug)->first();
-        $products = $category
-            ? $category->products()->paginate(12)
-            : Product::paginate(12); // fallback to all products
+        $category = ProductCategory::active()->where('slug', $categorySlug)->first();
+        $products = $category ? $category->products()->paginate(12) : Product::active()->paginate(12);
 
-        return view('frontend.shop', compact('products', 'category', 'segments'));
+        return view('frontend.shop', compact('products', 'category', 'segments', ));
     }
 
     // --- Product Details ---
     public function productDetails($slug)
     {
-        
-        $product = Product::where('slug', $slug)->firstOrFail();
-        return view('frontend.product-details', compact('product'));
+        $product = Product::active()->with(['categories', 'tags', 'galleries'])->where('slug', $slug)->firstOrFail();
+        $categoryIds = $product->categories->pluck('id');
+        $relatedProducts = Product::active()
+            ->whereHas('categories', function ($q) use ($categoryIds) {
+                $q->whereIn('product_categories.id', $categoryIds);
+            })
+            ->where('id', '!=', $product->id)
+            ->limit(6)
+            ->get();
+
+        return view('frontend.product-details', compact('product', 'relatedProducts'));
     }
+
 
     // --- Blog List (Category/Sub-category) ---
     public function blogList($categories = null)

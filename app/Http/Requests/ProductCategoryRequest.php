@@ -48,7 +48,7 @@ class ProductCategoryRequest extends FormRequest
 
             // Custom
             'custom_field' => 'nullable|string|max:255',
-
+            'is_featured' => 'boolean',
             // Status
             'status' => 'required|boolean',
 

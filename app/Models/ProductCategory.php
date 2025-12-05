@@ -32,6 +32,7 @@ class ProductCategory extends Model
         'status',
         'author_id',
         'custom_field',
+        'is_featured',
     ];
 
     /**

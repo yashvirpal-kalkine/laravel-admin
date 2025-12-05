@@ -104,9 +104,23 @@ $breadcrumbs = [
                 </div>
 
                 {{-- Template --}}
+                @php
+                    $templates = config('settings.global_section_templates');
+                @endphp
+
                 <div class="mb-3 col-md-6">
                     <label class="form-label">Template Name</label>
-                    <input type="text" name="template" value="{{ old('template', $section->template ?? '') }}" class="form-control">
+                     <select name="template" class="form-control">
+                        <option value="">-- Select Template --</option>
+
+                        @foreach($templates as $key => $name)
+                            <option value="{{ $key }}"
+                                {{ old('template', $section->template ?? '') == $key ? 'selected' : '' }}>
+                                {{ $name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    {{-- <input type="text" name="template" value="{{ old('template', $section->template ?? '') }}" class="form-control"> --}}
                     @error('template') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 

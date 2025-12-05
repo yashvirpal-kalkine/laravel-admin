@@ -46,9 +46,12 @@ return [
         'category' => 'shop',
         'auth' => 'Auth',
         'search' => 'Search',
-    ]
+    ],
 
-
+    'global_section_templates' => [
+        '0' => 'Why Choose Us',
+        '1' => 'Bannner',
+    ],
 
 
 ];

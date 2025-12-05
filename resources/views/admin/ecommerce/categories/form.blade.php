@@ -134,7 +134,14 @@
                     <label class="form-label">Meta Description</label>
                     <textarea name="meta_description" class="form-control" rows="3">{{ old('meta_description', $category->meta_description ?? '') }}</textarea>
                 </div>
-
+                <div class="mb-3 col-md-6">
+                    <div class="form-check form-switch">
+                        <input type="hidden" name="is_featured" value="0">
+                        <input type="checkbox" name="is_featured" class="form-check-input" value="1" id="is_featured"
+                               {{ old('is_featured', $category->is_featured ?? false) ? 'checked' : '' }}>
+                        <label for="is_featured" class="form-check-label">Featured Category</label>
+                    </div>
+                </div>
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">
                         <input type="hidden" name="status" value="0" />

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Page;
-use App\Models\GlobalSection;
 use App\Models\User;
 use Illuminate\Support\Str;
 
@@ -65,35 +64,5 @@ class PageSeeder extends Seeder
             $this->command->info("✅ Page created/updated: {$page->title} with template '{$template}'");
         }
 
-        // Example Global Sections (optional)
-        $globalsections = [
-            [
-                'title' => 'Money Magnet Pyramid',
-                'slug' => Str::slug('Money Magnet Pyramid'),
-                'short_description' => 'Coming soon',
-                'description' => 'Coming soon',
-                'template' => 'banner',
-                'page_id' => Page::where('slug', 'home')->first()?->id,
-                'status' => 1,
-            ],
-            [
-                'title' => 'Rose Quartz Palm Stone',
-                'slug' => Str::slug('Rose Quartz Palm Stone'),
-                'short_description' => 'Coming soon',
-                'description' => 'Coming soon',
-                'template' => 'banner',
-                'page_id' => Page::where('slug', 'home')->first()?->id,
-                'status' => 1,
-            ],
-        ];
-
-        foreach ($globalsections as $section) {
-            $record = GlobalSection::updateOrCreate(
-                ['slug' => $section['slug']],
-                $section
-            );
-
-            $this->command->info("🔄 Global Section inserted/updated: {$record->title}");
-        }
     }
 }
