@@ -69,6 +69,8 @@ class PageController extends Controller
             if (empty($data['slug'])) {
                 $data['slug'] = Str::slug($data['title']);
             }
+            $data['template'] = $data['template'] ?? 'default';
+
 
             if ($request->hasFile('banner')) {
                 $images = $this->imageService->upload($request->file('banner'), 'banner');
@@ -130,6 +132,7 @@ class PageController extends Controller
             if (empty($data['slug'])) {
                 $data['slug'] = Str::slug($data['title']);
             }
+            $data['template'] = $data['template'] ?? 'default';
 
             if ($request->hasFile('banner')) {
                 $this->imageService->delete($page->banner, 'banner');

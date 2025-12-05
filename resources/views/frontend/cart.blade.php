@@ -7,7 +7,7 @@
 
 @section('content')
     <!-- breadcrumb section start here -->
-    <section class="breadcrumb-sec" style="background: url(assets/images/banner1.png) no-repeat center;">
+    <section class="breadcrumb-sec" style="background: url({{ asset('frontend/assets/images/banner1.png') }}) no-repeat center;">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -47,7 +47,7 @@
                                     <td>
                                         <figure class="product-image-container">
                                             <a href="#" class="product-image">
-                                                <img src="assets/images/pro1.jpg" alt="product">
+                                                <img src="{{ asset('frontend/assets/images/pro1.jpg') }}" alt="product">
                                             </a>
 
                                             <a href="#" class="btn-remove icon-cancel" title="Remove Product"><i
@@ -77,7 +77,7 @@
                                     <td>
                                         <figure class="product-image-container">
                                             <a href="#" class="product-image">
-                                                <img src="assets/images/pro2.jpg" alt="product">
+                                                <img src="{{ asset('frontend/assets/images/pro2.jpg') }}" alt="product">
                                             </a>
 
                                             <a href="#" class="btn-remove icon-cancel" title="Remove Product"><i
@@ -107,7 +107,7 @@
                                     <td>
                                         <figure class="product-image-container">
                                             <a href="#" class="product-image">
-                                                <img src="assets/images/pro3.jpg" alt="product">
+                                                <img src="{{ asset('frontend/assets/images/pro3.jpg') }}" alt="product">
                                             </a>
 
                                             <a href="#" class="btn-remove icon-cancel" title="Remove Product"><i

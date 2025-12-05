@@ -53,31 +53,71 @@ class HomeController extends Controller
     public function page($slug)
     {
         $page = Page::where('slug', $slug)->first();
-
         if (!$page) {
-            abort(404);
+            return response()->view('frontend.404', [], 404);
         }
-        if ($page->slug == 'contact-us') {
-            return view('frontend.contact', compact('page'));
-        } else if ($page->slug == 'sitemap') {
-
-            //$categories = Category::forDomain($domain->id)
-
-            $categories = Category::with('children')->whereNull('parent_id')->orderBy('name')->get();
-
-            $articles = Blog::active()->orderBy('title')->get();
-            $pages = Page::with('children')->active()->whereNotIn('id', [1])->orderBy('title')->get();
-
-            $sitemapData = [
-                'pages' => $pages,
-                'categories' => $categories,
-                'articles' => $articles,
-            ];
-
-            return view('frontend.sitemap', compact('sitemapData', 'page'));
+        $template = $page->template ?? 'default';
+        if (!view()->exists("frontend.$template")) {
+            $template = 'default';
         }
-        return view('frontend.page', compact('page'));
+
+        return view("frontend.$template", compact('page'));
     }
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        // Example: search articles, products, etc.
+        $results = Page::where('title', 'like', "%{$query}%")
+            ->orWhere('description', 'like', "%{$query}%")
+            ->paginate(10);
+
+        return view("frontend.search", compact('results', 'query'));
+    }
+
+    // --- Product List (Category/Sub-category) ---
+    public function productList($categories = null)
+    {
+        $segments = $categories ? explode('/', $categories) : [];
+        $categorySlug = end($segments);
+
+        $category = ProductCategory::where('slug', $categorySlug)->first();
+        $products = $category
+            ? $category->products()->paginate(12)
+            : Product::paginate(12); // fallback to all products
+
+        return view('frontend.shop', compact('products', 'category', 'segments'));
+    }
+
+    // --- Product Details ---
+    public function productDetails($slug)
+    {
+        
+        $product = Product::where('slug', $slug)->firstOrFail();
+        return view('frontend.product-details', compact('product'));
+    }
+
+    // --- Blog List (Category/Sub-category) ---
+    public function blogList($categories = null)
+    {
+        $segments = $categories ? explode('/', $categories) : [];
+        $categorySlug = end($segments);
+
+        $category = BlogCategory::where('slug', $categorySlug)->first();
+        $posts = $category
+            ? $category->posts()->paginate(10)
+            : Post::paginate(10); // fallback to all posts
+
+        return view('frontend.blog.list', compact('posts', 'category', 'segments'));
+    }
+
+    // --- Blog Details ---
+    public function blogDetails($slug)
+    {
+        $post = Post::where('slug', $slug)->firstOrFail();
+        return view('frontend.blog.details', compact('post'));
+    }
+
 
     public function sitemapXML()
     {

@@ -7,7 +7,7 @@
 
 @section('content')
     <!-- breadcrumb section start here -->
-    <section class="breadcrumb-sec" style="background: url(assets/images/banner1.png) no-repeat center;">
+    <section class="breadcrumb-sec" style="background: url({{ asset('frontend/assets/images/banner1.png') }}) no-repeat center;">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -148,7 +148,7 @@
                         <div class="product-advertisement">
                             <h4>Specials</h4>
                             <figure>
-                                <a href="#"> <img src="assets/images/a.jpg" alt="Product Advertisement"> </a>
+                                <a href="#"> <img src="{{ asset('frontend/assets/images/a.jpg') }}" alt="Product Advertisement"> </a>
                             </figure>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                     <div class="row gy-4 gx-3">
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro1.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro1.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -223,7 +223,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro2.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro2.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -287,7 +287,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro3.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro3.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -351,7 +351,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro4.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro4.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -415,7 +415,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro5.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro5.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -479,7 +479,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro6.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro6.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -543,7 +543,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro9.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro9.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -604,7 +604,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro10.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro10.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -665,7 +665,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro11.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro11.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -726,7 +726,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro12.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro12.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -787,7 +787,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro13.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro13.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -848,7 +848,7 @@
 
                         <div class="col-md-4">
                             <div class="product-box">
-                                <figure> <img src="assets/images/pro14.jpg" alt=""> </figure>
+                                <figure> <img src="{{ asset('frontend/assets/images/pro14.jpg') }}" alt=""> </figure>
                                 <div class="product-btns">
                                     <button class="btn-cart">
                                         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">

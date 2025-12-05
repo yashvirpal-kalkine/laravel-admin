@@ -53,13 +53,24 @@ class Product extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(ProductCategory::class, 'product_category_product');
+        return $this->belongsToMany(
+            ProductCategory::class,
+            'product_category_product',
+            'product_id',
+            'product_category_id'
+        );
     }
 
     public function tags()
     {
-        return $this->belongsToMany(ProductTag::class, 'product_product_tag');
+        return $this->belongsToMany(
+            ProductTag::class,
+            'product_product_tag',
+            'product_id',
+            'product_tag_id'
+        );
     }
+
 
     public function galleries()
     {

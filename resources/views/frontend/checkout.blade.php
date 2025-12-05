@@ -7,7 +7,7 @@
 
 @section('content')
     <!-- breadcrumb section start here -->
-    <section class="breadcrumb-sec" style="background: url(assets/images/banner1.png) no-repeat center;">
+    <section class="breadcrumb-sec" style="background: url({{ asset('frontend/assets/images/banner1.png') }}) no-repeat center;">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">

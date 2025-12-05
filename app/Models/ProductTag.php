@@ -107,6 +107,10 @@ class ProductTag extends Model
     {
         return $query->where('status', 1);
     }
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_product_tag', 'product_tag_id', 'product_id');
+    }
 
     /**
      * Automatically append URL fields for image-related columns.

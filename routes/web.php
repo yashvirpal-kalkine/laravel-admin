@@ -11,11 +11,42 @@ require __DIR__ . '/admin.php';
 
 
 
-// Home page
+// Home & search
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/search', [HomeController::class, 'search'])->name('search');
 
-// Dynamic page route
+// Products
+Route::prefix('products')->group(function () {
+    //http://localhost:8000/products/details/sample-product-1
+    // Product details (slug always last) - MUST BE FIRST
+    Route::get('details/{slug}', [HomeController::class, 'productDetails'])
+        ->name('products.details');
+
+    // http://localhost:8000/products/pisces
+    // http://localhost:8000/products/shop-by-zodiac/pisces
+    // Product list by category/sub-category
+    Route::get('{categories?}', [HomeController::class, 'productList'])
+        ->where('categories', '.*') // catch nested categories
+        ->name('products.list');
+});
+
+
+// Blog
+Route::prefix('blog')->group(function () {
+    // Blog post details
+    Route::get('post/{slug}', [HomeController::class, 'blogDetails'])
+        ->name('blog.details');
+    // Blog list by category/sub-category
+    Route::get('{categories?}', [HomeController::class, 'blogList'])
+        ->where('categories', '.*') // catch nested categories
+        ->name('blog.list');
+
+
+});
+
+// Dynamic pages (keep last)
 Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
+
 
 
 Route::get('/dashboard', function () {

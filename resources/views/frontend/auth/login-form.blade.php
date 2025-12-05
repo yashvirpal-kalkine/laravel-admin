@@ -42,7 +42,7 @@
 
                         </div>
                         <div class="login-img-wrap">
-                            <figure> <img src="assets/images/login.png" alt=""> </figure>
+                            <figure> <img src="{{ asset('frontend/assets/images/login.png') }}" alt=""> </figure>
                         </div>
                     </div>
                 </div>

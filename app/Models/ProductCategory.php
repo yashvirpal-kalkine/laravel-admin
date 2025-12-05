@@ -108,7 +108,11 @@ class ProductCategory extends Model
         return $query->where('status', 1);
     }
 
-
+    // Products belonging to this category
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_category_product', 'product_category_id', 'product_id');
+    }
     /**
      * Automatically append URL fields for image-related columns.
      */

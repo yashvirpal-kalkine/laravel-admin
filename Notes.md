@@ -35,4 +35,4 @@ docker exec laravel_admin_app chmod -R 775 /var/www/html/bootstrap/cache
 
 
 sudo chown -R $(whoami):$(whoami) .
-
+sudo chmod -R 777 myapp/storage myapp/bootstrap/cache myapp/database                                                     

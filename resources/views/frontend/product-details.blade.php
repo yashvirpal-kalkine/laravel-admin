@@ -8,7 +8,7 @@
 @section('content')
 
     <!-- breadcrumb section start here -->
-    <section class="breadcrumb-sec" style="background: url(assets/images/banner1.png) no-repeat center;">
+    <section class="breadcrumb-sec" style="background: url({{ asset('frontend/assets/images/banner1.png') }}) no-repeat center;">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -37,7 +37,7 @@
 
                         <div class="prod_img">
                             <a class="setup main-image" href="#" target="_blank">
-                                <img id="mainImg" src="assets/images/pro1.jpg" alt="">
+                                <img id="mainImg" src="{{ asset('frontend/assets/images/pro1.jpg') }}" alt="">
                             </a>
                         </div>
 
@@ -47,19 +47,19 @@
                             <button class="thumb-arrow prev-thumb">▲</button>
 
                             <div class="owl-carousel owl-thumbs">
-                                <div class="thumb "><img src="assets/images/pro1.jpg" data-large="assets/images/pro1.jpg">
+                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}" data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
                                 </div>
-                                <div class="thumb "><img src="assets/images/pro2.jpg" data-large="assets/images/pro2.jpg">
+                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro2.jpg') }}" data-large="{{ asset('frontend/assets/images/pro2.jpg') }}">
                                 </div>
-                                <div class="thumb "><img src="assets/images/pro1.jpg" data-large="assets/images/pro1.jpg">
+                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}" data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
                                 </div>
-                                <div class="thumb "><img src="assets/images/pro1.jpg" data-large="assets/images/pro1.jpg">
+                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}" data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
                                 </div>
-                                <div class="thumb "><img src="assets/images/pro1.jpg" data-large="assets/images/pro1.jpg">
+                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}" data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
                                 </div>
-                                <div class="thumb "><img src="assets/images/pro1.jpg" data-large="assets/images/pro1.jpg">
+                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}" data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
                                 </div>
-                                <div class="thumb "><img src="assets/images/pro1.jpg" data-large="assets/images/pro1.jpg">
+                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}" data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
                                 </div>
                             </div>
 
@@ -135,19 +135,19 @@
                         <div class="ds-memonics">
                             <ul>
                                 <li>
-                                    <figure> <img src="assets/images/ds1.webp"> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/ds1.webp') }}"> </figure>
                                     <h4>Free Delivery</h4>
                                 </li>
                                 <li>
-                                    <figure> <img src="assets/images/ds2.webp"> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/ds2.webp') }}"> </figure>
                                     <h4>7 Day Return</h4>
                                 </li>
                                 <li>
-                                    <figure> <img src="assets/images/ds3.webp"> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/ds3.webp') }}"> </figure>
                                     <h4>100% Authentic</h4>
                                 </li>
                                 <li>
-                                    <figure> <img src="assets/images/ds4.webp"> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/ds4.webp') }}"> </figure>
                                     <h4>Secure Payment</h4>
                                 </li>
                             </ul>
@@ -339,7 +339,7 @@
                         <div class="owl-carousel products-silder owl-theme">
                             <div class="item">
                                 <div class="product-box">
-                                    <figure> <img src="assets/images/pro1.jpg" alt=""> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/pro1.jpg') }}" alt=""> </figure>
                                     <div class="product-btns">
                                         <button class="btn-cart">
                                             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -405,7 +405,7 @@
 
                             <div class="item">
                                 <div class="product-box">
-                                    <figure> <img src="assets/images/pro2.jpg" alt=""> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/pro2.jpg') }}" alt=""> </figure>
                                     <div class="product-btns">
                                         <button class="btn-cart">
                                             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -471,7 +471,7 @@
 
                             <div class="item">
                                 <div class="product-box">
-                                    <figure> <img src="assets/images/pro3.jpg" alt=""> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/pro3.jpg') }}" alt=""> </figure>
                                     <div class="product-btns">
                                         <button class="btn-cart">
                                             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -537,7 +537,7 @@
 
                             <div class="item">
                                 <div class="product-box">
-                                    <figure> <img src="assets/images/pro4.jpg" alt=""> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/pro4.jpg') }}" alt=""> </figure>
                                     <div class="product-btns">
                                         <button class="btn-cart">
                                             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -603,7 +603,7 @@
 
                             <div class="item">
                                 <div class="product-box">
-                                    <figure> <img src="assets/images/pro5.jpg" alt=""> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/pro5.jpg') }}" alt=""> </figure>
                                     <div class="product-btns">
                                         <button class="btn-cart">
                                             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -669,7 +669,7 @@
 
                             <div class="item">
                                 <div class="product-box">
-                                    <figure> <img src="assets/images/pro6.jpg" alt=""> </figure>
+                                    <figure> <img src="{{ asset('frontend/assets/images/pro6.jpg') }}" alt=""> </figure>
                                     <div class="product-btns">
                                         <button class="btn-cart">
                                             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
