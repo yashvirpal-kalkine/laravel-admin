@@ -107,7 +107,6 @@ class ProductSeeder extends Seeder
         // OTHER DIRECT CATEGORIES
         // -----------------------------
         $otherItems = [
-            ['title' => 'Customised Bracelets', 'image' => null],
             ['title' => 'Corporate Gifts', 'image' => null],
             ['title' => 'Puja Needs', 'image' => null],
             ['title' => 'Bracelets', 'image' => null],
@@ -149,7 +148,7 @@ class ProductSeeder extends Seeder
         $categoriesAll = ProductCategory::all();
         $tagsAll = ProductTag::all();
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 11; $i++) {
             if ($i == 1) {
                 $title = "Customised Bracelets";
                 $product = Product::firstOrCreate(

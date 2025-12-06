@@ -1,4 +1,39 @@
 <!-- Magnet Pyramid section start hee -->
+@php
+    $imgurl = $item->image ? $item->image_url : asset('frontend/images/offers.webp');
+@endphp
+<section class="magnet-pyramid-sec">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="magnet-pyramid-wrap">
+                    <figure><img src="{{ $imgurl }}" alt="{{ $item->image_alt ?? $item->title }}"></figure>
+                    <div class="magnet-pyramid-text">
+                        @if($item->title)
+                            <h2>{{ $item->title }}</h2>
+                        @endif
+                        @if($item->subtitle)
+                            <p>{{ $item->subtitle }}</p>
+                        @endif
+                        @if($item->short_description)
+                            <p>{{ $item->short_description }}</p>
+                        @endif
+                        @if($item->description)
+                            <p>{{ $item->description }}</p>
+                        @endif
+                        @if($item->button_text)
+                            <a class="btn shop-now-btn" href="{{ $item->button_link ?? '#' }}">
+                                {{ $item->button_text }}
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- <!-- Magnet Pyramid section start hee -->
 <section class="magnet-pyramid-sec">
     <div class="container">
         <div class="row">
@@ -33,4 +68,4 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}

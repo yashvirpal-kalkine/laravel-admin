@@ -35,78 +35,83 @@
                 <div class="col-lg-6">
                     <!-- MAIN IMAGE -->
                     <div class="prod_img_outer prod_img2 has_bigger">
-
+                        @php
+                            $imgurl = $product->image ? $product->image_url : asset('frontend/images/product.webp');
+                        @endphp
                         <div class="prod_img">
-                            <a class="setup main-image" href="#" target="_blank">
-                                <img id="mainImg" src="{{ asset('frontend/assets/images/pro1.jpg') }}" alt="">
-                            </a>
+                            <span class="setup main-image">
+                                <img id="mainImg" src="{{ $imgurl }}" alt="{{ $product->image_alt ?? $product->title }}">
+                            </span>
                         </div>
+                        @if($product->galleries->isNotEmpty())
+                            <!-- THUMBNAIL SLIDER + ARROWS -->
+                            <div class="thumb-slider-wrapper">
 
-                        <!-- THUMBNAIL SLIDER + ARROWS -->
-                        <div class="thumb-slider-wrapper">
+                                <button class="thumb-arrow prev-thumb">▲</button>
 
-                            <button class="thumb-arrow prev-thumb">▲</button>
-
-                            <div class="owl-carousel owl-thumbs">
-                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}"
-                                        data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
+                                <div class="owl-carousel owl-thumbs">
+                                    @foreach ($product->galleries as $galleries)
+                                        @php
+                                            $imgurl = $galleries->image ? $galleries->image_url : asset('frontend/images/product.webp');
+                                        @endphp
+                                        <div class="thumb ">
+                                            <img src="{{ $imgurl }}" data-large="{{ $imgurl }}"
+                                                alt="{{ $product->image_alt ?? $product->title }}">
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro2.jpg') }}"
-                                        data-large="{{ asset('frontend/assets/images/pro2.jpg') }}">
-                                </div>
-                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}"
-                                        data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
-                                </div>
-                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}"
-                                        data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
-                                </div>
-                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}"
-                                        data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
-                                </div>
-                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}"
-                                        data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
-                                </div>
-                                <div class="thumb "><img src="{{ asset('frontend/assets/images/pro1.jpg') }}"
-                                        data-large="{{ asset('frontend/assets/images/pro1.jpg') }}">
-                                </div>
+                                <button class="thumb-arrow next-thumb">▲</button>
                             </div>
-
-                            <button class="thumb-arrow next-thumb">▲</button>
-
-                        </div>
-
+                        @endif
                     </div>
-
-
                 </div>
                 <!-- RIGHT SIDE PRODUCT INFO (unchanged) -->
                 <div class="col-lg-6">
                     <div class="product-info">
                         <h2>{{ $product->title }}</h2>
-
-
-                        <div class="custom_tag_pdp">
-                            <ul>
-                                <li class="tags">Memory Boost</li>
-                                <li class="tags">Concentration Increase</li>
-                            </ul>
-                        </div>
                         <div class="price ffdd ">
-                            <span> NZ$ 4,209.00
-                                <span class="prepaid-offer"> 15% OFF + Free Gift on Prepaid Order</span>
-                            </span>
+                            @if ($product->sale_price)
+                                <span>
+                                    {{ currencyformat($product->sale_price) }}
+                                </span>
+                                <small class="compare-price">
+                                    <s> {{ currencyformat($product->regular_price) }}</s>
+                                </small>
+                                <span>
+                                    <span class="prepaid-offer">
+                                        {{ $product->discountPercentage() }}% Off
+                                    </span>
+                                </span>
+                            @else
+                                <span class="price-sale">
+                                    {{ currencyformat($product->regular_price) }}
+                                </span>
+                            @endif
                         </div>
+                        <p>{{ $product->short_description }}</p>
+                        @if ($product->tags->isNotEmpty())
+                            <div class="custom_tag_pdp">
+                                <ul>Tags:
+                                    @foreach ($product->tags as $tags)
+                                        <li class="tags">{{ $tags->title }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-                        <p class="taxes"> (incl gst) </p>
 
-                        <div class="product-category-box">
-                            Category:
-                            <a href="/product-category/pendants/">Pendants</a>,
-                            <a href="/product-category/rings/">Rings</a> &
-                            <a href="/product-category/malas/">Malas</a>
-                        </div>
+                        @if($product->categories->isNotEmpty())
+                            <div class="product-category-box">
+                                Category:
+                                @foreach ($product->categories as $category)
+                                    <a href="{{ route('products.list', $category->full_slug) }}">
+                                        {{ $category->title }}
+                                    </a>@if(!$loop->last),@endif
+                                @endforeach
+                            </div>
+                        @endif
 
-                        <div class="offer_box">
+                        {{-- <div class="offer_box">
                             <div class="marquee-track">
                                 <!-- First Set -->
                                 <div class="li-text">🎁 15% OFF + Free Gift on All Prepaid Orders 🎁</div>
@@ -118,7 +123,7 @@
                                 <div class="li-text">💰 Get 10% OFF on Partial Payment 💰</div>
                                 <div class="li-text">🎉 Extra 20% OFF on 2nd Product 🎉</div>
                             </div>
-                        </div>
+                        </div> --}}
 
 
                         <!-- QUANTITY -->
@@ -180,85 +185,7 @@
                                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                                         data-bs-parent="#accordionExample">
                                         <div class="accordion-body">
-                                            <ul>
-                                                <li>This premium spiritual product from <strong>Jovial Vision</strong> is
-                                                    designed to attract positivity and overall well-being.</li>
-                                                <li>Helps maintain mental calmness, clarity and confidence in day-to-day
-                                                    life.</li>
-                                                <li>Perfect for students, working professionals, job seekers and business
-                                                    owners.</li>
-                                                <li>Every product is <strong>cleansed & energized (Abhimantrit)</strong>
-                                                    using powerful Vedic rituals before dispatch.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Accordion 2 — BENEFITS -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingTwo">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                            Benefits
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <ul>
-                                                <li><strong>Boosts Focus & Memory</strong> — helps in exams, studies and new
-                                                    learning.</li>
-                                                <li><strong>Improves Job & Interview Success</strong> — enhances speech,
-                                                    confidence and clarity.</li>
-                                                <li><strong>Removes Negativity & Confusion</strong> — keeps mind calm and
-                                                    positive.</li>
-                                                <li><strong>Increases Wisdom & Creativity</strong> — opens the way for
-                                                    intuition and clarity.</li>
-                                                <li><strong>Energized by Jovial Vision Experts</strong> — for maximum
-                                                    spiritual impact.</li>
-                                            </ul>
-
-                                            <ul>
-                                                <li>Every product is <strong>Abhimantrit</strong> following powerful Vedic
-                                                    rituals.</li>
-                                                <li>Energization is done personally with your <strong>Name & Gotra</strong>
-                                                    for best results.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Accordion 3 — PACKAGING -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingThree">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseThree" aria-expanded="false"
-                                            aria-controls="collapseThree">
-                                            Packaging
-                                        </button>
-                                    </h2>
-                                    <div id="collapseThree" class="accordion-collapse collapse"
-                                        aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <ul>
-                                                <li>Details are confirmed before energization to maintain complete accuracy.
-                                                </li>
-                                                <li>Products are cleansed and energized according to your <strong>Name,
-                                                        Gotra & Date of Birth</strong>.</li>
-                                                <li>After energization, products are packed with positive vibrations.</li>
-                                            </ul>
-
-                                            <ul>
-                                                <li>Fresh flowers</li>
-                                                <li>Positive blessings</li>
-                                                <li>Certificate of authenticity</li>
-                                                <li>Personalized greeting card</li>
-                                            </ul>
-
-                                            <ul>
-                                                <li>All steps are completed under the supervision of the <strong>Jovial
-                                                        Vision Team</strong> to ensure powerful results.</li>
-                                            </ul>
+                                            {{ $product->description }}
                                         </div>
                                     </div>
                                 </div>
@@ -346,7 +273,7 @@
                     <div class="bracelets-box">
                         <div class="owl-carousel products-silder owl-theme">
                             @foreach ($relatedProducts as $item)
-                                <x-frontend.product-card-carousel :product="$item" />
+                                <x-frontend.product-card-carousel :item="$item" />
                             @endforeach
                         </div>
                     </div>

@@ -27,6 +27,6 @@ class Slider extends Model
     // Generate Image URL
     public function getImageUrlAttribute()
     {
-        return $this->image ? image_url('slider', $this->image, 'large') : null;
+        return $this->image ? image_url('slider', $this->image, 'medium') : null;
     }
 }

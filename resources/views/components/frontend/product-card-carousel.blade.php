@@ -1,6 +1,9 @@
+@php
+    $imgurl = $item->image ? $item->image_url : asset('frontend/images/product.webp');
+@endphp
 <div class="item">
     <div class="product-box">
-        <figure> <img src="{{ asset('frontend/assets/images/pro1.jpg') }}" alt=""> </figure>
+        <figure><img src="{{ $imgurl }}" alt="{{ $item->image_alt ?? $item->title }}"></figure>
         <div class="product-btns">
             <button class="btn-cart">
                 <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -34,20 +37,30 @@
                 </svg>
             </button>
         </div>
-        <div class="custom-tags-home">
-            <p>Bestseller</p>
-        </div>
-        <h4>{{ $product->title }}</h4>
+        @if ($item->sale_price)
+            <div class="custom-tags-home">
+                <p>Sale</p>
+            </div>
+        @endif
+        <h4>
+            <a href="{{ route('products.details', $item->slug) }}" class="href">{{ $item->title }}</a>
+        </h4>
         <div class="product-price">
-            <span class="price-sale">
-                ₹ 799
-            </span>
-            <small class="compare-price">
-                <s>₹ 1,299</s>
-            </small>
-            <span class="price-discount-percent">
-                38% OFF
-            </span>
+            @if ($item->sale_price)
+                <span class="price-sale">
+                    {{ currencyformat($item->sale_price) }}
+                </span>
+                <small class="compare-price">
+                    <s> {{ currencyformat($item->regular_price) }}</s>
+                </small>
+                <span class="price-discount-percent">
+                    {{ $item->discountPercentage() }}% Off
+                </span>
+            @else
+                <span class="price-sale">
+                    {{ currencyformat($item->regular_price) }}
+                </span>
+            @endif
         </div>
         <div class="product-rating">
             <div class="rating-stars">

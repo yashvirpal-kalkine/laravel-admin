@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\GlobalSection;
 use App\Models\Slider;
 use Illuminate\Support\Str;
-use App\Models\Admin; 
+use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
                 'short_description' => 'Coming soon',
                 'description' => 'Coming soon',
                 'template' => '1',
-                'page_id' =>1,
+                'page_id' => 1,
                 'status' => 1,
             ],
             [
@@ -47,35 +47,35 @@ class DatabaseSeeder extends Seeder
                 'short_description' => 'Coming soon',
                 'description' => 'Coming soon',
                 'template' => '1',
-                'page_id' =>1,
+                'page_id' => 1,
                 'status' => 1,
             ],
             [
                 'title' => 'Guarantee of Purity',
                 'slug' => Str::slug('Guarantee of Purity'),
                 'template' => '0',
-                'page_id' =>1,
+                'page_id' => 1,
                 'status' => 1,
             ],
             [
                 'title' => '100% Natural & Certified',
                 'slug' => Str::slug('100% Natural & Certified'),
                 'template' => '0',
-                'page_id' =>1,
+                'page_id' => 1,
                 'status' => 1,
             ],
             [
                 'title' => 'Ethically Sourced',
                 'slug' => Str::slug('Ethically Sourced'),
                 'template' => '0',
-                'page_id' =>1,
+                'page_id' => 1,
                 'status' => 1,
             ],
             [
                 'title' => 'Free Shipping',
                 'slug' => Str::slug('Free Shipping'),
                 'template' => '0',
-                'page_id' =>1,
+                'page_id' => 1,
                 'status' => 1,
             ],
         ];
@@ -91,15 +91,17 @@ class DatabaseSeeder extends Seeder
         // Slider
         $sliders = [
             [
-                'title' => 'Slider 1',
-                'short_description' => 'Coming soon',
-                'description' => 'Coming soon',
+                'title' => 'Find the Right Direction Through Vedic Astrology',
+                'subtitle' => 'Talk to our experienced Astrologers and get right solutions for your problems',
+                'button_text' => 'Call Us',
+                'button_link' => 'https://thecreativecoders.com',
                 'status' => 1,
             ],
             [
-                'title' => 'Slider 2',
-                'short_description' => 'Coming soon',
-                'description' => 'Coming soon',
+                'title' => 'Find the Right Direction Through Vedic Astrology 1',
+                'subtitle' => 'Talk to our experienced Astrologers and get right solutions for your problems',
+                'button_text' => 'Call Us',
+                'button_link' => 'https://thecreativecoders.com',
                 'status' => 1,
             ],
         ];

@@ -6,11 +6,11 @@ use Illuminate\View\Component;
 
 class ProductCard extends Component
 {
-    public $product;
+    public $item;
 
-    public function __construct($product)
+    public function __construct($item)
     {
-        $this->product = $product;
+        $this->item = $item;
     }
 
     public function render()

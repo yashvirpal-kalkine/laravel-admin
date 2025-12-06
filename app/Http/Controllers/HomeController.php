@@ -75,7 +75,7 @@ class HomeController extends Controller
         $globalSectionSecond = $globalSections->skip(1)->first();
 
         // Customize Bracelet (single product)
-        $customizeBracelet = Product::active()
+        $customizeBracelet = Product::active()->where('id', 1)
             ->find(1);
 
         return view(
@@ -115,7 +115,7 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('q');
-        $results = Page::where('title', 'like', "%{$query}%")
+        $results = Product::where('title', 'like', "%{$query}%")
             ->orWhere('description', 'like', "%{$query}%")
             ->paginate(10);
 

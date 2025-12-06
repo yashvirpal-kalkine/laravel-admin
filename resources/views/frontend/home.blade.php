@@ -21,15 +21,21 @@
                 <div class="carousel-inner">
                     @foreach ($sliders as $key => $item)
                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <img src="{{ asset('frontend/assets/images/banner1.webp') }}" class="d-block w-100" alt="banner1">
+                            @php
+                                $imgurl = $item->image ? $item->image_url : asset('frontend/images/slider.webp');
+                            @endphp
+                            <img src="{{ $imgurl }}" class="d-block w-100" alt="{{ $item->image_alt ?? $item->title }}">
                             <div class="carousel-caption">
                                 <div class="row">
                                     <div class="col-md-9">
                                         <div class="container-fluid">
-                                            <h2>Find the Right Direction Through <br>Vedic Astrology </h2>
-                                            <h3>Talk to our experienced Astrologers and get right solutions for your problems
-                                            </h3>
-                                            <a class="btn" href="#">Call Us Now</a>
+                                            <h2>{{ $item->title ?? "" }} </h2>
+                                            <h3>{{ $item->subtitle ?? "" }} </h3>
+                                            @if($item->button_text)
+                                                <a class="btn" href="{{ $item->button_link ?? "" }}">
+                                                    {{ $item->button_text ?? "Call Us Now" }}
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -83,11 +89,11 @@
                         <div class="bracelets-box">
                             <div class="owl-carousel products-silder owl-theme">
                                 @foreach ($popularProducts as $item)
-                                    <x-frontend.product-card-carousel :product="$item" />
+                                    <x-frontend.product-card-carousel :item="$item" />
                                 @endforeach
                             </div>
                         </div>
-                        <a class="all-products" href="#">View all products</a>
+                        <a class="all-products" href="{{ route('page', 'shop') }}">View all products</a>
                     </div>
                 </div>
             </div>
@@ -125,11 +131,11 @@
                         <div class="bracelets-box">
                             <div class="owl-carousel products-silder owl-theme">
                                 @foreach ($newProducts as $item)
-                                    <x-frontend.product-card-carousel :product="$item" />
+                                    <x-frontend.product-card-carousel :item="$item" />
                                 @endforeach
                             </div>
                         </div>
-                        <a class="all-products" href="">View all products</a>
+                        <a class="all-products" href="{{ route('page', 'shop') }}">View all products</a>
                     </div>
                 </div>
             </div>
@@ -138,7 +144,7 @@
     @endif
 
     @if ($globalSectionFirst)
-        <x-frontend.global-section :globalSection="$globalSectionFirst" />
+        <x-frontend.global-section :item="$globalSectionFirst" />
     @endif
 
     @if ($customizeBracelet)
@@ -226,7 +232,7 @@
 
 
     @if ($globalSectionSecond)
-        <x-frontend.global-section :globalSection="$globalSectionSecond" />
+        <x-frontend.global-section :item="$globalSectionSecond" />
     @endif
 
     <!-- Instagram Feed section start here -->
