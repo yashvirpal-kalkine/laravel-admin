@@ -42,5 +42,9 @@ class GlobalSection extends Model
     {
         return $this->belongsTo(Page::class);
     }
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? image_url('global-sections', $this->image, 'medium') : null;
+    }
 }
 

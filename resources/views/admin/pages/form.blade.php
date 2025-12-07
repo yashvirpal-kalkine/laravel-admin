@@ -35,7 +35,7 @@ $breadcrumbs = [
                     @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                <div class="mb-3 col-md-12">
+                <div class="mb-3 col-md-6">
                     <label for="parent_id">Parent Page</label>
                     <select name="parent_id" id="parent_id" class="form-control">
                         <option value="">-- No Parent (Top Level) --</option>
@@ -43,6 +43,17 @@ $breadcrumbs = [
                     </select>
                 </div>
 
+                <div class="mb-3 col-md-6">
+                    <label for="template">Template</label>
+                    <select name="template" id="template" class="form-control">
+                        <option value="">Select</option>
+                        @foreach(config('settings.templates') as $key => $label)
+                            <option value="{{ $key }}" {{ isset($page) && $page->template === $key ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
                 
                 <div class="mb-3 col-md-12">

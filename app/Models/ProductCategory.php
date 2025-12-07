@@ -32,6 +32,7 @@ class ProductCategory extends Model
         'status',
         'author_id',
         'custom_field',
+        'is_featured',
     ];
 
     /**
@@ -108,12 +109,29 @@ class ProductCategory extends Model
         return $query->where('status', 1);
     }
 
-
+    // Products belonging to this category
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_category_product', 'product_category_id', 'product_id');
+    }
     /**
      * Automatically append URL fields for image-related columns.
      */
-    protected $appends = ['image_url', 'banner_url', 'seo_image_url'];
 
+    protected $appends = ['image_url', 'banner_url', 'seo_image_url', 'full_slug'];
+
+    public function getFullSlugAttribute()
+    {
+        $slugs = [];
+        $category = $this;
+
+        while ($category) {
+            array_unshift($slugs, $category->slug);
+            $category = $category->parent;
+        }
+
+        return implode('/', $slugs);
+    }
     /**
      * Define which attributes represent images.
      */
@@ -124,7 +142,7 @@ class ProductCategory extends Model
      */
     protected function generateImageUrl(?string $filename): ?string
     {
-        return !empty($filename) ? image_url('page', $filename, 'large') : null;
+        return !empty($filename) ? image_url('productcategory', $filename, 'medium') : null;
     }
 
     public function getImageUrlAttribute(): ?string

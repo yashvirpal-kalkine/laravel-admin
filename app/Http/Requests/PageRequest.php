@@ -43,7 +43,7 @@ class PageRequest extends FormRequest
             // ✅ Correct self relation (page to parent page)
             'parent_id' => 'nullable|exists:pages,id',
 
-            'template' => 'nullable|string|max:255',
+            'template' => 'nullable|string|in:' . implode(',', array_keys(config('settings.templates'))),
             'custom_field' => 'nullable|string|max:255',
         ];
     }
