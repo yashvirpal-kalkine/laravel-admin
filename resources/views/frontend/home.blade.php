@@ -166,7 +166,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <x-frontend.custom-bracelet-form />
+                                <x-frontend.custom-bracelet-form full-width="true" />
                             </div>
                         </div>
                     </div>
