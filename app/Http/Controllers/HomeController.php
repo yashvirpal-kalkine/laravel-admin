@@ -75,9 +75,8 @@ class HomeController extends Controller
         $globalSectionSecond = $globalSections->skip(1)->first();
 
         // Customize Bracelet (single product)
-        $customizeBracelet = Product::active()->where('id', 1)
-            ->find(1);
-
+        $customizeBracelet = Product::active()->where('id', 1)->with(['galleries'])->find(1);
+        //dd($customizeBracelet);
         return view(
             'frontend.home',
             compact(

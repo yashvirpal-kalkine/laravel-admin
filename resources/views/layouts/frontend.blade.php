@@ -30,9 +30,10 @@
 <body>
     @include('frontend.partials.header')
     <main class="">
-        {{-- @if(!request()->is('/'))
-            @include('frontend.partials.breadcrumb')
-        @endif --}}
+        @if(!request()->routeIs('home'))
+            <x-frontend.banner-breadcrumb />
+        @endif
+
         @yield('content')
     </main>
 

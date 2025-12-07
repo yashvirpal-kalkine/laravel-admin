@@ -60,7 +60,7 @@ class ProductGallery extends Model
      */
     protected function generateImageUrl(?string $filename): ?string
     {
-        return !empty($filename) ? image_url('page', $filename, 'large') : null;
+        return !empty($filename) ? image_url('product_gallery', $filename, 'large') : null;
     }
 
     /**

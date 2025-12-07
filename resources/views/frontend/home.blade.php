@@ -154,72 +154,19 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-9 mx-auto">
-                        <h2 class="section-title text-center">Customize Bracelets</h2>
+                        <h2 class="section-title text-center">{{ $customizeBracelet->title }}</h2>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="customised-img-box">
                                     <div class="owl-carousel owl-theme" id="customised-img">
-                                        <div class="item">
-                                            <div class="customised-img-wrap">
-                                                <figure> <a href="#"> <img src="{{ asset('frontend/assets/images/b-1.jpg') }}"
-                                                            alt=""> </a>
-                                                </figure>
-                                            </div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="customised-img-wrap">
-                                                <figure> <a href="#"> <img src="{{ asset('frontend/assets/images/b-2.jpg') }}"
-                                                            alt=""> </a>
-                                                </figure>
-                                            </div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="customised-img-wrap">
-                                                <figure> <a href="#"> <img src="{{ asset('frontend/assets/images/b-3.jpg') }}"
-                                                            alt=""> </a>
-                                                </figure>
-                                            </div>
-                                        </div>
+                                        @foreach ($customizeBracelet->galleries as $item)
+                                            <x-frontend.image-carousel :item="$item" :product="$customizeBracelet" />
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="customised-form">
-                                    <h4>For Energize, We require these details</h4>
-                                    <form>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="input-group">
-                                                    <label>Name</label>
-                                                    <input type="text" name="">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="input-group">
-                                                    <label>Date Of Birth</label>
-                                                    <input type="text" name="">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="input-group">
-                                                    <label>Problem</label>
-                                                    <input type="text" name="">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="input-group">
-                                                    <label>Specific Problem</label>
-                                                    <textarea></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="input-group">
-                                                    <button>Submit</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                <x-frontend.custom-bracelet-form />
                             </div>
                         </div>
                     </div>
