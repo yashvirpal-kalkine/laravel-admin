@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/admin.php';
@@ -29,6 +30,16 @@ Route::prefix('products')->group(function () {
         ->where('categories', '.*') // catch nested categories
         ->name('products.list');
 });
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+
+    Route::post('add/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('update/{product}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+});
+
+
+
 
 
 // Blog
