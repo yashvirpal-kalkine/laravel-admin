@@ -33,6 +33,7 @@
             <th>Actions</th>
         </tr>
         @foreach($cart->items as $item)
+            {{-- {{ $item }} --}}
             <tr id="cart-item-{{ $item->id }}">
                 <td>{{ $item->product->title }}</td>
                 <td>
@@ -40,7 +41,8 @@
                 </td>
                 <td>{{ $item->price }}</td>
                 <td>
-                    <button class="remove-cart" data-id="{{ $item->id }}">Remove</button>
+                    <button class="remove-cart" data-id="{{ $item->id }}"
+                        onclick="removeFromCart({{ $item->product_id }})">Remove</button>
                 </td>
             </tr>
         @endforeach
