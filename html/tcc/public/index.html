@@ -97,11 +97,30 @@
         </div>
       </div>
 
-      <div class="rounded-xl bg-gradient-to-b from-slate-800 to-slate-950 p-6">
+      <div class="rounded-xl bg-gradient-to-b from-slate-800 to-slate-950 p-6 shadow-lg shadow-black/20">
+
+  <div class="relative w-full h-56 bg-slate-700/20 rounded-lg overflow-hidden flex items-center justify-center">
+    
+    <!-- Text overlay (visible only if image missing or slow loading) -->
+    <p class="absolute text-slate-400 text-sm z-10">App Preview / Screenshot</p>
+
+    <!-- Image -->
+    <img src="https://kalkinemedia.com/storage/uploads/large/Coalminig_12_11_2025_09_34_57_461348.jpg"
+         alt="Preview"
+         class="w-full h-full object-cover opacity-80 hover:opacity-100 transition rounded-lg" />
+
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 bg-black/30"></div>
+  </div>
+
+</div>
+
+      <!-- <div class="rounded-xl bg-gradient-to-b from-slate-800 to-slate-950 p-6">
         <div class="h-56 w-full bg-slate-700/30 rounded-lg grid place-items-center">
           <p class="text-slate-400">App Preview / Screenshot</p>
+          <img src="https://kalkinemedia.com/storage/uploads/large/Coalminig_12_11_2025_09_34_57_461348.jpg" alt="https://kalkinemedia.com/storage/uploads/large/Coalminig_12_11_2025_09_34_57_461348.jpg">
         </div>
-      </div>
+      </div> -->
     </section>
 
     <!-- SERVICES -->
