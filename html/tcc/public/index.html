@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Creative Coders</title>
+
+  <!-- Tailwind CSS compiled file -->
+  <link rel="stylesheet" href="/output.css">
+
+  <style>
+    /* Remove body overflow issues */
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  </style>
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("mobileMenu");
+      menu.classList.toggle("hidden");
+    }
+  </script>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-slate-800">
+    <div class="container mx-auto px-4 flex items-center justify-between py-4">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 grid place-items-center font-bold">
+          TCC
+        </div>
+        <div>
+          <h1 class="text-sm font-semibold">The Creative Coders</h1>
+          <p class="text-xs text-slate-400">Build. Design. Ship.</p>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="hidden md:block">
+        <ul class="flex gap-6 text-sm font-medium">
+          <li><a class="hover:text-blue-400" href="#services">Services</a></li>
+          <li><a class="hover:text-blue-400" href="#portfolio">Portfolio</a></li>
+          <li><a class="hover:text-blue-400" href="#blog">Blog</a></li>
+          <li><a class="hover:text-blue-400" href="#about">About</a></li>
+          <li><a class="hover:text-blue-400" href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <a href="#contact" class="hidden md:block bg-orange-500 px-4 py-2 rounded-lg font-semibold hover:bg-orange-400">
+        Get started
+      </a>
+      <!-- Mobile Hamburger -->
+      <button onclick="toggleMenu()" class="md:hidden text-2xl focus:outline-none">
+        ☰
+      </button>
+    </div>
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-slate-800">
+      <ul class="flex flex-col p-4 gap-4 text-sm font-medium">
+        <li><a class="hover:text-blue-400" href="#services">Services</a></li>
+        <li><a class="hover:text-blue-400" href="#portfolio">Portfolio</a></li>
+        <li><a class="hover:text-blue-400" href="#blog">Blog</a></li>
+        <li><a class="hover:text-blue-400" href="#about">About</a></li>
+        <li><a class="hover:text-blue-400" href="#contact">Contact</a></li>
+        <li>
+          <a href="#contact" class="bg-orange-500 px-4 py-2 rounded-lg font-semibold text-center whitespace-nowrap">
+            Get started
+          </a>
+
+        </li>
+      </ul>
+
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4">
+
+    <!-- HERO -->
+    <section class="grid md:grid-cols-2 gap-10 mt-10 bg-slate-900 border border-slate-800 rounded-xl p-8">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">We design and build delightful digital products</h2>
+        <p class="text-slate-400">
+          Designer-led engineering for startups and enterprises.
+        </p>
+
+        <div class="flex gap-4 mt-6">
+          <a class="bg-orange-500 px-5 py-3 rounded-lg font-semibold" href="#contact">Start a project</a>
+          <a class="border border-slate-700 px-5 py-3 rounded-lg" href="#portfolio">See work</a>
+        </div>
+      </div>
+
+      <div class="rounded-xl bg-gradient-to-b from-slate-800 to-slate-950 p-6">
+        <div class="h-56 w-full bg-slate-700/30 rounded-lg grid place-items-center">
+          <p class="text-slate-400">App Preview / Screenshot</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="mt-16">
+      <h3 class="text-xl font-semibold mb-6">Services</h3>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Single Service Card -->
+        <!-- You had duplicates—I kept 6 unique but fully responsive cards -->
+
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:-translate-y-1 transition shadow">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-xl animate-pulse">
+              💻</div>
+            <h4 class="text-lg font-semibold">Web Development</h4>
+          </div>
+          <p class="text-slate-400 text-sm mb-3">Fast & scalable web apps built with modern frameworks.</p>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Learn More →</a>
+        </div>
+
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:-translate-y-1 transition shadow">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 via-yellow-500 to-green-500 flex items-center justify-center text-xl animate-pulse">
+              🎨</div>
+            <h4 class="text-lg font-semibold">Product Design</h4>
+          </div>
+          <p class="text-slate-400 text-sm mb-3">UX/UI design systems that delight users.</p>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Learn More →</a>
+        </div>
+
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:-translate-y-1 transition shadow">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 via-blue-500 to-indigo-500 flex items-center justify-center text-xl animate-pulse">
+              🚀</div>
+            <h4 class="text-lg font-semibold">Brand Strategy</h4>
+          </div>
+          <p class="text-slate-400 text-sm mb-3">Strategic identity & market positioning.</p>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Learn More →</a>
+        </div>
+
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:-translate-y-1 transition shadow">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-xl animate-pulse">
+              📈</div>
+            <h4 class="text-lg font-semibold">Marketing</h4>
+          </div>
+          <p class="text-slate-400 text-sm mb-3">ROI-focused digital marketing solutions.</p>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Learn More →</a>
+        </div>
+
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:-translate-y-1 transition shadow">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 via-yellow-500 to-green-500 flex items-center justify-center text-xl animate-pulse">
+              🛠️</div>
+            <h4 class="text-lg font-semibold">Consulting</h4>
+          </div>
+          <p class="text-slate-400 text-sm mb-3">Expert guidance for product success.</p>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Learn More →</a>
+        </div>
+
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:-translate-y-1 transition shadow">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 via-blue-500 to-indigo-500 flex items-center justify-center text-xl animate-pulse">
+              ⚡</div>
+            <h4 class="text-lg font-semibold">Performance Optimization</h4>
+          </div>
+          <p class="text-slate-400 text-sm mb-3">Boost speed, UX & conversion.</p>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Learn More →</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="mt-16 bg-slate-900 border border-slate-800 rounded-xl p-8">
+      <h3 class="text-2xl font-semibold mb-4">About Us</h3>
+      <p class="text-slate-400 leading-relaxed">
+        We build digital products that are fast, accessible, and designed for real business impact.
+      </p>
+
+      <div class="grid sm:grid-cols-3 gap-6 mt-6">
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+          <h4 class="text-white font-medium">10+ Years</h4>
+          <p class="text-sm text-slate-500">Experience</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+          <h4 class="text-white font-medium">50+ Projects</h4>
+          <p class="text-sm text-slate-500">Delivered</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+          <h4 class="text-white font-medium">Global Clients</h4>
+          <p class="text-sm text-slate-500">Worldwide</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="mt-16">
+      <h3 class="text-xl font-semibold mb-6">Portfolio</h3>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+        <!-- Portfolio Card -->
+        <article class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <img src="https://picsum.photos/600/380?1"
+            class="w-full h-48 object-cover group-hover:scale-105 transition" />
+          <div class="p-5">
+            <h4 class="font-semibold text-lg text-white">Project Atlas</h4>
+            <p class="text-slate-400 text-sm mt-1">SaaS platform frontend architecture.</p>
+
+            <div class="flex gap-2 text-xs mt-3">
+              <span class="bg-slate-800 px-2 py-1 rounded">React</span>
+              <span class="bg-slate-800 px-2 py-1 rounded">TypeScript</span>
+              <span class="bg-slate-800 px-2 py-1 rounded">Tailwind</span>
+            </div>
+
+            <a href="#" class="text-indigo-400 text-sm mt-4 inline-block">View Project →</a>
+          </div>
+        </article>
+
+        <!-- Duplicate 2 more cards (they stay responsive) -->
+        <article class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <img src="https://picsum.photos/600/380?2"
+            class="w-full h-48 object-cover group-hover:scale-105 transition" />
+          <div class="p-5">
+            <h4 class="font-semibold text-lg text-white">UI Dashboard</h4>
+            <p class="text-slate-400 text-sm mt-1">Modern admin dashboard design.</p>
+            <a href="#" class="text-indigo-400 text-sm mt-4 inline-block">View Project →</a>
+          </div>
+        </article>
+
+        <article class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <img src="https://picsum.photos/600/380?3"
+            class="w-full h-48 object-cover group-hover:scale-105 transition" />
+          <div class="p-5">
+            <h4 class="font-semibold text-lg text-white">Mobile App</h4>
+            <p class="text-slate-400 text-sm mt-1">Cross-platform mobile experience.</p>
+            <a href="#" class="text-indigo-400 text-sm mt-4 inline-block">View Project →</a>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="/blog" class="bg-indigo-600 px-6 py-3 rounded-md">View All Projects</a>
+      </div>
+    </section>
+
+    <!-- BLOG -->
+    <section id="blog" class="mt-16">
+      <h3 class="text-xl font-semibold mb-6">Blog</h3>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+        <article class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <img src="https://picsum.photos/600/380?random=11" class="h-48 w-full object-cover" />
+          <div class="p-5">
+            <p class="text-xs text-slate-500">Jan 12, 2025 • Asha</p>
+            <h4 class="font-semibold mt-2">Design Systems at Scale</h4>
+            <a href="#" class="text-indigo-400 text-sm mt-3 inline-block">Read more →</a>
+          </div>
+        </article>
+
+        <article class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <img src="https://picsum.photos/600/380?random=12" class="h-48 w-full object-cover" />
+          <div class="p-5">
+            <p class="text-xs text-slate-500">Feb 3, 2025 • Ravi</p>
+            <h4 class="font-semibold mt-2">Accessibility-First UI</h4>
+            <a href="#" class="text-indigo-400 text-sm mt-3 inline-block">Read more →</a>
+          </div>
+        </article>
+
+        <article class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <img src="https://picsum.photos/600/380?random=13" class="h-48 w-full object-cover" />
+          <div class="p-5">
+            <p class="text-xs text-slate-500">Feb 18, 2025 • Meera</p>
+            <h4 class="font-semibold mt-2">Frontend Performance Audits</h4>
+            <a href="#" class="text-indigo-400 text-sm mt-3 inline-block">Read more →</a>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="/blog" class="bg-indigo-600 px-6 py-3 rounded-md">View All Posts</a>
+      </div>
+    </section>
+
+    <!-- CONTACT FORM -->
+    <section id="contact" class="mt-16 bg-slate-900 border border-slate-800 rounded-xl p-8 max-w-3xl mx-auto">
+      <h3 class="text-2xl font-semibold mb-6">Contact Us</h3>
+
+      <form class="grid gap-4">
+        <input type="text" placeholder="Name" class="bg-slate-950 border border-slate-700 rounded-lg px-4 py-3"
+          required>
+        <input type="email" placeholder="Email" class="bg-slate-950 border border-slate-700 rounded-lg px-4 py-3"
+          required>
+        <textarea rows="5" placeholder="Project details"
+          class="bg-slate-950 border border-slate-700 rounded-lg px-4 py-3" required></textarea>
+
+        <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold">
+          Send Message
+        </button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 border-t border-slate-800 mt-16">
+    <div class="container mx-auto px-4 py-16">
+
+      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-4">YourBrand</h3>
+          <p class="text-slate-400 text-sm mb-4">Building elegant digital products.</p>
+          <p class="text-sm text-slate-300">Phone: +91 98765 43210</p>
+          <p class="text-sm text-slate-300">Email: hello@yourbrand.com</p>
+          <p class="text-sm text-slate-300">Bangalore, India</p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white">About</a></li>
+            <li><a href="#" class="hover:text-white">Portfolio</a></li>
+            <li><a href="#" class="hover:text-white">Blog</a></li>
+            <li><a href="#" class="hover:text-white">Careers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-semibold mb-4">Services</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white">Design</a></li>
+            <li><a href="#" class="hover:text-white">Development</a></li>
+            <li><a href="#" class="hover:text-white">Marketing</a></li>
+            <li><a href="#" class="hover:text-white">Consulting</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-semibold mb-4">Newsletter</h4>
+          <form class="flex flex-col sm:flex-row gap-2 w-full">
+            <input type="email" placeholder="Your email"
+              class="bg-slate-900 border border-slate-700 rounded-md px-3 py-2 w-full">
+            <button class="bg-indigo-600 rounded-md px-4 py-2 text-white w-full sm:w-auto">
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-800 py-4 text-center text-sm text-slate-500">
+      © 2025 The Creative Coders. All rights reserved.
+    </div>
+
+  </footer>
+
+</body>
+
+</html>
