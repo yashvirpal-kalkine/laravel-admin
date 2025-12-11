@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Creative Coders</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Tailwind CSS compiled file -->
+  <link rel="stylesheet" href="/output.css">
+
+  <style>
+    /* Remove body overflow issues */
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  </style>
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("mobileMenu");
+      menu.classList.toggle("hidden");
+    }
+  </script>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-slate-800">
+    <div class="container mx-auto px-4 lg:px-8 xl:px-16 flex items-center justify-between py-4">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 grid place-items-center font-bold">
+          TCC
+        </div>
+        <div>
+          <h1 class="text-sm font-semibold">The Creative Coders</h1>
+          <p class="text-xs text-slate-400">Build. Design. Ship.</p>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="hidden md:block">
+        <ul class="flex gap-6 text-sm font-medium">
+          <li><a class="hover:text-blue-400" href="#services">Home</a></li>
+          <li><a class="hover:text-blue-400" href="#services">Services</a></li>
+          <li><a class="hover:text-blue-400" href="#portfolio">Portfolio</a></li>
+          <li><a class="hover:text-blue-400" href="#blog">Blog</a></li>
+          <li><a class="hover:text-blue-400" href="#about">About</a></li>
+          <li><a class="hover:text-blue-400" href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+
+      <a href="#contact" class="hidden md:inline-flex items-center justify-center 
+          px-5 py-2.5 rounded-lg font-semibold
+          bg-orange-500 text-white 
+          shadow-md shadow-orange-500/30
+          transition-all duration-300
+          hover:bg-orange-600 hover:shadow-orange-600/40
+          hover:-translate-y-1">
+        Get started
+      </a>
+
+
+      <!-- Mobile Hamburger -->
+      <button onclick="toggleMenu()" class="md:hidden text-2xl focus:outline-none">
+        ☰
+      </button>
+    </div>
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-slate-800">
+      <ul class="flex flex-col p-4 gap-4 text-sm font-medium">
+        <li><a class="hover:text-blue-400" href="#services">Home</a></li>
+        <li><a class="hover:text-blue-400" href="#services">Services</a></li>
+        <li><a class="hover:text-blue-400" href="#portfolio">Portfolio</a></li>
+        <li><a class="hover:text-blue-400" href="#blog">Blog</a></li>
+        <li><a class="hover:text-blue-400" href="#about">About</a></li>
+        <li><a class="hover:text-blue-400" href="#contact">Contact</a></li>
+        <li>
+          <a href="#contact" class="bg-orange-500 px-5 py-2 rounded-lg font-semibold text-center whitespace-nowrap 
+          text-white shadow-md shadow-orange-500/20
+          transition-all duration-300
+          hover:bg-orange-600 hover:shadow-orange-600/30 hover:-translate-y-0.5">
+            Get started
+          </a>
+
+        </li>
+      </ul>
+
+    </div>
+  </header>
+
+  <!-- <main class="container mx-auto px-4"> -->
+  <main class="container mx-auto px-4 lg:px-8 xl:px-16">
+
+    <!-- HERO -->
+    <section class="grid md:grid-cols-2 gap-10 mt-10 bg-slate-900 border border-slate-800 rounded-xl p-8">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">We design and build delightful digital products</h2>
+        <p class="text-slate-400">
+          Designer-led engineering for startups and enterprises.
+        </p>
+
+        <div class="flex gap-4 mt-6">
+          <a href="#contact" class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold
+          bg-orange-500 text-white shadow-md shadow-orange-500/30
+          transition-all duration-300
+          hover:bg-orange-600 hover:shadow-orange-600/40
+          hover:-translate-y-1">
+            Start a project
+          </a>
+
+
+          <a href="#portfolio" class="inline-flex items-center justify-center px-6 py-3 rounded-lg
+          border border-slate-700 text-slate-300 transition-all duration-300 hover:border-indigo-500 hover:text-indigo-400
+          hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10">
+            See work
+          </a>
+
+        </div>
+      </div>
+
+      <div class="rounded-xl bg-gradient-to-b from-slate-800 to-slate-950 p-6 shadow-lg shadow-black/20">
+
+        <div class="relative w-full h-56 bg-slate-700/20 rounded-lg overflow-hidden flex items-center justify-center">
+
+          <!-- Text overlay (visible only if image missing or slow loading) -->
+          <p class="absolute text-slate-400 text-sm z-10">App Preview / Screenshot</p>
+
+          <!-- Image -->
+          <img src="https://kalkinemedia.com/storage/uploads/large/Coalminig_12_11_2025_09_34_57_461348.jpg"
+            alt="Preview" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition rounded-lg" />
+
+          <!-- Dark overlay -->
+          <div class="absolute inset-0 bg-black/30"></div>
+        </div>
+
+      </div>
+
+      <!-- <div class="rounded-xl bg-gradient-to-b from-slate-800 to-slate-950 p-6">
+        <div class="h-56 w-full bg-slate-700/30 rounded-lg grid place-items-center">
+          <p class="text-slate-400">App Preview / Screenshot</p>
+          <img src="https://kalkinemedia.com/storage/uploads/large/Coalminig_12_11_2025_09_34_57_461348.jpg" alt="https://kalkinemedia.com/storage/uploads/large/Coalminig_12_11_2025_09_34_57_461348.jpg">
+        </div>
+      </div> -->
+    </section>
+
+
+    <!-- ABOUT -->
+
+    <section id="about" class="mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-10">
+
+      <!-- Heading -->
+      <div class="text-center mb-10">
+        <h3 class="text-3xl md:text-4xl font-bold text-white">
+          About Us
+        </h3>
+        <div class="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-500 mx-auto mt-3 rounded-full"></div>
+        <p class="text-slate-400 max-w-3xl mx-auto mt-5 leading-relaxed">
+          We build fast, accessible, and scalable digital products that transform businesses.
+          Our focus is on clean UI, strong performance, and long-term value.
+        </p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid sm:grid-cols-3 gap-6">
+
+        <!-- Experience -->
+        <div
+          class="group bg-slate-950 border border-slate-800 rounded-xl p-6 flex items-center gap-4 hover:border-indigo-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10">
+
+          <div
+            class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-briefcase"></i>
+          </div>
+
+          <div>
+            <h4 class="text-white font-semibold text-lg">10+ Years</h4>
+            <p class="text-sm text-slate-400">Experience</p>
+          </div>
+        </div>
+
+        <!-- Projects -->
+        <div
+          class="group bg-slate-950 border border-slate-800 rounded-xl p-6 flex items-center gap-4 hover:border-pink-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/10">
+
+          <div
+            class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+
+          <div>
+            <h4 class="text-white font-semibold text-lg">50+ Projects</h4>
+            <p class="text-sm text-slate-400">Delivered</p>
+          </div>
+        </div>
+
+        <!-- Global Clients -->
+        <div
+          class="group bg-slate-950 border border-slate-800 rounded-xl p-6 flex items-center gap-4 hover:border-green-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10">
+
+          <div
+            class="w-12 h-12 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-globe"></i>
+          </div>
+
+          <div>
+            <h4 class="text-white font-semibold text-lg">Global Clients</h4>
+            <p class="text-sm text-slate-400">Worldwide</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="mt-16">
+      <h3 class="text-3xl font-bold mb-3 text-center">Our Services</h3>
+      <div class="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-500 mx-auto mt-3 rounded-full mb-10"></div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Web Development -->
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 
+        hover:-translate-y-2 hover:border-indigo-500/40 
+        hover:shadow-lg hover:shadow-indigo-500/20 
+        transition-all duration-300">
+
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 
+         flex items-center justify-center text-3xl text-white 
+         shadow-md shadow-indigo-500/25 
+         group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
+              <i class="fa-solid fa-code"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-white group-hover:text-indigo-400 transition">
+              Web Development
+            </h4>
+          </div>
+
+          <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+            Fast & scalable web apps built with modern frameworks.
+          </p>
+
+          <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition">
+            Learn More →
+          </a>
+        </div>
+
+        <!-- Product Design -->
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 
+        hover:-translate-y-2 hover:border-pink-500/40 
+        hover:shadow-lg hover:shadow-pink-500/20 
+        transition-all duration-300">
+
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500 to-yellow-500 
+         flex items-center justify-center text-3xl text-white 
+         shadow-md shadow-pink-500/25 
+         group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
+              <i class="fa-solid fa-pen-nib"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-white group-hover:text-pink-400 transition">
+              Product Design
+            </h4>
+          </div>
+
+          <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+            UX/UI design systems that delight users.
+          </p>
+
+          <a href="#" class="text-pink-400 hover:text-pink-300 text-sm font-medium transition">
+            Learn More →
+          </a>
+        </div>
+
+        <!-- Brand Strategy -->
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 
+        hover:-translate-y-2 hover:border-green-500/40 
+        hover:shadow-lg hover:shadow-green-500/20 
+        transition-all duration-300">
+
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-blue-500 
+         flex items-center justify-center text-3xl text-white 
+         shadow-md shadow-green-500/25 
+         group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
+              <i class="fa-solid fa-rocket"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-white group-hover:text-green-400 transition">
+              Brand Strategy
+            </h4>
+          </div>
+
+          <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+            Strategic identity & market positioning.
+          </p>
+
+          <a href="#" class="text-green-400 hover:text-green-300 text-sm font-medium transition">
+            Learn More →
+          </a>
+        </div>
+
+        <!-- Marketing -->
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 
+        hover:-translate-y-2 hover:border-yellow-500/40 
+        hover:shadow-lg hover:shadow-yellow-500/20 
+        transition-all duration-300">
+
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 
+         flex items-center justify-center text-3xl text-white 
+         shadow-md shadow-yellow-500/25 
+         group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-white group-hover:text-yellow-300 transition">
+              Marketing
+            </h4>
+          </div>
+
+          <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+            ROI-focused digital marketing solutions.
+          </p>
+
+          <a href="#" class="text-yellow-400 hover:text-yellow-300 text-sm font-medium transition">
+            Learn More →
+          </a>
+        </div>
+
+        <!-- Consulting -->
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 
+        hover:-translate-y-2 hover:border-purple-500/40 
+        hover:shadow-lg hover:shadow-purple-500/20 
+        transition-all duration-300">
+
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 
+         flex items-center justify-center text-3xl text-white 
+         shadow-md shadow-purple-500/25 
+         group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
+              <i class="fa-solid fa-lightbulb"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-white group-hover:text-purple-300 transition">
+              Consulting
+            </h4>
+          </div>
+
+          <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+            Expert guidance for product success.
+          </p>
+
+          <a href="#" class="text-purple-400 hover:text-purple-300 text-sm font-medium transition">
+            Learn More →
+          </a>
+        </div>
+
+        <!-- Performance Optimization -->
+        <div class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 
+        hover:-translate-y-2 hover:border-blue-500/40 
+        hover:shadow-lg hover:shadow-blue-500/20 
+        transition-all duration-300">
+
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 
+         flex items-center justify-center text-3xl text-white 
+         shadow-md shadow-blue-500/25 
+         group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
+              <i class="fa-solid fa-gauge-high"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-white group-hover:text-blue-400 transition">
+              Performance Optimization
+            </h4>
+          </div>
+
+          <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+            Boost speed, UX & conversion.
+          </p>
+
+          <a href="#" class="text-blue-400 hover:text-blue-300 text-sm font-medium transition">
+            Learn More →
+          </a>
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="mt-16">
+      <h3 class="text-3xl font-bold mb-3 text-center">Projects</h3>
+      <div class="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-500 mx-auto mt-3 rounded-full mb-10"></div>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+        <!-- Portfolio Card -->
+        <article class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden 
+                 hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/20 
+                 transition-all duration-300">
+
+          <div class="overflow-hidden">
+            <img src="https://picsum.photos/600/380?1"
+              class="w-full h-48 object-cover group-hover:scale-110 transition-all duration-500" />
+          </div>
+
+          <div class="p-5">
+            <h4 class="font-semibold text-lg text-white group-hover:text-indigo-400 transition">
+              Project Atlas
+            </h4>
+
+            <p class="text-slate-400 text-sm mt-1">
+              SaaS platform frontend architecture.
+            </p>
+
+            <!-- Tech Tags -->
+            <div class="flex flex-wrap gap-2 text-xs mt-4">
+              <span class="bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded-md">React</span>
+              <span class="bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded-md">TypeScript</span>
+              <span class="bg-sky-500/10 text-sky-400 px-2 py-1 rounded-md">Tailwind</span>
+            </div>
+
+            <a href="#" class="text-indigo-400 text-sm mt-4 inline-block hover:text-indigo-300 transition">
+              View Project →
+            </a>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden 
+                 hover:border-pink-500/40 hover:shadow-lg hover:shadow-pink-500/20 
+                 transition-all duration-300">
+
+          <div class="overflow-hidden">
+            <img src="https://picsum.photos/600/380?2"
+              class="w-full h-48 object-cover group-hover:scale-110 transition-all duration-500" />
+          </div>
+
+          <div class="p-5">
+            <h4 class="font-semibold text-lg text-white group-hover:text-pink-400 transition">
+              UI Dashboard
+            </h4>
+
+            <p class="text-slate-400 text-sm mt-1">
+              Modern admin dashboard design.
+            </p>
+
+            <a href="#" class="text-pink-400 text-sm mt-4 inline-block hover:text-pink-300 transition">
+              View Project →
+            </a>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden 
+                 hover:border-green-500/40 hover:shadow-lg hover:shadow-green-500/20 
+                 transition-all duration-300">
+
+          <div class="overflow-hidden">
+            <img src="https://picsum.photos/600/380?3"
+              class="w-full h-48 object-cover group-hover:scale-110 transition-all duration-500" />
+          </div>
+
+          <div class="p-5">
+            <h4 class="font-semibold text-lg text-white group-hover:text-green-400 transition">
+              Mobile App
+            </h4>
+
+            <p class="text-slate-400 text-sm mt-1">
+              Cross-platform mobile experience.
+            </p>
+
+            <a href="#" class="text-green-400 text-sm mt-4 inline-block hover:text-green-300 transition">
+              View Project →
+            </a>
+          </div>
+        </article>
+
+      </div>
+
+
+      <div class="text-center mt-8">
+        <a href="#" class="inline-flex justify-center items-center w-48 px-6 py-3 font-semibold rounded-full
+          bg-orange-500 text-white shadow-md shadow-orange-500/30
+          transition transform hover:-translate-y-1 hover:scale-105
+          hover:shadow-lg hover:shadow-orange-600/40 hover:bg-orange-600 active:bg-orange-700">
+
+          View All Projects
+        </a>
+
+
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials1" class="mt-16 bg-slate-900 border border-slate-800 rounded-xl p-8">
+      <h3 class="text-3xl font-bold mb-3 text-center">What Our Clients Say</h3>
+      <div class="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-500 mx-auto mt-3 rounded-full mb-10"></div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- Testimonial 1 -->
+        <div
+          class="bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col gap-5 hover:-translate-y-1 transition shadow-lg">
+          <div class="flex items-center gap-1 text-yellow-400 text-lg">
+            ★★★★☆
+          </div>
+
+          <p class="text-slate-300 italic leading-relaxed">
+            "The team at TCC delivered an amazing website. The attention to detail and design skills are exceptional!"
+          </p>
+
+          <div class="flex items-center gap-4 mt-auto pt-2">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-pink-500 
+                  flex items-center justify-center text-white font-bold shadow-md">
+              A
+            </div>
+            <div>
+              <p class="font-semibold text-white">Asha Sharma</p>
+              <p class="text-sm text-slate-500">Founder, StartupX</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div
+          class="bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col gap-5 hover:-translate-y-1 transition shadow-lg">
+          <div class="flex items-center gap-1 text-yellow-400 text-lg">
+            ★★★★★
+          </div>
+
+          <p class="text-slate-300 italic leading-relaxed">
+            "Working with The Creative Coders was seamless. They understood our vision and turned it into reality."
+          </p>
+
+          <div class="flex items-center gap-4 mt-auto pt-2">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-blue-500 
+                  flex items-center justify-center text-white font-bold shadow-md">
+              R
+            </div>
+            <div>
+              <p class="font-semibold text-white">Ravi Kumar</p>
+              <p class="text-sm text-slate-500">CEO, FinTechPro</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div
+          class="bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col gap-5 hover:-translate-y-1 transition shadow-lg">
+          <div class="flex items-center gap-1 text-yellow-400 text-lg">
+            ★★★★☆
+          </div>
+
+          <p class="text-slate-300 italic leading-relaxed">
+            "Their design and development team exceeded our expectations. Highly recommended for tech projects!"
+          </p>
+
+          <div class="flex items-center gap-4 mt-auto pt-2">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-yellow-500 
+                  flex items-center justify-center text-white font-bold shadow-md">
+              M
+            </div>
+            <div>
+              <p class="font-semibold text-white">Meera Joshi</p>
+              <p class="text-sm text-slate-500">Product Manager, HealthPlus</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+
+    <!-- BLOG -->
+    <section id="blog" class="mt-16">
+      <h3 class="text-3xl font-bold mb-3 text-center">Blogs</h3>
+      <div class="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-500 mx-auto mt-3 rounded-full mb-10"></div>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+        <!-- Blog Card -->
+        <article
+          class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10">
+
+          <div class="overflow-hidden">
+            <img src="https://picsum.photos/600/380?random=11"
+              class="h-48 w-full object-cover group-hover:scale-105 transition duration-500" />
+          </div>
+
+          <div class="p-5">
+            <p class="text-xs text-slate-500 flex items-center gap-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+              Jan 12, 2025 • Asha
+            </p>
+
+            <h4 class="font-semibold mt-2 text-white group-hover:text-indigo-400 transition">
+              Design Systems at Scale
+            </h4>
+
+            <p class="text-slate-400 text-sm mt-2 line-clamp-2">
+              Learn how to build cohesive design systems that work across large product ecosystems.
+            </p>
+
+            <a href="#"
+              class="text-indigo-400 text-sm mt-3 inline-flex items-center gap-1 group-hover:gap-2 transition">
+              Read more →
+            </a>
+          </div>
+        </article>
+
+        <!-- Blog Card -->
+        <article
+          class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10">
+
+          <div class="overflow-hidden">
+            <img src="https://picsum.photos/600/380?random=12"
+              class="h-48 w-full object-cover group-hover:scale-105 transition duration-500" />
+          </div>
+
+          <div class="p-5">
+            <p class="text-xs text-slate-500 flex items-center gap-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+              Feb 3, 2025 • Ravi
+            </p>
+
+            <h4 class="font-semibold mt-2 text-white group-hover:text-indigo-400 transition">
+              Accessibility-First UI
+            </h4>
+
+            <p class="text-slate-400 text-sm mt-2 line-clamp-2">
+              Build interfaces that are inclusive and follow WCAG standards from day one.
+            </p>
+
+            <a href="#"
+              class="text-indigo-400 text-sm mt-3 inline-flex items-center gap-1 group-hover:gap-2 transition">
+              Read more →
+            </a>
+          </div>
+        </article>
+
+        <!-- Blog Card -->
+        <article
+          class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10">
+
+          <div class="overflow-hidden">
+            <img src="https://picsum.photos/600/380?random=13"
+              class="h-48 w-full object-cover group-hover:scale-105 transition duration-500" />
+          </div>
+
+          <div class="p-5">
+            <p class="text-xs text-slate-500 flex items-center gap-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+              Feb 18, 2025 • Meera
+            </p>
+
+            <h4 class="font-semibold mt-2 text-white group-hover:text-indigo-400 transition">
+              Frontend Performance Audits
+            </h4>
+
+            <p class="text-slate-400 text-sm mt-2 line-clamp-2">
+              Improve load time, interaction speed, and Core Web Vitals using modern techniques.
+            </p>
+
+            <a href="#"
+              class="text-indigo-400 text-sm mt-3 inline-flex items-center gap-1 group-hover:gap-2 transition">
+              Read more →
+            </a>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="#" class="inline-flex justify-center items-center w-48 px-6 py-3 font-semibold rounded-full
+          bg-orange-500 text-white shadow-md shadow-orange-500/30
+          transition transform hover:-translate-y-1 hover:scale-105
+          hover:shadow-lg hover:shadow-orange-600/40 hover:bg-orange-600 active:bg-orange-700">
+
+          View All Posts
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CONTACT FORM -->
+
+    <section id="contact"
+      class="mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-12 max-w-5xl mx-auto shadow-lg shadow-black/20">
+
+      <!-- Heading -->
+      <h3 class="text-3xl font-bold mb-3 text-center">Get In Touch</h3>
+      <div class="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-500 mx-auto mt-3 rounded-full mb-10"></div>
+
+      <div class="grid md:grid-cols-2 gap-12">
+
+        <!-- LEFT SIDE: WHY CHOOSE US -->
+        <div class="space-y-6">
+
+          <h4 class="text-xl font-semibold text-white">Why Choose Us?</h4>
+          <p class="text-slate-400 leading-relaxed">
+            We are committed to delivering high-quality work, transparent communication,
+            and solutions that help your business grow faster.
+          </p>
+
+          <div class="space-y-5">
+
+            <!-- Point 1 -->
+            <div class="flex gap-4">
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 text-lg">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <p class="text-white font-semibold">Experienced Team</p>
+                <p class="text-slate-400 text-sm">Skilled experts delivering top-notch solutions.</p>
+              </div>
+            </div>
+
+            <!-- Point 2 -->
+            <div class="flex gap-4">
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 text-lg">
+                <i class="fa-solid fa-bolt"></i>
+              </div>
+              <div>
+                <p class="text-white font-semibold">Fast Delivery</p>
+                <p class="text-slate-400 text-sm">On-time delivery without compromising quality.</p>
+              </div>
+            </div>
+
+            <!-- Point 3 -->
+            <div class="flex gap-4">
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 text-lg">
+                <i class="fa-solid fa-comments"></i>
+              </div>
+              <div>
+                <p class="text-white font-semibold">Clear Communication</p>
+                <p class="text-slate-400 text-sm">We keep you updated every step of the way.</p>
+              </div>
+            </div>
+
+            <!-- Point 4 -->
+            <div class="flex gap-4">
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 text-lg">
+                <i class="fa-solid fa-bullseye"></i>
+              </div>
+              <div>
+                <p class="text-white font-semibold">Guaranteed Satisfaction</p>
+                <p class="text-slate-400 text-sm">We ensure results that exceed expectations.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT SIDE — FORM -->
+        <form class="grid gap-5">
+          <div class="grid gap-2">
+            <label class="text-sm text-slate-400">Your Name</label>
+            <input type="text" placeholder="John Doe" class="bg-slate-950/50 border border-slate-700 focus:border-orange-500
+          focus:ring-2 focus:ring-orange-500/30 rounded-lg px-4 py-3 transition" required>
+          </div>
+
+          <div class="grid gap-2">
+            <label class="text-sm text-slate-400">Your Email</label>
+            <input type="email" placeholder="email@example.com" class="bg-slate-950/50 border border-slate-700 focus:border-orange-500
+          focus:ring-2 focus:ring-orange-500/30 rounded-lg px-4 py-3 transition" required>
+          </div>
+
+          <div class="grid gap-2">
+            <label class="text-sm text-slate-400">Project Details</label>
+            <textarea rows="5" placeholder="Describe your project..." class="bg-slate-950/50 border border-slate-700 focus:border-orange-500
+          focus:ring-2 focus:ring-orange-500/30 rounded-lg px-4 py-3 transition" required></textarea>
+          </div>
+
+          <button class="relative flex justify-center items-center w-full px-6 py-3 font-semibold rounded-full 
+         bg-orange-500 text-white shadow-md shadow-orange-500/30 
+         overflow-hidden transition transform hover:-translate-y-1 hover:scale-100  
+         hover:shadow-lg hover:shadow-orange-600/40 hover:bg-orange-600 active:bg-orange-700 ">
+
+            Send Message
+
+          </button>
+
+
+        </form>
+
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer class="bg-slate-950 border-t border-slate-800 mt-16">
+    <div class="container mx-auto px-4 py-16 lg:px-8 xl:px-16">
+
+      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+
+        <!-- BRAND INFO -->
+        <div class="space-y-4">
+          <h3 class="text-2xl font-bold text-white">YourBrand</h3>
+          <p class="text-slate-400 text-sm">Building elegant digital products that delight users.</p>
+          <div class="space-y-1 text-sm text-slate-300">
+            <p class="flex items-center gap-3">
+              <i class="fa-solid fa-phone text-green-500"></i>
+              +91 98765 43210
+            </p>
+
+            <p class="flex items-center gap-3">
+              <i class="fa-solid fa-envelope text-blue-500"></i>
+              info@tcc.com
+            </p>
+
+            <p class="flex items-center gap-3">
+              <i class="fa-solid fa-location-dot text-red-500"></i>
+              Bangalore, India
+            </p>
+
+          </div>
+
+          <!-- Social Icons with Font Awesome -->
+          <div class="flex gap-4 mt-4">
+            <a href="#" class="text-[#1877F2] hover:opacity-80"><i class="fab fa-facebook-f text-sm"></i></a>
+            <a href="#" class="text-[#1DA1F2] hover:opacity-80"><i class="fab fa-twitter text-sm"></i></a>
+            <a href="#" class="text-[#E4405F] hover:opacity-80"><i class="fab fa-instagram text-sm"></i></a>
+            <a href="#" class="text-[#0A66C2] hover:opacity-80"><i class="fab fa-linkedin-in text-sm"></i></a>
+            <a href="#" class="text-[#FF6600] hover:opacity-80"><i class="fa-solid fa-globe text-sm"></i></a>
+          </div>
+
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-white mb-1">Quick Links</h3>
+          <div class="w-16 h-1 bg-orange-500 mb-4 rounded"></div>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-orange-500 transition">About Us</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Contact Us</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Our Portfolio</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Our Blogs</a></li>
+          </ul>
+        </div>
+
+        <!-- SERVICES -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-white mb-1">Services</h3>
+          <div class="w-16 h-1 bg-orange-500 mb-4 rounded"></div>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-orange-500 transition">Brand Strategy</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Product Design</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Web Development</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Performance Optimization</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Marketing</a></li>
+            <li><a href="#" class="hover:text-orange-500 transition">Consulting</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-white mb-1">Newsletter</h3>
+          <div class="w-16 h-1 bg-orange-500 mb-4 rounded"></div>
+          <p class="text-slate-400 text-sm">Subscribe to get the latest updates and offers.</p>
+
+          <form class="flex flex-col gap-3 mt-2 w-full">
+            <input type="email" placeholder="Your email" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3
+           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-400 transition" />
+
+
+
+            <button class="inline-flex justify-center items-center w-48 px-6 py-3 font-semibold rounded-full bg-indigo-500 text-white shadow-md 
+            shadow-indigo-500/30 transition transform hover:-translate-y-1 hover:scale-105 hover:shadow-lg hover:shadow-indigo-600/40 
+            active:bg-indigo-600">
+              Subscribe
+            </button>
+
+
+          </form>
+
+
+        </div>
+
+
+
+      </div>
+    </div>
+
+    <!-- COPYRIGHT -->
+    <div class="border-t border-slate-800 py-4 text-center text-sm text-slate-500">
+      © 2025 The Creative Coders. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+<script>
+  const slider = document.getElementById("testimonialSlider");
+  let scrollAmount = 0;
+
+  setInterval(() => {
+    if (!slider) return;
+
+    const cardWidth = slider.children[0].offsetWidth + 24; // card + gap
+
+    scrollAmount += cardWidth;
+
+    if (scrollAmount >= slider.scrollWidth - slider.clientWidth) {
+      scrollAmount = 0;
+    }
+
+    slider.scrollTo({ left: scrollAmount, behavior: "smooth" });
+  }, 3500);
+</script>
+
+</html>

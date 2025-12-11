@@ -133,6 +133,32 @@ class ProductCategory extends Model
         return implode('/', $slugs);
     }
     /**
+     * Build breadcrumb trail from parent → child
+     */
+    public function getBreadcrumbs(): array
+    {
+        $breadcrumbs = [];
+        $category = $this;
+
+        // Collect parents first
+        while ($category) {
+            $breadcrumbs[] = $category;
+            $category = $category->parent;
+        }
+
+        // Reverse (root → child)
+        $breadcrumbs = array_reverse($breadcrumbs);
+
+        // Format breadcrumbs
+        return array_map(function ($cat) {
+            return [
+                'label' => $cat->title,
+                'url' => route('products.list', $cat->full_slug),
+            ];
+        }, $breadcrumbs);
+    }
+
+    /**
      * Define which attributes represent images.
      */
     protected static $imageFields = ['image', 'banner', 'seo_image'];

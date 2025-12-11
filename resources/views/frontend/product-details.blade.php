@@ -6,28 +6,7 @@
 @endsection
 
 @section('content')
-
-    <!-- breadcrumb section start here -->
-    <section class="breadcrumb-sec"
-        style="background: url({{ asset('frontend/assets/images/banner1.png') }}) no-repeat center;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="breadcrumb-wrap">
-                        <nav aria-label="breadcrumb">
-                            <h1>Product Details</h1>
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Product Details</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- breadcrumb section end here -->
-
+    
     <!-- products details section start here -->
     <section class="product-section py-5">
         <div class="container">
@@ -40,6 +19,11 @@
                         @endphp
                         <div class="prod_img">
                             <span class="setup main-image">
+                                @if ($product->sale_price)
+                                    <div class="custom-tags-home">
+                                        <p>Sale</p>
+                                    </div>
+                                @endif
                                 <img id="mainImg" src="{{ $imgurl }}" alt="{{ $product->image_alt ?? $product->title }}">
                             </span>
                         </div>
@@ -171,6 +155,7 @@
                                 <p>Want to buy in bulk? <a href="#" style="color: blue;">Inquire Now</a></p>
                             </div>
                         </div>
+                        <x-frontend.custom-bracelet-form />
                         <div class="description-box">
                             <div class="accordion" id="accordionExample">
 
@@ -192,6 +177,7 @@
 
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

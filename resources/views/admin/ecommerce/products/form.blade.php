@@ -141,13 +141,25 @@
                 </div>
 
                 @php
-                function renderCategoryOptions($categories, $selectedIds = [], $prefix = '') {
+                function renderCategoryOptions($categories, $selectedIds = [], $prefix = '', $parentId = null)
+                {
                     foreach ($categories as $category) {
                         $isSelected = in_array($category->id, $selectedIds) ? 'selected' : '';
-                        echo "<option value='{$category->id}' {$isSelected}>{$prefix}{$category->title}</option>";
+
+                        // add data-parent ONLY for children
+                        $dataParent = $parentId ? "data-parent='{$parentId}'" : '';
+
+                        echo "<option value='{$category->id}' {$isSelected} {$dataParent}>
+                                {$prefix}{$category->title}
+                            </option>";
 
                         if ($category->children->isNotEmpty()) {
-                            renderCategoryOptions($category->children, $selectedIds, $prefix . '— ');
+                            renderCategoryOptions(
+                                $category->children,
+                                $selectedIds,
+                                $prefix . '— ',
+                                $category->id // 👈 pass current as parent
+                            );
                         }
                     }
                 }
@@ -247,3 +259,25 @@
 @endsection
 
 @include('components.admin.select2')
+@push('scripts')
+<script>
+    
+$('.select2').on('change', function () {
+    const $select = $(this);
+    let selected = $select.val() || [];
+
+    // Loop through all selected child options
+    $select.find('option:selected').each(function () {
+        const parentId = $(this).data('parent');
+
+        if (parentId && !selected.includes(parentId.toString())) {
+            selected.push(parentId.toString());
+        }
+    });
+
+    // Update selection only if changed
+    $select.val(selected).trigger('change.select2');
+});
+
+</script>
+@endpush

@@ -127,7 +127,7 @@ class Product extends Model
      */
     protected function generateImageUrl(?string $filename): ?string
     {
-        return !empty($filename) ? image_url('page', $filename, 'large') : null;
+        return !empty($filename) ? image_url('product', $filename, 'large') : null;
     }
 
     public function getImageUrlAttribute(): ?string

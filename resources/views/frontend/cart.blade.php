@@ -6,25 +6,94 @@
 @endsection
 
 @section('content')
-    <!-- breadcrumb section start here -->
-    <section class="breadcrumb-sec" style="background: url({{ asset('frontend/assets/images/banner1.png') }}) no-repeat center;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="breadcrumb-wrap">
-                        <nav aria-label="breadcrumb">
-                            <h1>Cart</h1>
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Cart</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- breadcrumb section end here -->
+    <div id="mini-cart">
+        <a href="{{ route('cart.index') }}">Cart (<span id="cart-count">{{ $cart->items->sum('quantity') ?? 0 }}</span>)</a>
+        <ul>
+            @foreach($cart->items as $item)
+                <li>{{ $item->product->title }} x {{ $item->quantity }} - {{ $item->price }}</li>
+            @endforeach
+        </ul>
+        <div>Total: {{ $cart->total() }}</div>
+    </div>
+    <a href="{{ route('cart.index') }}">
+        Cart (<span id="cart-count">{{ $cart->items->sum('quantity') ?? 0 }}</span>)
+    </a>
+
+
+    <button class="add-cart" data-id="1" onclick="addToCart(2)">add cart</button>
+    <button class="add-cart" data-id="1" onclick="updateCart(2)">Update cart</button>
+
+
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        @foreach($cart->items as $item)
+            {{-- {{ $item }} --}}
+            <tr id="cart-item-{{ $item->id }}">
+                <td>{{ $item->product->title }}</td>
+                <td>
+                    <input type="number" value="{{ $item->quantity }}" min="1" data-id="{{ $item->id }}" class="update-cart">
+                </td>
+                <td>{{ $item->price }}</td>
+                <td>
+                    <button class="remove-cart" data-id="{{ $item->id }}"
+                        onclick="removeFromCart({{ $item->product_id }})">Remove</button>
+                </td>
+            </tr>
+        @endforeach
+    </table>
+    <div>Total: <span id="cart-total">{{ $cart->total() }}</span></div>
+
+    @push('scripts')
+        <script>
+            function addToCart(productId, qty = 1) {
+                fetch(`/cart/add/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: qty })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('cart-count').innerText = data.cart_count;
+                        alert(data.message);
+                    });
+            }
+
+            function updateCart(productId, qty = 1) {
+                fetch(`/cart/update/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: qty })
+                }).then(() => location.reload());
+            }
+
+            function removeFromCart(productId) {
+                fetch(`/cart/remove/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(() => location.reload());
+            }
+        </script>
+    @endpush
+
+
+
 
     <!-- cart page section start here -->
     <section class="cart-page-sec">

@@ -1,0 +1,25 @@
+{
+  "name": "tcc-tailwind-v4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx concurrently \"npm:css\" \"npm:server\"",
+    "css": "npx tailwindcss -i ./public/input.css -o ./public/output.css --watch",
+    "server": "npx nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.17",
+    "@tailwindcss/cli": "^4.1.17",
+    "nodemon": "^3.0.2",
+    "concurrently": "^8.2.2"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
