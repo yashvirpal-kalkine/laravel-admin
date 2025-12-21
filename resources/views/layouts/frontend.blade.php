@@ -47,8 +47,8 @@
     <script src="{{ asset('frontend/assets/js/jquery.magnific-popup.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/glightbox.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/aos.js') }}"></script>
-    {{-- <script src="{{ asset('frontend/assets/js/custom.js') }}"> </script>
-    <script src="{{ asset('frontend/assets/js/products.js') }}"> </script> --}}
+    <script src="{{ asset('frontend/assets/js/custom.js') }}"> </script>
+     {{--<script src="{{ asset('frontend/assets/js/products.js') }}"> </script> --}}
 
     {{-- Stack Script --}}
     @stack('scripts')

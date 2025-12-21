@@ -73,7 +73,7 @@ p{
 
 .btn {
   padding: 10px 28px !important;
-  border-radius: 5px;
+  border-radius: 50px;
   border: none;
   cursor: pointer;
   font-weight: 500;
@@ -127,9 +127,6 @@ top header css strat here
     background: var(--color-bg-4);
 }
 .top-header-wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 8px 0px;
 }
 .top-left p {
@@ -178,24 +175,25 @@ top header css strat here
 }
 .search-box .input-group {
     position: relative;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    padding: 0px 0px 0px 10px;
 }
 .search-box .input-group input {
     width: 540px;
 }
 .search-box .input-group input {
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 50px;
     background: #cccccc1a;
+    border: transparent;
 }
 
 .search-box .input-group button {
-    border: 1px solid #ffaa3d;
+    border: transparent;
     padding: 10px 20px;
-    background: #ffaa3d;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    color: #ffffff;
+    background: transparent;
+    color: #000000;
     font-size: 16px;
     text-transform: capitalize;
     font-weight: 400;
@@ -205,8 +203,7 @@ top header css strat here
 }
 .login-box ul li {
     background: #ffaa3d;
-    /* padding: 8px 10px; */
-    border-radius: 4px;
+    border-radius: 50px;
     position: relative;
 }
 
@@ -432,7 +429,7 @@ div#category .item {
     margin-left: 20px;
 }
 
-/* Ã°Å¸â€Â¥ Border OUTSIDE hexagon */
+/* ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥ Border OUTSIDE hexagon */
 .hex-wrap{
     position: absolute;
     top: 0;
@@ -499,7 +496,7 @@ div#category .item {
     font-weight: 500;
 }
 
-/* Ã°Å¸â€â€ž Animation */
+/* ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬Å¾ Animation */
 @keyframes borderAnim {
     0%{ background-position: 0% 50%; }
     50%{ background-position: 100% 50%; }
@@ -558,8 +555,10 @@ div#category .item {
 .product-box h4 {
     font-size: 16px;
     margin: 10px 0px 10px;
-    color: #000;
     font-weight: 500;
+}
+.product-box h4 a{
+color: #000;
 }
 .product-box .product-price {
     display: flex;
@@ -1256,7 +1255,7 @@ customised section css start here
     border: 1px solid #959090a3;
     border-radius: 4px !important;
     border: 1px solid #838080a3;
-    border-radius: 4px !important;
+    border-radius: 50px !important;
     background: #f9f9af;
 }
 .customised-form {
@@ -1281,7 +1280,7 @@ customised section css start here
     width: 100%;
     padding: 8px;
     border: 1px solid #838080a3;
-    border-radius: 4px !important;
+    border-radius: 50px !important;
     background: #f9f9af;
 }
 
@@ -1302,7 +1301,7 @@ customised section css start here
     padding: 10px;
     background: #ffaa3d;
     border: transparent;
-    border-radius: 4px;
+    border-radius: 50px;
     color: #fffafa;
     text-transform: uppercase;
     font-weight: 500;
@@ -1972,8 +1971,14 @@ ease-in-out 0s;
     font-size: 16px;
 }
 .login-box > ul >  li > a {
-    padding: 8px 10px;
-    display: inline-block;
+    display: block;
+    width: 36px;
+    height: 36px;
+    text-align: center;
+    line-height: 36px;
+}
+.login-box > ul > li > a i {
+    color: #fff;
 }
 .cart-header span {
     font-size: 22px;
@@ -2678,7 +2683,10 @@ ease;
     justify-content: space-between;
     align-items: center;
 }
-
+.input-group.quantity-group .qty-input {
+    border: transparent;
+    padding: 10px 0px;
+}
 .quantity-group {
     border: 1px solid #ccc;
     border-radius: 50px;
@@ -2695,7 +2703,7 @@ ease;
 }
 
 .quantity-group button {
-    padding: 10px 20px !important;
+    padding: 8px 20px !important;
 }
 
 .li-text:after {
@@ -2708,8 +2716,17 @@ ease;
     opacity: .8;
 }
 
-.price.ffdd {
-    padding-top: 18px;
+
+.product-info .price.ffdd small.compare-price {
+    font-weight: 400;
+    color: #838080;
+    font-size: 18px;
+    display: inline-block;
+    margin-left: 4px;
+}
+
+.product-info p {
+    padding: 10px 0px;
 }
 
 .price.ffdd span {
@@ -2769,6 +2786,7 @@ p.taxes {
 .prod_img {
     width: 100%;
     height: 560px;
+    position: relative;
 }
 
 .prod_img img {
@@ -2869,11 +2887,7 @@ p.taxes {
     cursor: pointer;
     transition: 0.2s;
 }
-.rating-stars i.active,
-.rating-stars i:hover,
-.rating-stars i:hover ~ i {
-    color: #ffb400 !important;
-}
+
 .btn-review-submit {
     background: #ffaa3d;
     border-radius: 50px;
@@ -4568,4 +4582,28 @@ section.account-sec .btn-buy {
     border: 2px dashed #aaa;
 }
 /* -------------------------------
-account page css end here */
+account page css end here 
+-----------------------------------*/
+
+/* ------------------------------
+  marquee css start 
+-------------------------------*/
+.top-header-wrap .top-left {
+    text-align: center;
+}
+
+
+/* Active star */
+.rating-stars i.active {
+  color: #ffb400;
+}
+
+/* Hover effect */
+.rating-stars i:hover {
+  color: #ff9800;
+}
+
+
+/* ------------------------------
+  marquee css end 
+-------------------------------*/

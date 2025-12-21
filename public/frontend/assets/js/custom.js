@@ -1,71 +1,82 @@
+/***************************************
+ * OFFER SLIDER
+ ***************************************/
+$(document).ready(function () {
+  $('.offer-slider').owlCarousel({
+    items: 1,
+    loop: true,
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayHoverPause: true,
+    smartSpeed: 2000,
+    nav: false,
+    dots: false
+  });
+});
 
-function showPage(pageName) {
-  // Hide all pages
+
+/***************************************
+ * PAGE SWITCH (My Account)
+ ***************************************/
+function showPage(pageName, event) {
   const pages = document.querySelectorAll('.page-content');
-  pages.forEach(page => page.style.display = 'none');
+  pages.forEach(p => p.style.display = 'none');
 
-  // Show selected page
   document.getElementById(pageName + '-page').style.display = 'block';
 
-  // Update active menu item
-  const menuItems = document.querySelectorAll('.nav-menu a');
-  menuItems.forEach(item => item.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.nav-menu a')
+    .forEach(i => i.classList.remove('active'));
 
+  event.target.classList.add('active');
   event.preventDefault();
 }
 
 
+/***************************************
+ * ADD / EDIT ADDRESS
+ ***************************************/
+document.addEventListener('DOMContentLoaded', () => {
 
-document.addEventListener('DOMContentLoaded', function () {
-  /* Show Add Address Form */
-  document.getElementById("addNewAddressBtn").addEventListener("click", function () {
-    document.getElementById("formTitle").innerText = "Add Address";
-    document.getElementById("addressForm").reset(); // empty form
-    document.getElementById("addressFormWrapper").style.display = "block";
-  });
+  const addBtn = document.getElementById("addNewAddressBtn");
+  const editBtn = document.querySelector(".edit-address-btn");
+  const cancelBtn = document.getElementById("cancelFormBtn");
 
-  /* Show Edit Form */
-  document.querySelector(".edit-address-btn").addEventListener("click", function () {
+  if (addBtn) {
+    addBtn.addEventListener("click", () => {
+      document.getElementById("formTitle").innerText = "Add Address";
+      document.getElementById("addressForm").reset();
+      document.getElementById("addressFormWrapper").style.display = "block";
+    });
+  }
 
-    document.getElementById("formTitle").innerText = "Edit Address";
-    document.getElementById("addressFormWrapper").style.display = "block";
+  if (editBtn) {
+    editBtn.addEventListener("click", () => {
+      document.getElementById("formTitle").innerText = "Edit Address";
+      document.getElementById("addressFormWrapper").style.display = "block";
 
-    // Prefill (you can extend more fields later)
-    document.getElementById("firstName").value = "Yog";
-    document.getElementById("lastName").value = "Raj";
-    document.getElementById("country").value = "India";
-  });
+      document.getElementById("firstName").value = "Yog";
+      document.getElementById("lastName").value = "Raj";
+      document.getElementById("country").value = "India";
+    });
+  }
 
-  /* Cancel Button */
-  document.getElementById("cancelFormBtn").addEventListener("click", function () {
-    document.getElementById("addressFormWrapper").style.display = "none";
-  });
-})
-
-
-// marquee Silder
-
-var elements = $('ul.marquee-item-list li').length;
-for (var i = 0; i < elements; i++) {
-  $(".marquee-item-list").clone().prependTo(".marquee-block");
-};
-var liEle = [];
-var liEle = $(".marquee-item-list li");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      document.getElementById("addressFormWrapper").style.display = "none";
+    });
+  }
+});
 
 
-
-// Category  Carousel
-
+/***************************************
+ * CATEGORY CAROUSEL
+ ***************************************/
 $('.category').owlCarousel({
   loop: true,
   margin: 0,
   nav: true,
   dots: false,
-  navText: [
-    "<i class='fa fa-angle-left'></i>",
-    "<i class='fa fa-angle-right'></i>"
-  ],
+  navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"],
   autoplay: true,
   autoplayTimeout: 4000,
   autoplayHoverPause: true,
@@ -78,21 +89,16 @@ $('.category').owlCarousel({
 });
 
 
-
-// Category  Carousel
-
+/***************************************
+ * CUSTOMIZED IMAGE SLIDER
+ ***************************************/
 $('#customised-img').owlCarousel({
   loop: true,
   margin: 10,
   nav: true,
   dots: false,
-  navText: [
-    "<i class='fa fa-angle-left'></i>",
-    "<i class='fa fa-angle-right'></i>"
-  ],
+  navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"],
   autoplay: false,
-  autoplayTimeout: 4000,
-  autoplayHoverPause: true,
   smartSpeed: 1600,
   responsive: {
     0: { items: 1 },
@@ -102,18 +108,15 @@ $('#customised-img').owlCarousel({
 });
 
 
-
-// Products Silder Carousel
-
+/***************************************
+ * PRODUCTS SLIDER
+ ***************************************/
 $('.products-silder').owlCarousel({
   loop: true,
   margin: 10,
   nav: true,
   dots: false,
-  navText: [
-    "<i class='fa fa-angle-left'></i>",
-    "<i class='fa fa-angle-right'></i>"
-  ],
+  navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"],
   autoplay: true,
   autoplayTimeout: 4000,
   autoplayHoverPause: true,
@@ -126,20 +129,16 @@ $('.products-silder').owlCarousel({
 });
 
 
-// Instagram Feed Carousel
-
+/***************************************
+ * INSTAGRAM SLIDER
+ ***************************************/
 $('#instagram').owlCarousel({
   loop: true,
   margin: 10,
   nav: false,
   dots: false,
-  navText: [
-    "<i class='fa fa-angle-left'></i>",
-    "<i class='fa fa-angle-right'></i>"
-  ],
   autoplay: true,
   autoplayTimeout: 3000,
-  autoplayHoverPause: true,
   smartSpeed: 1600,
   responsive: {
     0: { items: 1 },
@@ -148,62 +147,233 @@ $('#instagram').owlCarousel({
   }
 });
 
-// mega menu js
-document.addEventListener("DOMContentLoaded", function () {
 
+/***************************************
+ * MEGA MENU (Mobile)
+ ***************************************/
+document.addEventListener("DOMContentLoaded", () => {
 
   const pToggle = document.querySelector(".products-toggle");
   const pMenu = document.querySelector(".products-submenu");
 
-  pToggle.addEventListener("click", function (e) {
-    if (window.innerWidth < 992) {
-      e.preventDefault();
-      pMenu.classList.toggle("open");
-    }
-  });
-
+  if (pToggle && pMenu) {
+    pToggle.addEventListener("click", (e) => {
+      if (window.innerWidth < 992) {
+        e.preventDefault();
+        pMenu.classList.toggle("open");
+      }
+    });
+  }
 
   const zToggle = document.querySelector(".zodiac-toggle");
   const zMenu = document.querySelector(".mega-menu");
 
-  zToggle.addEventListener("click", function (e) {
-    if (window.innerWidth < 992) {
-      e.preventDefault();
-      zMenu.classList.toggle("open");
-    }
-  });
-
-});
-
-
-document.querySelectorAll(".btn-plus").forEach(function (button) {
-  button.addEventListener("click", function () {
-    let input = this.parentElement.querySelector(".qty-input");
-    input.value = parseInt(input.value) + 1;
-  });
-});
-
-document.querySelectorAll(".btn-minus").forEach(function (button) {
-  button.addEventListener("click", function () {
-    let input = this.parentElement.querySelector(".qty-input");
-    let value = parseInt(input.value);
-    if (value > 1) {
-      input.value = value - 1;
-    }
-  });
-});
-
-
-
-
-
-function toggleContent(id) {
-  var content = document.getElementById(id);
-
-  // If content is closed → open it
-  if (content.style.maxHeight) {
-    content.style.maxHeight = null;
-  } else {
-    content.style.maxHeight = content.scrollHeight + "px";
+  if (zToggle && zMenu) {
+    zToggle.addEventListener("click", (e) => {
+      if (window.innerWidth < 992) {
+        e.preventDefault();
+        zMenu.classList.toggle("open");
+      }
+    });
   }
+
+});
+
+
+/***************************************
+ * QTY BUTTONS
+ ***************************************/
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.querySelectorAll(".btn-plus").forEach(btn => {
+    btn.addEventListener("click", () => {
+      let input = btn.parentElement.querySelector(".qty-input");
+      input.value = parseInt(input.value) + 1;
+    });
+  });
+
+  document.querySelectorAll(".btn-minus").forEach(btn => {
+    btn.addEventListener("click", () => {
+      let input = btn.parentElement.querySelector(".qty-input");
+      if (parseInt(input.value) > 1)
+        input.value = parseInt(input.value) - 1;
+    });
+  });
+
+});
+
+
+/***************************************
+ * ACCORDION TOGGLE
+ ***************************************/
+function toggleContent(id) {
+  const box = document.getElementById(id);
+  if (!box) return;
+
+  box.style.maxHeight = box.style.maxHeight ? null : box.scrollHeight + "px";
 }
+
+
+/***************************************
+ * CART OPEN/CLOSE
+ ***************************************/
+document.addEventListener("DOMContentLoaded", () => {
+
+  const toggle = document.querySelector(".cart-toggle");
+  const box = document.querySelector(".cart-box");
+  const close = document.querySelector(".cart-close");
+
+  if (toggle && box) {
+    toggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      box.classList.toggle("open");
+    });
+  }
+
+  if (close) {
+    close.addEventListener("click", (e) => {
+      e.preventDefault();
+      box.classList.remove("open");
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (box && toggle && !box.contains(e.target) && !toggle.contains(e.target)) {
+      box.classList.remove("open");
+    }
+  });
+
+});
+
+
+/***************************************
+ * PASSWORD SHOW/HIDE
+ ***************************************/
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("togglePass");
+  const pass = document.getElementById("pass");
+  const eye = document.getElementById("eyeIcon");
+
+  if (btn && pass && eye) {
+    btn.addEventListener("click", () => {
+
+      if (pass.value.trim() === "") return;
+
+      if (pass.type === "password") {
+        pass.type = "text";
+        eye.classList.replace("fa-eye-slash", "fa-eye");
+      } else {
+        pass.type = "password";
+        eye.classList.replace("fa-eye", "fa-eye-slash");
+      }
+
+    });
+  }
+
+});
+
+
+/***************************************
+ * PRODUCT MAIN IMAGE CHANGE
+ ***************************************/
+function smoothChange(img) {
+  $("#mainImg").removeClass("active-slide");
+  setTimeout(() => {
+    $("#mainImg").attr("src", img).addClass("active-slide");
+  }, 50);
+}
+
+$(".owl-thumbs").owlCarousel({
+  items: 5,
+  margin: 10,
+  loop: true,
+  dots: false,
+  nav: false,
+  mouseDrag: true,
+  smartSpeed: 400,
+  slideBy: 1,
+  onInitialized: () => {
+    var first = $(".owl-thumbs .owl-item:not(.cloned)").first();
+    first.addClass("active-thumb");
+    smoothChange(first.find("img").attr("data-large"));
+  },
+  responsive: {
+    0: { items: 3 },
+    600: { items: 4 },
+    1000: { items: 5 }
+  }
+});
+
+
+$(document).on("click", ".owl-thumbs .owl-item", function () {
+  let img = $(this).find("img").attr("data-large");
+  smoothChange(img);
+  $(".owl-thumbs .owl-item").removeClass("active-thumb");
+  $(this).addClass("active-thumb");
+  $(".color-dot").removeClass("active");
+  $(`.color-dot[data-img="${img}"]`).addClass("active");
+});
+
+
+$(".color-dot").click(function () {
+  $(".color-dot").removeClass("active");
+  $(this).addClass("active");
+
+  let img = $(this).attr("data-img");
+  smoothChange(img);
+});
+
+
+/***************************************
+ * PRICE RANGE SLIDER
+ ***************************************/
+const minRange = document.getElementById("minRange");
+const maxRange = document.getElementById("maxRange");
+const progress = document.getElementById("progressBar");
+
+if (minRange && maxRange && progress) {
+
+  function updateUI() {
+    const min = +minRange.value;
+    const max = +maxRange.value;
+    const total = +minRange.max;
+
+    progress.style.left = (min / total * 100) + "%";
+    progress.style.right = (100 - (max / total * 100)) + "%";
+  }
+
+  minRange.addEventListener("input", () => {
+    if (+minRange.value > +maxRange.value - 500)
+      minRange.value = +maxRange.value - 500;
+    updateUI();
+  });
+
+  maxRange.addEventListener("input", () => {
+    if (+maxRange.value < +minRange.value + 500)
+      maxRange.value = +minRange.value + 500;
+    updateUI();
+  });
+
+  updateUI();
+}
+
+
+document.querySelectorAll(".rating-stars i").forEach(star => {
+    star.addEventListener("click", function () {
+
+        let index = parseInt(this.getAttribute("data-index"));
+
+        // Remove all active first
+        document.querySelectorAll(".rating-stars i")
+            .forEach(s => s.classList.remove("active"));
+
+        // Add active only up to clicked star
+        for (let i = 1; i <= index; i++) {
+            document.querySelector(`.rating-stars i[data-index="${i}"]`)
+                .classList.add("active");
+        }
+    });
+});
+
+
