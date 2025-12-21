@@ -6,7 +6,7 @@
 @endsection
 
 @section('content')
-    
+
     <!-- products details section start here -->
     <section class="product-section py-5">
         <div class="container">
@@ -249,23 +249,24 @@
         </div>
     </div>
     <!-- pro-details-tabs section end here  -->
-
-    <!-- Bracelets section start here -->
-    <section class="bracelets-sec bg-white pt-0">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="section-title text-center">Releated Products</h2>
-                    <div class="bracelets-box">
-                        <div class="owl-carousel products-silder owl-theme">
-                            @foreach ($relatedProducts as $item)
-                                <x-frontend.product-card-carousel :item="$item" />
-                            @endforeach
+    @if($relatedProducts->isNotEmpty())
+        <!-- Releated section start here -->
+        <section class="bracelets-sec bg-white pt-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="section-title text-center">Releated Products</h2>
+                        <div class="bracelets-box">
+                            <div class="owl-carousel products-silder owl-theme">
+                                @foreach ($relatedProducts as $item)
+                                    <x-frontend.product-card-carousel :item="$item" />
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <!-- Bracelets section end here -->
+        </section>
+        <!-- Releated section end here -->
+    @endif
 @endsection
