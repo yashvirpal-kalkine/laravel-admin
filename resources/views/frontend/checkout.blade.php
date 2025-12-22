@@ -15,30 +15,32 @@
 
                         <!-- Returning Customer -->
                         <div class="notification-card">
-                            <div class="toggle-section" onclick="toggleContent('loginContent')">
+                            <div class="toggle-section" onclick="toggleContent('loginContent','loginArrow')">
                                 <i class="fas fa-user-circle"></i>
                                 <span>Returning customer? Click here to login</span>
                                 <i class="fas fa-chevron-down arrow-icon" id="loginArrow"></i>
                             </div>
+
                             <div id="loginContent" class="expandable-content">
-                                <p style="color: #666; margin-bottom: 20px;">If you didn't logged in, please log in first.
+                                <p style="color:#666;margin-bottom:20px;">
+                                If you didn't log in, please log in first.
                                 </p>
 
                                 <div class="input-field">
-                                    <label>Email</label>
-                                    <input type="email" name="email" placeholder="Enter your email">
+                                <label>Email</label>
+                                <input type="email" placeholder="Enter your email">
                                 </div>
 
                                 <div class="input-field">
-                                    <label>Password</label>
-                                    <input type="password" name="password" placeholder="Enter your password">
+                                <label>Password</label>
+                                <input type="password" placeholder="Enter your password">
                                 </div>
 
                                 <button type="button" class="submit-button">
-                                    <i class="fas fa-sign-in-alt"></i> Sign In
+                                <i class="fas fa-sign-in-alt"></i> Sign In
                                 </button>
                             </div>
-                        </div>
+                            </div>
 
                         <!-- Coupon Code -->
                         <div class="notification-card">

@@ -10,7 +10,7 @@
 :root {
   --color-bg-1: #faf5df;
   --color-bg-2: #f5f5a8;
-  --color-bg-3: #0b9e59;
+  --color-bg-3: #1cab6a;
   --color-bg-4: #38d18b;
   --color-text: #272525;
   --color-primary: #fefc97;
@@ -92,7 +92,7 @@ p{
 .btn--lg { padding: 14px 32px; }
 .btn--sm { padding: 8px 18px; }
 
-.btn:hover {background: #15ae66;color: #fff;}
+.btn:hover {background: #1cab6a;color: #fff;}
 
 .section-title {
   font-size: 36px;
@@ -124,7 +124,7 @@ section.slider-home-sec .carousel-indicators button.active {
 top header css strat here
 --------------------------*/
 .top-header-sec {
-    background: var(--color-bg-4);
+    background: #1cab6a;
 }
 .top-header-wrap {
     padding: 8px 0px;
@@ -199,7 +199,7 @@ top header css strat here
     font-weight: 400;
 }
 .login-box ul li:hover {
-    background: #38d18b;
+    background: #1cab6a;
 }
 .login-box ul li {
     background: #ffaa3d;
@@ -271,7 +271,7 @@ top header css strat here
 }
 
 .menu-wrapper ul li a:hover {
-    color: #17be72;
+    color: #1cab6a;
 }
 
 
@@ -429,7 +429,7 @@ div#category .item {
     margin-left: 20px;
 }
 
-/* ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥ Border OUTSIDE hexagon */
+/* ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ Border OUTSIDE hexagon */
 .hex-wrap{
     position: absolute;
     top: 0;
@@ -496,7 +496,7 @@ div#category .item {
     font-weight: 500;
 }
 
-/* ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬Å¾ Animation */
+/* ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ Animation */
 @keyframes borderAnim {
     0%{ background-position: 0% 50%; }
     50%{ background-position: 100% 50%; }
@@ -546,7 +546,7 @@ div#category .item {
     border: transparent;
     width: 36px;
     height: 36px;
-    background: #7adc79;
+    background: #1cab6a;
     border-radius: 4px;
 }
 .product-box .product-btns button svg path {
@@ -578,7 +578,7 @@ color: #000;
     font-weight: 400;
 }
 .product-box .product-price span.price-discount-percent {
-    background: #3dbc77;
+    background: #1cab6a;
     font-size: 12px;
     padding: 2px 6px;
     border-radius: 50px;
@@ -619,7 +619,7 @@ color: #000;
     left: 1%;
     width: 44px;
     height: 44px;
-    background: #7adc79 !important;
+    background: #1cab6a!important;
     border-radius: 50px;
 }
 
@@ -915,7 +915,7 @@ section.articles-sec {
 }
 footer {
     padding: 50px 0px;
-    background: #31c883;
+    background: #1cab6a;
 }
 
 .footer-logo figure img {
@@ -1011,6 +1011,9 @@ p.add i {
     gap: 15px;
     margin-top: 23px;
 }
+.footer-social-icon ul li a:hover svg path {
+    fill: #1cab6a;
+}
 .footer-social-icon ul li a {
     width: 38px;
     height: 38px;
@@ -1029,10 +1032,13 @@ p.add i {
 }
 
 .footer-social-icon ul li a:hover {
-    background: #5b5959;
+    background: #ffffff;
 }
 .footer-box ul li a:hover {
-    color: #ffaa3d;
+    color: #fff;
+}
+.footer-social-icon ul li a:hover i {
+    color: #1cab6a;
 }
 .copy-right-wrap {
     display: flex;
@@ -1294,7 +1300,7 @@ customised section css start here
     margin-top: 11px;
 }
 .customised-form .input-group button:hover {
-    background: #38d18b;
+    background: #1cab6a;
 }
 .customised-form .input-group button {
     width: 100%;
@@ -1568,7 +1574,7 @@ products page css start here
   gap: 10px;
   align-items:center;
   margin-bottom: 30px;
-  justify-content: space-between;
+  justify-content: end;
 }
 .top-baar-right {
     display: flex;
@@ -1642,7 +1648,7 @@ section.breadcrumb-sec:after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #0000005e;
+    background: #0000007a;
     content: "";
 }
 
@@ -1923,6 +1929,7 @@ ease-in-out 0s;
     position: relative;
     border: 1px solid #ccc;
     width: 80px;
+    border-radius: 50px !important;
 }
 
 .product-image-container a img {
@@ -2905,6 +2912,7 @@ p.taxes {
     border: 1px solid #bfbfbf;
     padding: 13px 14px;
     font-size: 16px;
+    border-radius: 50px;
 }
 .form-control:focus {
     border-color: #049c41;
@@ -2948,7 +2956,7 @@ cart page css start here
 }
 
 .cart-page-sec .table-cart thead {
-    background: #222;
+    background: #1cab6a;
     color: #fff;
     border-radius: 10px;
 }
@@ -2961,7 +2969,7 @@ cart page css start here
     padding: 20px 15px;
     font-size: 16px;
     letter-spacing: .5px;
-    border-right: 1px solid #cccccc7a;
+    border-right: 1px solid #ffffffcc;
     font-weight: 600;
 }
 
@@ -2979,6 +2987,7 @@ cart page css start here
 }
 .cart-page-sec .product-image img {
     width: 80px;
+    border-radius: 50px;
 }
 
 .cart-page-sec .btn-remove {
@@ -3188,6 +3197,7 @@ section.cart-page-sec {
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-top: 12px;
 }
 .form-group-custom-control .custom-radio label.custom-control-label {
     font-size: 14px;
@@ -3197,7 +3207,7 @@ section.cart-page-sec {
     height: 16px;
 }
 .cart-page-sec .cart-summary .form-group-sm {
-    margin-top: 10px;
+    margin-top: 20px;
 }
 .cart-page-sec .cart-summary .form-group-sm label {
     margin-bottom: 15px;
@@ -3205,14 +3215,14 @@ section.cart-page-sec {
     color: #000;
 }
 .cart-page-sec .cart-summary .form-group-sm select {
-    height: 44px;
+    height: 46px;
 }
 .cart-page-sec .cart-summary .form-group-sm select:focus {
     box-shadow: none;
     border-color: #f5b90166;
 }
 .cart-page-sec .cart-summary .form-group-sm input {
-    height: 40px;
+    height: 46px;
 }
 .cart-page-sec .cart-summary .form-group-sm input:focus {
     box-shadow: none;
@@ -3353,7 +3363,7 @@ border-bottom: 1px solid #f0f0f0;
  
 .summary-table .quantity-badge {background: #ffaa3d;color: white;padding: 4px 10px;border-radius: 20px;font-size: 12px;margin-left: 10px;font-weight: 600;}
  
-.summary-table .price {font-weight: 700;color: #151513;font-size: 18px;}
+.summary-table .price {font-weight: 600;color: #151513;font-size: 16px;}
  
 .shipping-options {background: #fafafa;padding: 25px;border-radius: 15px;margin: 20px 0;border: 1px solid #f0f0f0;}
  
@@ -3387,7 +3397,7 @@ font-weight: 500;
  
 .total-row {display: flex;justify-content: space-between;align-items: center;color: #1a1a1a;font-size: 20px;font-weight: 700;}
  
-.total-amount {color: #ffaa3d;font-size: 22px;}
+.total-amount {color: #31302f;font-size: 18px;}
  
 .payment-methods {background: #fafafa;padding: 25px;border-radius: 15px;margin: 25px 0;border: 1px solid #f0f0f0;}
  
@@ -3425,7 +3435,7 @@ padding-left: 35px;
 .checkout-button {width: 100%;padding: 12px 20px;color: white;border: none;border-radius: 50px;font-size: 16px;font-weight: 600;cursor: pointer;transition: all 0.3s ease;text-transform: uppercase;letter-spacing: 1px;background: #ffaa3d;}
  
 .checkout-button:hover {
-    background: #151513;
+    background: #1cab6a;
 }
  
 .checkout-button:active {
@@ -3462,7 +3472,7 @@ margin-top: 30px;
 }
 }
  .shipping-header .price {
-    color: #ffaa3d;
+    color: #31302f;
 }
 h4.section-header i {
     font-size: 22px;
@@ -3721,7 +3731,7 @@ section.login-sec {
 }
 
 .login-container .login-form .login-cta:hover {
-  background: #191919;
+  background: #1cab6a;
 }
 
 
@@ -3736,7 +3746,7 @@ section.login-sec {
   width: 100%;
   text-decoration: none;
   border-radius: 50px;
-  padding: 14px 20px;
+  padding: 12px 20px;
   box-sizing: border-box;
   justify-content: center;
   font-size: 16px;
@@ -3911,15 +3921,7 @@ padding: 12px 15px;
 
 .contact-sec .form-control:focus {border-color: #ffaa3d;}
 
-.contact-sec .btn-send {
-background: #ffaa3d;
-color: white;
-padding: 12px 40px;
-border: none;
-border-radius: 4px;
-font-weight: 600;
-transition: all 0.3s ease;
-}
+.contact-sec .btn-send {background: #ffaa3d;color: white;padding: 12px 40px;border: none;border-radius: 50px;font-weight: 600;transition: all 0.3s ease;}
 
 .contact-sec .btn-send:hover {background: #ffaa3d;}
 
@@ -4607,3 +4609,126 @@ account page css end here
 /* ------------------------------
   marquee css end 
 -------------------------------*/
+
+/* Comment List */
+.comment-item {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.comment-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-header h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.comment-date {
+  font-size: 13px;
+  color: #999;
+}
+
+.comment-rating {
+  color: #f5a623;
+  font-size: 15px;
+  margin: 5px 0;
+}
+
+.tab-content-box {
+  display: none;
+}
+
+.tab-content-box.active {
+  display: block;
+}
+
+/* Tabs Wrapper */
+.product-tabs {
+  display: flex;
+  gap: 10px;                 /* ðŸ‘ˆ GAP yahan se aayega */
+  margin-bottom: 25px;
+}
+
+/* Tab Button */
+.product-tab-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+.product-tab-btn:hover {
+  background: #1cab6a;
+  border-color: #1cab6a;
+  color: #ffffff;
+}
+
+/* Active Tab */
+.product-tab-btn.active {
+  background: #ffaa3d;
+  border-color: #ffaa3d;
+  color: #fff;
+}
+
+/* Reviews Count */
+.product-tab-btn .count {
+  background: rgb(92 92 92 / 25%);
+  color: #000000;
+  font-size: 12px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-left: 6px;
+}
+
+/* Tab Content */
+.tab-content-box {
+  display: none;
+}
+
+.tab-content-box.active {
+  display: block;
+}
+.product-tab-btn:hover .count {
+    background: #fff;
+}
+.tab-content-box h4 {
+    font-size: 22px;
+    font-weight: 600;
+}
+.cart-table-container .table>:not(:first-child) {
+    border-top: transparent;
+}
+
+.cart-summary .table>:not(:first-child) {
+    border-top: transparent;
+}

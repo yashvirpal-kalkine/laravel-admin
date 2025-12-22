@@ -36,7 +36,7 @@
                             </div>
                             <div class="login-box">
                                 <ul>
-                                    <li><a class="topwish" href="#"><i class="fa fa-heart hidden-md hidden-lg hidden-sm"></i></a></li>
+                                    <li><a class="topwish" href="#"><i class="fa fa-heart hidden-md hidden-lg hidden-sm"></i></a><span id="count">1</span></li>
                                     <li> <a href="#"> <i class="fas fa-user"></i> </a> </li>
 
                                     <li class="dropdown cart-dropdown"> <a href="#" class="cart-toggle"> <i class="fas fa-shopping-bag"></i>

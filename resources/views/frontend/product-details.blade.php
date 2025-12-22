@@ -6,7 +6,7 @@
 @endsection
 
 @section('content')
-
+    
     <!-- products details section start here -->
     <section class="product-section py-5">
         <div class="container">
@@ -156,27 +156,7 @@
                             </div>
                         </div>
                         <x-frontend.custom-bracelet-form />
-                        <div class="description-box">
-                            <div class="accordion" id="accordionExample">
 
-                                <!-- Accordion 1 — DESCRIPTION -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                            Description
-                                        </button>
-                                    </h2>
-                                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            {{ $product->description }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
 
                     </div>
                 </div>
@@ -186,87 +166,114 @@
     <!-- products details section end here  -->
 
     <!-- pro-details-tabs section start here -->
-    <div class="container my-5">
+   <div class="container my-5">
+
+  <!-- Tabs -->
+  <div class="product-tabs">
+    <button class="product-tab-btn active" data-tab="desc">Description</button>
+    <button class="product-tab-btn" data-tab="reviews">
+      Reviews <span class="count">0</span>
+    </button>
+  </div>
+
+  <!-- Description -->
+  <div id="desc" class="tab-content-box active">
+    <h4>Description</h4>
+    <p>
+      This 7 Chakra Pendant in Clear Quartz is crafted to enhance positive energy,
+      improve focus, and balance the body’s chakras. Ideal for daily wear and gifting.
+    </p>
+  </div>
+
+  <!-- Reviews -->
+  <div id="reviews" class="tab-content-box">
+
+    <!-- Comment List -->
+    <div class="comment-list mb-5">
+
+      <div class="comment-item">
+        <div class="comment-avatar">A</div>
+        <div class="comment-content">
+          <div class="comment-header">
+            <h6>Akash Verma</h6>
+            <span class="comment-date">June 12, 2025</span>
+          </div>
+          <div class="comment-rating">★★★★☆</div>
+          <p>Beautiful pendant, very good quality and fast delivery.</p>
+        </div>
+      </div>
+
+      <div class="comment-item">
+        <div class="comment-avatar">R</div>
+        <div class="comment-content">
+          <div class="comment-header">
+            <h6>Riya Sharma</h6>
+            <span class="comment-date">June 10, 2025</span>
+          </div>
+          <div class="comment-rating">★★★★★</div>
+          <p>Loved the crystal clarity and packaging. Highly recommended.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Review Form -->
+    <div class="review-section">
+      <h3 class="review-title">Add a Review</h3>
+
+      <div class="rating-wrap mb-3">
+        <label class="fw-semibold mb-1">Your rating *</label>
+        <div class="rating-stars">
+          <i class="fas fa-star" data-index="1"></i>
+          <i class="fas fa-star" data-index="2"></i>
+          <i class="fas fa-star" data-index="3"></i>
+          <i class="fas fa-star" data-index="4"></i>
+          <i class="fas fa-star" data-index="5"></i>
+        </div>
+      </div>
+
+      <form>
+        <div class="mb-3">
+          <label class="fw-semibold mb-1">Your review *</label>
+          <textarea class="form-control" rows="4"></textarea>
+        </div>
+
         <div class="row">
-            <div class="col-md-12">
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold mb-1">Name *</label>
+            <input type="text" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold mb-1">Email *</label>
+            <input type="email" class="form-control">
+          </div>
+        </div>
 
-                <button class="btn btn-success rounded-pill px-5 mb-4">
-                    Reviews (0)
-                </button>
+        <button class="btn-review-submit">Submit</button>
+      </form>
+    </div>
 
-                <div class="review-section">
-                    <h3 class="review-title">Reviews</h3>
+  </div>
 
-                    <p>There are no reviews yet.</p>
-                    <p>Be the first to review <strong>“7 Chakra Pendant in Clear Quartz”</strong></p>
-                    <p>Your email address will not be published. Required fields are marked *</p>
+</div>
+    <!-- pro-details-tabs section end here  -->
 
-                    <!-- Rating -->
-                    <div class="rating-wrap">
-                        <label class="fw-semibold mb-1">Your rating *</label>
-                        <div class="rating-stars mb-3">
-                            <i class="fas fa-star" data-index="1"></i>
-                            <i class="fas fa-star" data-index="2"></i>
-                            <i class="fas fa-star" data-index="3"></i>
-                            <i class="fas fa-star" data-index="4"></i>
-                            <i class="fas fa-star" data-index="5"></i>
+    <!-- Bracelets section start here -->
+    <section class="bracelets-sec bg-white pt-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="section-title text-center">Releated Products</h2>
+                    <div class="bracelets-box">
+                        <div class="owl-carousel products-silder owl-theme">
+                            @foreach ($relatedProducts as $item)
+                                <x-frontend.product-card-carousel :item="$item" />
+                            @endforeach
                         </div>
                     </div>
-
-                    <!-- Review Form -->
-                    <form>
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <label class="fw-semibold mb-1">Your review *</label>
-                                <textarea class="form-control" rows="4" required></textarea>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label class="fw-semibold mb-1">Name *</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-
-                            <div class="col-md-12 mb-3">
-                                <label class="fw-semibold mb-1">Email *</label>
-                                <input type="email" class="form-control" required>
-                            </div>
-                        </div>
-
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="saveInfo">
-                            <label class="form-check-label" for="saveInfo">
-                                Save my name, email, and website in this browser for the next time I comment.
-                            </label>
-                        </div>
-
-                        <button type="submit" class="btn btn-review-submit">Submit</button>
-                    </form>
                 </div>
-
             </div>
         </div>
-    </div>
-    <!-- pro-details-tabs section end here  -->
-    @if($relatedProducts->isNotEmpty())
-        <!-- Releated section start here -->
-        <section class="bracelets-sec bg-white pt-0">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h2 class="section-title text-center">Releated Products</h2>
-                        <div class="bracelets-box">
-                            <div class="owl-carousel products-silder owl-theme">
-                                @foreach ($relatedProducts as $item)
-                                    <x-frontend.product-card-carousel :item="$item" />
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Releated section end here -->
-    @endif
+    </section>
+    <!-- Bracelets section end here -->
 @endsection

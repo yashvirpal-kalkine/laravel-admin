@@ -377,3 +377,28 @@ document.querySelectorAll(".rating-stars i").forEach(star => {
 });
 
 
+/* ===== Tabs Switch ===== */
+const tabBtns = document.querySelectorAll(".product-tab-btn");
+const tabContents = document.querySelectorAll(".tab-content-box");
+
+tabBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    tabBtns.forEach(b => b.classList.remove("active"));
+    tabContents.forEach(c => c.classList.remove("active"));
+
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+  });
+});
+
+/***************************************
+  Click here to login
+ ***************************************/
+
+function toggleContent(contentId, arrowId) {
+  const content = document.getElementById(contentId);
+  const arrow = document.getElementById(arrowId);
+
+  content.classList.toggle("active");
+  arrow.classList.toggle("rotate");
+}
