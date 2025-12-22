@@ -152,10 +152,30 @@
 
                         <div class="custom-html">
                             <div class="bulk-order-enquiry">
-                                <p>Want to buy in bulk? <a href="#" style="color: blue;">Inquire Now</a></p>
+                                <p>Want to buy in bulk?
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#enquiryModal"
+                                        style="color: blue;">Enquiry Now</a>
+                                </p>
                             </div>
                         </div>
-                        <x-frontend.custom-bracelet-form />
+
+                        <div class="modal fade" id="enquiryModal" tabindex="-1" aria-labelledby="enquiryModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="enquiryModalLabel">Enquiry Form</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <x-frontend.custom-bracelet-form full-width="true" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
 
 
                     </div>

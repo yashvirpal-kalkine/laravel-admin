@@ -105,6 +105,10 @@ class HomeController extends Controller
         if (!view()->exists("frontend.$template")) {
             $template = 'default';
         }
+        if ($page->template == "wishlist") {
+            $productWishlist = Product::active()->paginate(12);
+            return view("frontend.$template", compact('page', 'productWishlist'));
+        }
         if ($page->template == "shop") {
             $products = Product::active()->paginate(12);
             return view("frontend.$template", compact('page', 'products'));
