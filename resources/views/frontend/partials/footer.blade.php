@@ -49,46 +49,49 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-6">
+            <div class="col-md-5 col-sm-6">
                 <div class="footer-wrap">
                     <div class="footer-box">
                         <h3>Our Products</h3>
-                        <ul>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Rudraksh</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Bracelets</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Pyrite</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Stone</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Shankh</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Pendants</a></li>
+                        <ul class="list-unstyled row">
+                            @foreach($ourProductsFooterMenu as $category)
+                                <li class="col-6">
+                                    <a href="{{ route('products.list', $category->slug) }}">
+                                        <i class="fas fa-angle-double-right"></i> {{ $category->title }}
+                                    </a>
+                                </li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
+            {{-- <div class="col-md-3 col-sm-6">
                 <div class="footer-wrap">
                     <div class="footer-box">
-                        <h3>Links</h3>
+                        <h3><!--Links-->&nbsp;</h3>
                         <ul>
                             <li><a href="#"><i class="fas fa-angle-double-right"></i> Shop By Concern</a></li>
                             <li><a href="#"><i class="fas fa-angle-double-right"></i> Shop by Zodiac</a></li>
                             <li><a href="#"><i class="fas fa-angle-double-right"></i> Customised Bracelets</a></li>
                             <li><a href="#"><i class="fas fa-angle-double-right"></i> Corporate Gifts</a></li>
+                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Pooja Needs</a></li>
                             <li><a href="#"><i class="fas fa-angle-double-right"></i> Bulk Orders</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Contact Us</a></li>
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-3 col-sm-6">
                 <div class="footer-wrap">
                     <div class="footer-box">
-                        <h3>Policy Information</h3>
+                        <h3>Quick Link</h3>
                         <ul>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> My Account</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Refund & Returns</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Privacy Policy</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Shipping Policy</a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i> Terms & Conditions</a></li>
+                            @foreach($quickLinksFooterMenu as $menu)
+                                <li>
+                                    <a href="{{ route('page', $menu->slug) }}">
+                                        <i class="fas fa-angle-double-right"></i> {{ $menu->title }}
+                                    </a>
+                                </li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>

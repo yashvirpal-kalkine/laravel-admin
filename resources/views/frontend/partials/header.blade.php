@@ -7,8 +7,12 @@
                     <div class="top-header-wrap">
                         <div class="top-left">
                             <div class="offer-slider owl-carousel">
-                                <div class="item"> <p>Get 30% Off On Selected Items</p> </div>
-                                <div class="item"> <p>Free Shipping on Orders Above ₹999</p> </div>
+                                <div class="item">
+                                    <p>Get 30% Off On Selected Items</p>
+                                </div>
+                                <div class="item">
+                                    <p>Free Shipping on Orders Above ₹999</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -22,7 +26,10 @@
                 <div class="col-md-12">
                     <div class="middle-header-wrap">
                         <div class="left-logo">
-                            <figure> <a href="#"> <img src="{{ asset('frontend/assets/images/logo.webp') }}"> </a>
+                            <figure>
+                                <a href="{{ route('home') }}">
+                                    <img src="{{ asset('frontend/assets/images/logo.webp') }}" alt="logo">
+                                </a>
                             </figure>
                         </div>
                         <div class="middle-right">
@@ -36,16 +43,35 @@
                             </div>
                             <div class="login-box">
                                 <ul>
-                                    <li><a class="topwish" href="#"><i class="fa fa-heart hidden-md hidden-lg hidden-sm"></i></a><span id="count">1</span></li>
-                                    <li> <a href="#"> <i class="fas fa-user"></i> </a> </li>
+                                    <li>
+                                        <a class="topwish" href="{{ route('page', 'wishlist') }}">
+                                            <i class="fa fa-heart hidden-md hidden-lg hidden-sm"></i>
+                                        </a>
+                                        <span id="count">1</span>
+                                    </li>
+                                    <li>
+                                        @if (Auth::check())
+                                            <a href="{{ route('user.dashboard') }}">
+                                                <i class="fas fa-user"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('page', 'login') }}">
+                                                <i class="fas fa-user"></i>
+                                            </a>
+                                        @endif
 
-                                    <li class="dropdown cart-dropdown"> <a href="#" class="cart-toggle"> <i class="fas fa-shopping-bag"></i>
+
+                                    </li>
+
+                                    <li class="dropdown cart-dropdown">
+                                        <a href="{{ route('page', 'cart') }}" class="cart-toggle">
+                                            <i class="fas fa-shopping-bag"></i>
                                         </a>
                                         <span id="cartCount">3</span>
                                         <div class=" cart-box">
                                             <div class="cart-header">
                                                 <span>Shopping Cart</span>
-                                                <a href="#" class="cart-close">×</a>
+                                                <a href="javascript:void(0)" class="cart-close">×</a>
                                             </div>
 
                                             <div class="product">
@@ -123,8 +149,10 @@
                                                     <strong>$13400.00</strong>
                                                 </div>
 
-                                                <a href="#" class="btn view-cart">View Cart</a>
-                                                <a href="#" class="btn checkout">Checkout</a>
+                                                <a href="{{ route('page', 'cart') }}" class="btn view-cart">View
+                                                    Cart</a>
+                                                <a href="{{ route('page', 'checkout') }}"
+                                                    class="btn checkout">Checkout</a>
                                             </div>
                                         </div>
                                     </li>
@@ -149,136 +177,73 @@
                             </button>
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                 <ul class="navbar-nav mx-auto">
-
-                                    <!--  PRODUCTS WITH SUBMENU -->
                                     <li class="nav-item products-parent position-relative">
-                                        <a href="#" class="products-toggle">
-                                            <i class="fas fa-box"></i> Products
+                                        <a href="{{ route('page', 'shop') }}" class="products-toggle">
+                                            <i class="fas fa-box"></i> Shops
                                             <i class="fas fa-chevron-down mobile-arrow"></i>
                                         </a>
 
-                                        <!-- SUBMENU -->
                                         <ul class="products-submenu">
-                                            <li><a href="#">Bracelets</a></li>
-                                            <li><a href="#">Rudraksha</a></li>
-                                            <li><a href="#">Pyrite</a></li>
-                                            <li><a href="#">Stone</a></li>
+                                            @foreach($directCategoriesHeaderMenu as $category)
+                                                <li class="">
+                                                    <a href="{{ route('products.list', $category->slug) }}">
+                                                        {{ $category->title }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </li>
 
-                                    <li class="nav-item zodiac-parent">
-                                        <a href="#" class="zodiac-toggle">
-                                            <i class="fas fa-bullseye"></i> Shop By Concern
-                                            <i class="fas fa-chevron-down mobile-arrow"></i>
-                                        </a>
+                                    @foreach($megaCategoriesHeaderMenu as $category)
 
-                                        <div class="mega-menu">
+                                        <li class="nav-item zodiac-parent">
+                                            <a href="{{ route('products.list', $category->slug) }}">
+                                                @if ($category->id == 1)
+                                                    <i class="fas fa-bullseye"></i>
+                                                @elseif ($category->id == 8)
+                                                    <i class="fas fa-sun"></i>
+                                                @endif
+                                                {{ $category->title }}
+                                                <i class="fas fa-chevron-down mobile-arrow"></i>
+                                            </a>
 
-                                            <div class="zodiac-grid">
-                                                <div class="z-item"> <a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/s1.jpg') }}">
-                                                        <p>Love</p>
-                                                    </a> </div>
-                                                <div class="z-item"> <a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/s2.jpg') }}">
-                                                        <p>Money</p>
-                                                    </a> </div>
-                                                <div class="z-item"> <a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/s3.jpg') }}">
-                                                        <p>Career</p>
-                                                    </a> </div>
-                                                <div class="z-item"> <a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/s4.jpg') }}">
-                                                        <p>Health</p>
-                                                    </a> </div>
-                                                <div class="z-item"> <a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/s5.jpg') }}">
-                                                        <p>Marriage</p>
-                                                    </a> </div>
-                                                <div class="z-item"> <a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/s6.jpg') }}">
-                                                        <p>Gifts</p>
-                                                    </a> </div>
+                                            <div class="mega-menu">
+                                                <div class="zodiac-grid">
+                                                    @foreach($category->children as $child)
+                                                        <div class="z-item">
+                                                            <a href="{{ route('products.list', $child->slug) }}">
+                                                                @if($child->image)
+                                                                    <img src="{{ asset($child->image) }}"
+                                                                        alt="{{ $child->image_alt }}">
+                                                                @endif
+                                                                <p>{{ $child->title }}</p>
+                                                            </a>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
-
-                                        </div>
-                                    </li>
-
-                                    <!--  ZODIAC MEGA MENU -->
-                                    <li class="nav-item zodiac-parent">
-                                        <a href="#" class="zodiac-toggle">
-                                            <i class="fas fa-sun"></i> Shop by Zodiac
-                                            <i class="fas fa-chevron-down mobile-arrow"></i>
-                                        </a>
-
-                                        <div class="mega-menu">
-
-                                            <div class="zodiac-grid">
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m1.png') }}">
-                                                        <p>Aries</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m2.png') }}">
-                                                        <p>Taurus</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m3.png') }}">
-                                                        <p>Gemini</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m4.png') }}">
-                                                        <p>Cancer</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m5.png') }}">
-                                                        <p>Leo</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m6.png') }}">
-                                                        <p>Virgo</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m7.png') }}">
-                                                        <p>Libra</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m8.png') }}">
-                                                        <p>Scorpio</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m9.png') }}">
-                                                        <p>Sagittarius</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m10.png') }}">
-                                                        <p>Capricorn</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m11.png') }}">
-                                                        <p>Aquarius</p>
-                                                    </a></div>
-                                                <div class="z-item"><a href="#"><img
-                                                            src="{{ asset('frontend/assets/images/m12.png') }}">
-                                                        <p>Pisces</p>
-                                                    </a></div>
-                                            </div>
-
-                                        </div>
-                                    </li>
-
-                                    <!-- OTHER MENU ITEMS -->
+                                        </li>
+                                    @endforeach
+                                    @foreach($categoryHeaderMenu as $category)
+                                        <li class="nav-item">
+                                            <a href="{{ route('products.list', $category->slug) }}">
+                                                @if ($category->id == 21)
+                                                    <i class="fas fa-gift"></i>
+                                                @elseif ($category->id == 22)
+                                                    <i class="fas fa-om"></i>
+                                                @endif
+                                                {{ $category->title }}
+                                            </a>
+                                        </li>
+                                    @endforeach
                                     <li class="nav-item">
-                                        <a href="#"><i class="fas fa-ring"></i> Customised Bracelets</a>
+                                        <a href="{{ route('products.details', 'customised-bracelets') }}"><i
+                                                class="fas fa-ring"></i> Customised Bracelets</a>
                                     </li>
+
                                     <li class="nav-item">
-                                        <a href="#"><i class="fas fa-gift"></i> Corporate Gifts</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#"><i class="fas fa-om"></i> Puja Needs</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#"><i class="fas fa-id-card"></i> Membership Plans</a>
+                                        <a href="{{ route('products.details', 'membership-plans') }}"><i
+                                                class="fas fa-id-card"></i> Membership Plans</a>
                                     </li>
 
                                 </ul>
