@@ -45,7 +45,6 @@
                         console.log('SUCCESS:', data);
                         loadMiniCart();
                         document.getElementById('cart-count').innerText = data.cart_count;
-                        alert(data.message);
                     });
             }
 
@@ -80,13 +79,29 @@
             }
 
             function loadMiniCart() {
-                fetch('/cart/mini')
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById('mini-cart').innerHTML = html;
+                fetch('/cart/mini', {
+                    headers: { 'Accept': 'application/json' }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success) return;
+                        document.querySelectorAll('.cart-count').forEach(el => el.innerText = data.cart_count);
+                        renderMiniCart(data.cart);
                     });
             }
+            function renderMiniCart(cart) {
+                const miniCart = document.getElementById('mini-cart');
+                let html = `<a href="{{ route('cart.index') }}">Cart (<span id="cart-count">${cart.items.reduce((sum, item) => sum + item.quantity, 0)}</span>)</a><ul>`;
 
+                cart.items.forEach(item => {
+                    html += `<li>${item.product.title} x ${item.quantity} - ${item.price}</li>`;
+                });
+
+                html += `</ul><div>Total: ${cart.total}</div>`;
+
+                miniCart.innerHTML = html;
+            }
+            loadMiniCart();
         </script>
     @endpush
 

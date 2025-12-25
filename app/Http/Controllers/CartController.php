@@ -65,8 +65,13 @@ class CartController extends Controller
         $cart = $this->cart->getCart();
         $cart->load('items.product');
 
-        return view('frontend.partials.cart-mini', compact('cart'));
+        return response()->json([
+            'success' => true,
+            'cart' => $cart,
+            'cart_count' => $this->cart->count()
+        ]);
     }
+
 
 
 }

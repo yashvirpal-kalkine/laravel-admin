@@ -36,10 +36,11 @@ Route::prefix('cart')->group(function () {
     Route::post('add/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::post('update/{product}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('mini', [CartController::class, 'mini'])->name('cart.mini');
 });
 
 
-Route::get('mini', [CartController::class, 'mini'])->name('cart.mini');
+
 
 
 // Blog
