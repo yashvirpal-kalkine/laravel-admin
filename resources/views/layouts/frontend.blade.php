@@ -53,15 +53,20 @@
     <script src="{{ asset('frontend/assets/js/aos.js') }}"></script>
 
     <script>
-        window.routes = {
-            cartAdd: "{{ route('cart.add', ':id') }}",
-            cartUpdate: "{{ route('cart.update', ':id') }}",
-            cartRemove: "{{ route('cart.remove', ':id') }}",
-            cartMini: "{{ route('cart.mini') }}",
-            cartProductQty: "{{ route('cart.productQty', ':id') }}",
-            checkOutUrl: "{{ route('page', 'checkout') }}",
+        window.App = {
+            symbol: @json((string) setting('currency_symbol', '₹')),
+            routes: {
+                cartAdd: @json(route('cart.add', ':id')),
+                cartUpdate: @json(route('cart.update', ':id')),
+                cartRemove: @json(route('cart.remove', ':id')),
+                cartMini: @json(route('cart.mini')),
+                cartProductQty: @json(route('cart.productQty', ':id')),
+                checkout: @json(route('page', 'checkout')),
+            }
         };
     </script>
+
+
 
 
     <script src="{{ asset('frontend/assets/js/custom.js') }}"> </script>

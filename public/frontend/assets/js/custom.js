@@ -402,23 +402,28 @@ document.addEventListener("click", function (e) {
 
   const wrapper = btn.closest(".qty-wrapper");
   const input = wrapper.querySelector(".qty-input");
-
   const productId = input.dataset.productId;
   let value = parseInt(input.value);
+
   const min = parseInt(input.min) || 1;
   const max = parseInt(input.max) || 999;
 
-  if (btn.dataset.type === "plus" && value < max) {
-    value++;
-  }
+  if (btn.dataset.type === "plus" && value < max) value++;
+  if (btn.dataset.type === "minus" && value > min) value--;
 
-  if (btn.dataset.type === "minus" && value > min) {
-    value--;
-  }
   input.value = value;
-  updateCart(productId, value);
+
+  const buyNowBtn = document.querySelector(`#buyNow${productId}`);
+  if (!buyNowBtn) {
+    if (value === 1) return;
+    updateCart(productId, value);
+  }
 });
 
+function route(name, id = null) {
+  let url = App.routes[name];
+  return id ? url.replace(':id', id) : url;
+}
 
 
 function addToCart(productId, qty = 1, buyNow = false) {
@@ -427,7 +432,7 @@ function addToCart(productId, qty = 1, buyNow = false) {
   if (input) {
     qty = input.value;
   }
-  fetch(window.routes.cartAdd.replace(':id', productId), {
+  fetch(route('cartAdd', productId), {
     method: 'POST',
     headers: {
       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -448,9 +453,15 @@ function addToCart(productId, qty = 1, buyNow = false) {
         addCart.disabled = true;
         addCart.textContent = 'Already in Cart';
         buyNowBtn.disabled = true;
+
+        const wrapper = document.querySelector(`#qtywrapper${productId}`);
+        wrapper.querySelectorAll("button, input").forEach((el) => {
+          el.disabled = true;
+        });
+
+
       } else {
         const addCartButtons = document.querySelectorAll(`.addCart${productId}`);
-
         addCartButtons.forEach(function (item) {
           item.disabled = true;
           item.setAttribute('title', 'Already in Cart');
@@ -469,7 +480,7 @@ function addToCart(productId, qty = 1, buyNow = false) {
 
 function updateCart(productId, qty) {
   showLoader();
-  fetch(window.routes.cartUpdate.replace(':id', productId), {
+  fetch(route('cartUpdate', productId), {
     method: 'POST',
     headers: {
       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -492,7 +503,7 @@ function updateCart(productId, qty) {
 
 function removeFromCart(productId) {
   showLoader();
-  fetch(window.routes.cartRemove.replace(':id', productId), {
+  fetch(route('cartRemove', productId), {
     method: 'DELETE',
     headers: {
       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -520,11 +531,11 @@ function removeFromCart(productId) {
           const totalEl = document.getElementById('cart-total');
 
           if (subtotalEl) {
-            subtotalEl.innerText = `₹${data.cart_total.toFixed(2)}`;
+            subtotalEl.innerText = `${window.symbol}${data.cart_total.toFixed(2)}`;
           }
 
           if (totalEl) {
-            totalEl.innerText = `₹${data.cart_total.toFixed(2)}`;
+            totalEl.innerText = `${window.symbol}${data.cart_total.toFixed(2)}`;
           }
         }
       }
@@ -536,7 +547,7 @@ function removeFromCart(productId) {
 
 function loadMiniCart() {
 
-  fetch(window.routes.cartMini, {
+  fetch(route('cartMini'), {
     headers: { 'Accept': 'application/json' }
   })
     .then(res => res.json())
@@ -558,7 +569,7 @@ function productQty(productId) {
   const input = document.querySelector('.qty-input');
   if (!input) return;
 
-  fetch(window.routes.cartProductQty.replace(':id', productId), {
+  fetch(route('cartProductQty', productId), {
     headers: {
       'Accept': 'application/json'
     }

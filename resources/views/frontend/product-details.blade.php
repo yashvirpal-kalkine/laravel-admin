@@ -115,7 +115,8 @@
                             <label class="fw-bold">Quantity:</label>
                             <div class="quantity-wrap">
                                 <div class="gap-3 mt-1">
-                                    <x-frontend.quantity :cartQty="$product->cart_qty" :productId="$product->id" />
+                                    <x-frontend.quantity :cartQty="$product->cart_qty" :productId="$product->id"
+                                        :isSingle="true" />
                                 </div>
                                 <div class="btn-box">
                                     <x-frontend.add-to-cart :cartQty="$product->cart_qty" :productId="$product->id"

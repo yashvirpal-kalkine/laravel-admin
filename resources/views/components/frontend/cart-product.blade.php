@@ -18,7 +18,7 @@
     </td>
     <td>{{ currencyformat($item->price) }}</td>
     <td class="text-center">
-        <x-frontend.quantity :cartQty="$item->quantity " :productId="$item->product_id" />
+        <x-frontend.quantity :cartQty="$item->quantity " :productId="$item->product_id" :isSingle="false" />
     </td>
     <td class="text-end fw-semibold" id="subtotal-{{ $item->product_id }}">
         {{ currencyformat($subtotal) }}
