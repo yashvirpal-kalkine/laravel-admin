@@ -39,7 +39,7 @@ Route::prefix('cart')->group(function () {
 });
 
 
-
+Route::get('mini', [CartController::class, 'mini'])->name('cart.mini');
 
 
 // Blog

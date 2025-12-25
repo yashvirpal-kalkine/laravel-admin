@@ -59,5 +59,15 @@ class CartController extends Controller
             'cart_count' => $this->cart->count()
         ]);
     }
+
+    public function mini()
+    {
+        $cart = $this->cart->getCart();
+        $cart->load('items.product');
+
+        return view('frontend.partials.cart-mini', compact('cart'));
+    }
+
+
 }
 

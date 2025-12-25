@@ -71,7 +71,7 @@ p{
     margin: 0px;
 }
 
-.btn {
+.mybtn {
   padding: 10px 28px !important;
   border-radius: 50px;
   border: none;
@@ -2943,6 +2943,7 @@ products details  page css end here
 /* -----------------------------------
 cart page css start here
 ------------------------------------- */
+/*
 .cart-page-sec .cart-page-sec {
     padding: 60px 0;
     background: #f8f9fa;
@@ -2971,6 +2972,7 @@ cart page css start here
     letter-spacing: .5px;
     border-right: 1px solid #ffffffcc;
     font-weight: 600;
+    border-bottom: 1px solid #e2e2e2;
 }
 
 .cart-page-sec .product-row {
@@ -3256,7 +3258,7 @@ section.cart-page-sec {
     background: transparent;
     color: #635a5a;
     line-height: 16px;
-}
+}*/
 
 /* -----------------------------------
 cart page css end here
@@ -3943,6 +3945,7 @@ contact us page css end here
 /* ----------------------------------
 Wishlist page css start here
 ------------------------------------ */
+/*
 :root {
     --primary-color: #8b5cf6;
     --secondary-color: #6366f1;
@@ -4203,7 +4206,7 @@ section.wishlist-page-sec {
 }
 .wishlist-page-sec .btn-add-cart i {
     font-size: 15px;
-}
+}*/
 /* ----------------------------------
 Wishlist page css start here
 ------------------------------------ */

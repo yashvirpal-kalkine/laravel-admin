@@ -67,7 +67,7 @@
                                         <a href="{{ route('page', 'cart') }}" class="cart-toggle">
                                             <i class="fas fa-shopping-bag"></i>
                                         </a>
-                                        <span id="cartCount">3</span>
+                                        <span id="cartCount">{{ $cart->items->sum('quantity') ?? 0 }}</span>
                                         <div class=" cart-box">
                                             <div class="cart-header">
                                                 <span>Shopping Cart</span>
@@ -212,8 +212,13 @@
                                                     @foreach($category->children as $child)
                                                         <div class="z-item">
                                                             <a href="{{ route('products.list', $child->slug) }}">
+                                                                {{-- {{ $child->image }}
+                                                                {{ $child->image_url }} --}}
                                                                 @if($child->image)
-                                                                    <img src="{{ asset($child->image) }}"
+                                                                    {{-- <img
+                                                                        src="{{ $child->image ? $child->image_url : asset('frontend/images/category.webp') }}"
+                                                                        alt="{{ $child->image_alt }}"> --}}
+                                                                    <img src="{{  asset('frontend/images/category.webp') }}"
                                                                         alt="{{ $child->image_alt }}">
                                                                 @endif
                                                                 <p>{{ $child->title }}</p>
