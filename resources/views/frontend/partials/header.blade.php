@@ -34,9 +34,9 @@
                         </div>
                         <div class="middle-right">
                             <div class="search-box">
-                                <form>
+                                <form action="{{ route('page', 'search') }}" method="get">
                                     <div class="input-group">
-                                        <input type="text" name="" placeholder="Search">
+                                        <input type="text" name="q" placeholder="Search">
                                         <button><i class="fas fa-search"></i></button>
                                     </div>
                                 </form>
@@ -67,8 +67,20 @@
                                         <a href="{{ route('page', 'cart') }}" class="cart-toggle">
                                             <i class="fas fa-shopping-bag"></i>
                                         </a>
-                                        <span class="cartCount">{{ $cart->items->sum('quantity') ?? 0 }}</span>
-                                        <x-frontend.mini-cart />
+                                        <span class="cartCount">0</span>
+
+                                        <div class=" cart-box">
+                                            <div class="cart-header">
+                                                <span>Shopping Cart</span>
+                                                <a href="javascript:void(0)" class="cart-close">×</a>
+                                            </div>
+                                            <div class="minicart" id="minicart">
+                                                <p class="text-center mt-2">Loading...</p>
+                                                {{-- <x-frontend.mini-cart :cart="$cart" /> --}}
+                                            </div>
+
+                                        </div>
+
                                     </li>
                                 </ul>
                             </div>
@@ -128,13 +140,8 @@
                                                             <a href="{{ route('products.list', $child->slug) }}">
                                                                 {{-- {{ $child->image }}
                                                                 {{ $child->image_url }} --}}
-                                                                @if($child->image)
-                                                                    {{-- <img
-                                                                        src="{{ $child->image ? $child->image_url : asset('frontend/images/category.webp') }}"
-                                                                        alt="{{ $child->image_alt }}"> --}}
-                                                                    <img src="{{  asset('frontend/images/category.webp') }}"
-                                                                        alt="{{ $child->image_alt }}">
-                                                                @endif
+                                                                <img src="{{ $child->image ? $child->image_url : asset('frontend/images/category.webp') }}"
+                                                                    alt="{{ $child->image_alt }}">
                                                                 <p>{{ $child->title }}</p>
                                                             </a>
                                                         </div>

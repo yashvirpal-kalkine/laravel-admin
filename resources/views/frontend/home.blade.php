@@ -32,7 +32,7 @@
                                             <h2>{{ $item->title ?? "" }} </h2>
                                             <h3>{{ $item->subtitle ?? "" }} </h3>
                                             @if($item->button_text)
-                                                <a class="btn" href="{{ $item->button_link ?? "" }}">
+                                                <a class="btn mybtn" href="{{ $item->button_link ?? "" }}">
                                                     {{ $item->button_text ?? "Call Us Now" }}
                                                 </a>
                                             @endif

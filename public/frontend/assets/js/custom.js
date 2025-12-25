@@ -180,28 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-/***************************************
- * QTY BUTTONS
- ***************************************/
-document.addEventListener("DOMContentLoaded", () => {
-
-  document.querySelectorAll(".btn-plus").forEach(btn => {
-    btn.addEventListener("click", () => {
-      let input = btn.parentElement.querySelector(".qty-input");
-      input.value = parseInt(input.value) + 1;
-    });
-  });
-
-  document.querySelectorAll(".btn-minus").forEach(btn => {
-    btn.addEventListener("click", () => {
-      let input = btn.parentElement.querySelector(".qty-input");
-      if (parseInt(input.value) > 1)
-        input.value = parseInt(input.value) - 1;
-    });
-  });
-
-});
-
 
 /***************************************
  * ACCORDION TOGGLE
@@ -360,20 +338,20 @@ if (minRange && maxRange && progress) {
 
 
 document.querySelectorAll(".rating-stars i").forEach(star => {
-    star.addEventListener("click", function () {
+  star.addEventListener("click", function () {
 
-        let index = parseInt(this.getAttribute("data-index"));
+    let index = parseInt(this.getAttribute("data-index"));
 
-        // Remove all active first
-        document.querySelectorAll(".rating-stars i")
-            .forEach(s => s.classList.remove("active"));
+    // Remove all active first
+    document.querySelectorAll(".rating-stars i")
+      .forEach(s => s.classList.remove("active"));
 
-        // Add active only up to clicked star
-        for (let i = 1; i <= index; i++) {
-            document.querySelector(`.rating-stars i[data-index="${i}"]`)
-                .classList.add("active");
-        }
-    });
+    // Add active only up to clicked star
+    for (let i = 1; i <= index; i++) {
+      document.querySelector(`.rating-stars i[data-index="${i}"]`)
+        .classList.add("active");
+    }
+  });
 });
 
 
@@ -402,3 +380,203 @@ function toggleContent(contentId, arrowId) {
   content.classList.toggle("active");
   arrow.classList.toggle("rotate");
 }
+
+/* Loader functionality */
+function showLoader() {
+  document.getElementById('ajax-overlay').classList.add('active');
+  document.body.style.pointerEvents = 'none';
+}
+
+function hideLoader() {
+  document.getElementById('ajax-overlay').classList.remove('active');
+  document.body.style.pointerEvents = '';
+}
+
+
+/* Cart & Mini Cart functionality is handled in CartController.php */
+
+
+document.addEventListener("click", function (e) {
+  const btn = e.target.closest(".qty-btn");
+  if (!btn) return;
+
+  const wrapper = btn.closest(".qty-wrapper");
+  const input = wrapper.querySelector(".qty-input");
+
+  const productId = input.dataset.productId;
+  let value = parseInt(input.value);
+  const min = parseInt(input.min) || 1;
+  const max = parseInt(input.max) || 999;
+
+  if (btn.dataset.type === "plus" && value < max) {
+    value++;
+  }
+
+  if (btn.dataset.type === "minus" && value > min) {
+    value--;
+  }
+  input.value = value;
+  updateCart(productId, value);
+});
+
+
+
+function addToCart(productId, qty = 1, buyNow = false) {
+  showLoader();
+  const input = document.querySelector('.qty-input');
+  if (input) {
+    qty = input.value;
+  }
+  fetch(window.routes.cartAdd.replace(':id', productId), {
+    method: 'POST',
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({ quantity: qty })
+  })
+    .then(res => res.json())
+    .then(data => {
+      loadMiniCart();
+      document.querySelectorAll('.cartCount').forEach(el => el.innerText = data.cart_count);
+
+      const buyNowBtn = document.querySelector(`#buyNow${productId}`);
+
+      if (buyNowBtn) {
+        const addCart = document.querySelector(`#addCart${productId}`);
+        addCart.disabled = true;
+        addCart.textContent = 'Already in Cart';
+        buyNowBtn.disabled = true;
+      } else {
+        const addCartButtons = document.querySelectorAll(`.addCart${productId}`);
+
+        addCartButtons.forEach(function (item) {
+          item.disabled = true;
+          item.setAttribute('title', 'Already in Cart');
+        });
+      }
+      if (buyNow) {
+        setTimeout(() => {
+          window.location = window.routes.checkOutUrl
+        }, 2000)
+      }
+
+    })
+    .catch(err => console.error(err))
+    .finally(hideLoader);
+}
+
+function updateCart(productId, qty) {
+  showLoader();
+  fetch(window.routes.cartUpdate.replace(':id', productId), {
+    method: 'POST',
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({ quantity: qty })
+  })
+    .then(res => res.json())
+    .then(data => {
+      document.querySelector(`#subtotal-${productId}`).innerText = `₹${data.product_subtotal.toFixed(2)}`;
+      document.getElementById('cart-subtotal').innerText = `₹${data.cart_total.toFixed(2)}`;
+      document.getElementById('cart-total').innerText = `₹${data.cart_total.toFixed(2)}`;
+
+      loadMiniCart()
+    })
+    .catch(err => console.error(err))
+    .finally(hideLoader);
+}
+
+function removeFromCart(productId) {
+  showLoader();
+  fetch(window.routes.cartRemove.replace(':id', productId), {
+    method: 'DELETE',
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      'X-Requested-With': 'XMLHttpRequest',
+      'Accept': 'application/json'
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+
+      loadMiniCart();
+      // ---- CART PAGE ONLY ----
+      const cartItem = document.getElementById(`cart-item-${productId}`);
+
+      if (cartItem) {
+        cartItem.remove();
+
+        if (data.cart_count === 0) {
+          const cartPage = document.getElementById('cartpage');
+          if (cartPage) {
+            cartPage.innerHTML = `<div class="text-center py-4">Your cart is empty.</div>`;
+          }
+        } else {
+          const subtotalEl = document.getElementById('cart-subtotal');
+          const totalEl = document.getElementById('cart-total');
+
+          if (subtotalEl) {
+            subtotalEl.innerText = `₹${data.cart_total.toFixed(2)}`;
+          }
+
+          if (totalEl) {
+            totalEl.innerText = `₹${data.cart_total.toFixed(2)}`;
+          }
+        }
+      }
+    })
+    .catch(err => console.error(err))
+    .finally(hideLoader);
+}
+
+
+function loadMiniCart() {
+
+  fetch(window.routes.cartMini, {
+    headers: { 'Accept': 'application/json' }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) return;
+
+      document.getElementById('minicart').innerHTML = data.html;
+      document.querySelectorAll('.cartCount').forEach(el => el.innerText = data.cart_count);
+    })
+    .catch(err => console.error(err));
+}
+
+
+document.addEventListener('DOMContentLoaded', loadMiniCart);
+
+function productQty(productId) {
+  if (!productId) return;
+
+  const input = document.querySelector('.qty-input');
+  if (!input) return;
+
+  fetch(window.routes.cartProductQty.replace(':id', productId), {
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.qty > 0) {
+        input.value = data.qty;
+      }
+    })
+    .catch(err => console.error('Qty fetch error:', err));
+}
+
+// document.addEventListener('DOMContentLoaded', function () {
+//   const input = document.querySelector('.qty-input');
+//   if (!input) return;
+
+//   const productId = input.dataset.productId;
+//   productQty(productId);
+// });
+

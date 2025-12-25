@@ -18,9 +18,14 @@ use App\Models\Newsletter;
 use App\Models\SearchMeta;
 use App\Models\Author;
 
+use App\Services\CartService;
+
 
 class HomeController extends Controller
 {
+    public function __construct(protected CartService $cart)
+    {
+    }
     public function index()
     {
         // Load home page
@@ -40,6 +45,8 @@ class HomeController extends Controller
             ->where('is_featured', true)
             ->take(10)
             ->get();
+        $popularProducts = $this->cart->attachCartQtyToProducts($popularProducts);
+
 
         // Bracelet products (limit 10)
         $braceletCategory = ProductCategory::where('slug', 'bracelets')->first();
@@ -50,6 +57,7 @@ class HomeController extends Controller
             })
             ->take(10)
             ->get();
+        $braceletProducts = $this->cart->attachCartQtyToProducts($braceletProducts);
 
 
         // Latest 10 products
@@ -57,6 +65,7 @@ class HomeController extends Controller
             ->orderBy('id', 'desc')
             ->take(10)
             ->get();
+        $newProducts = $this->cart->attachCartQtyToProducts($newProducts);
 
         $whyChooseSections = GlobalSection::active()
             ->where('template', 0)
@@ -77,6 +86,7 @@ class HomeController extends Controller
         // Customize Bracelet (single product)
         $customizeBracelet = Product::active()->where('id', 1)->with(['galleries'])->find(1);
         //dd($customizeBracelet);
+
         return view(
             'frontend.home',
             compact(
@@ -100,29 +110,29 @@ class HomeController extends Controller
         $page = Page::where('slug', $slug)->first();
         if (!$page) {
             return response()->view('frontend.404', [], 404);
+        } else {
+            $template = $page->template ?? 'default';
+            if (!view()->exists("frontend.$template")) {
+                $template = 'default';
+            } else if ($page->template == "wishlist") {
+                $productWishlist = Product::active()->paginate(12);
+                return view("frontend.$template", compact('page', 'productWishlist'));
+            } else if ($page->template == "shop") {
+                $products = Product::active()->paginate(12);
+                $products = $this->cart->attachCartQtyToProducts($products);
+
+                return view("frontend.$template", compact('page', 'products'));
+            }
+            return view("frontend.$template", compact('page'));
         }
-        $template = $page->template ?? 'default';
-        if (!view()->exists("frontend.$template")) {
-            $template = 'default';
-        }
-        if ($page->template == "wishlist") {
-            $productWishlist = Product::active()->paginate(12);
-            return view("frontend.$template", compact('page', 'productWishlist'));
-        }
-        if ($page->template == "shop") {
-            $products = Product::active()->paginate(12);
-            return view("frontend.$template", compact('page', 'products'));
-        }
-        return view("frontend.$template", compact('page'));
     }
     public function search(Request $request)
     {
         $query = $request->input('q');
-        $results = Product::where('title', 'like', "%{$query}%")
-            ->orWhere('description', 'like', "%{$query}%")
-            ->paginate(10);
+        $products = Product::where('title', 'like', "%{$query}%")->paginate(12);
+        $products = $this->cart->attachCartQtyToProducts($products);
 
-        return view("frontend.search", compact('results', 'query'));
+        return view("frontend.search", compact('products', 'query'));
     }
 
     public function productList($categories = null)
@@ -131,15 +141,19 @@ class HomeController extends Controller
         $categorySlug = end($segments);
 
         $category = ProductCategory::active()->where('slug', $categorySlug)->first();
-        $products = $category ? $category->products()->paginate(12) : Product::active()->paginate(12);
 
-        return view('frontend.shop', compact('products', 'category', 'segments', ));
+        $products = $category ? $category->products()->paginate(12) : Product::active()->paginate(12);
+        $products = $this->cart->attachCartQtyToProducts($products);
+
+        return view('frontend.shop', compact('products', 'category', 'segments'));
     }
 
     // --- Product Details ---
     public function productDetails($slug)
     {
         $product = Product::active()->with(['categories', 'tags', 'galleries'])->where('slug', $slug)->firstOrFail();
+        $product->cart_qty = $this->cart->getProductQty($product);
+
         $categoryIds = $product->categories->pluck('id');
         $relatedProducts = Product::active()
             ->whereHas('categories', function ($q) use ($categoryIds) {
@@ -148,7 +162,7 @@ class HomeController extends Controller
             ->where('id', '!=', $product->id)
             ->limit(6)
             ->get();
-
+        $relatedProducts = $this->cart->attachCartQtyToProducts($relatedProducts);
         return view('frontend.product-details', compact('product', 'relatedProducts'));
     }
 

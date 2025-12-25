@@ -5,6 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     @yield('meta')
     <link rel="icon" href="{{ asset('frontend/assets/images/fevicion.webp') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/bootstrap.min.css') }}" />
@@ -38,7 +40,9 @@
     </main>
 
     @include('frontend.partials.footer')
-
+    <div id="ajax-overlay">
+        <div class="spinner"></div>
+    </div>
 
     <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/owl.carousel.min.js') }}"></script>
@@ -47,8 +51,22 @@
     <script src="{{ asset('frontend/assets/js/jquery.magnific-popup.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/glightbox.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/aos.js') }}"></script>
+
+    <script>
+        window.routes = {
+            cartAdd: "{{ route('cart.add', ':id') }}",
+            cartUpdate: "{{ route('cart.update', ':id') }}",
+            cartRemove: "{{ route('cart.remove', ':id') }}",
+            cartMini: "{{ route('cart.mini') }}",
+            cartProductQty: "{{ route('cart.productQty', ':id') }}",
+            checkOutUrl: "{{ route('page', 'checkout') }}",
+        };
+    </script>
+
+
     <script src="{{ asset('frontend/assets/js/custom.js') }}"> </script>
-     {{--<script src="{{ asset('frontend/assets/js/products.js') }}"> </script> --}}
+
+
 
     {{-- Stack Script --}}
     @stack('scripts')

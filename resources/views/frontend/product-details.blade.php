@@ -115,17 +115,14 @@
                             <label class="fw-bold">Quantity:</label>
                             <div class="quantity-wrap">
                                 <div class="gap-3 mt-1">
-                                    <div class="input-group quantity-group">
-                                        <button class="btn btn-outline-secondary btn-minus" type="button">−</button>
-                                        <input type="number" class="form-control text-center qty-input" value="1" min="1">
-                                        <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
-                                    </div>
+                                    <x-frontend.quantity :cartQty="$product->cart_qty" :productId="$product->id" />
                                 </div>
                                 <div class="btn-box">
-                                    <button class="add-to-cart-btn">Add to Cart</button>
-                                    <button class="add-to-cart-btn">Buy it now</button>
+                                    <x-frontend.add-to-cart :cartQty="$product->cart_qty" :productId="$product->id"
+                                        :isSingle="true" />
                                 </div>
                             </div>
+                            <x-frontend.add-to-wishlist :isSingle="true" />
                         </div>
 
                         <!-- ds-memonics -->
@@ -154,7 +151,7 @@
                             <div class="bulk-order-enquiry">
                                 <p>Want to buy in bulk?
                                     <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#enquiryModal"
-                                        style="color: blue;">Enquiry Now</a>
+                                        style="color: var(--bg---color-bg-3)">Enquiry Now</a>
                                 </p>
                             </div>
                         </div>
