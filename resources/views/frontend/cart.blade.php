@@ -85,23 +85,66 @@
                     .then(res => res.json())
                     .then(data => {
                         if (!data.success) return;
-                        document.querySelectorAll('.cart-count').forEach(el => el.innerText = data.cart_count);
                         renderMiniCart(data.cart);
                     });
             }
             function renderMiniCart(cart) {
-                const miniCart = document.getElementById('mini-cart');
-                let html = `<a href="{{ route('cart.index') }}">Cart (<span id="cart-count">${cart.items.reduce((sum, item) => sum + item.quantity, 0)}</span>)</a><ul>`;
+                const miniCart = document.getElementById('minicart');
+
+                if (!cart.items.length) {
+                    miniCart.innerHTML = `<p class="text-center mt-2">Cart is empty</p>`;
+                    document.querySelectorAll('.cartCount').forEach(el => el.innerText = 0);
+                    return;
+                }
+
+                let count = 0;
+                let total = 0;
+
+                let html = ``;
 
                 cart.items.forEach(item => {
-                    html += `<li>${item.product.title} x ${item.quantity} - ${item.price}</li>`;
+                    count += item.quantity;
+                    total += item.price * item.quantity;
+
+                    html += `<div class="product">
+                                                                    <div class="product-details">
+                                                                        <h4 class="product-title">
+                                                                            <a href="#">${item.product.title}</a>
+                                                                        </h4>
+
+                                                                        <span class="cart-product-info">
+                                                                            <span class="cart-product-qty">${item.quantity}</span>
+                                                                            × ${item.price} = ₹${(item.price * item.quantity).toFixed(2)}
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <figure class="product-image-container">
+                                                                        <a href="#" class="product-image">
+                                                                            <img src="{{ asset('frontend/assets/images/pro1.jpg') }}" alt="product" width="80" height="80">
+                                                                        </a>
+
+                                                                        <a href="javascript:void(0)" onclick="removeFromCart(${item.product_id})" class="btn-remove" title="Remove Product"><span>×</span></a>
+                                                                    </figure>
+                                                                </div>`;
+
                 });
-
-                html += `</ul><div>Total: ${cart.total}</div>`;
-
+                html += `<div class="cart-footer">
+                                                            <div class="subtotal">
+                                                                <span>Subtotal:</span>
+                                                                <strong>₹${total.toFixed(2)}</strong>
+                                                            </div>
+                                                            <div class="d-flex gap-2">
+                                                                <a href="{{ route('page', 'cart') }}" class="btn btn-sm mybtn">View Cart</a>
+                                                                <a href="{{ route('page', 'checkout') }}" class="btn btn-sm btn-primary mybtn">Checkout</a>   
+                                                            </div>
+                                                        </div>`;
                 miniCart.innerHTML = html;
+
+                document.querySelectorAll('.cartCount').forEach(el => el.innerText = count);
             }
-            loadMiniCart();
+            document.addEventListener('DOMContentLoaded', function () {
+                loadMiniCart();
+            });
         </script>
     @endpush
 
