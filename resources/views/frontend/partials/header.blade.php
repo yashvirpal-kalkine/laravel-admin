@@ -112,7 +112,7 @@
                                         <ul class="products-submenu">
                                             @foreach($directCategoriesHeaderMenu as $category)
                                                 <li class="">
-                                                    <a href="{{ route('products.list', $category->slug) }}">
+                                                    <a href="{{ route('products.list', $category->full_slug) }}">
                                                         {{ $category->title }}
                                                     </a>
                                                 </li>
@@ -137,7 +137,7 @@
                                                 <div class="zodiac-grid">
                                                     @foreach($category->children as $child)
                                                         <div class="z-item">
-                                                            <a href="{{ route('products.list', $child->slug) }}">
+                                                            <a href="{{ route('products.list', $child->full_slug) }}">
                                                                 {{-- {{ $child->image }}
                                                                 {{ $child->image_url }} --}}
                                                                 <img src="{{ $child->image ? $child->image_url : asset('frontend/images/category.webp') }}"

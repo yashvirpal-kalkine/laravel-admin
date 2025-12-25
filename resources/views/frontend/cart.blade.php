@@ -7,13 +7,13 @@
 
 @section('content')
 
-
+{{-- 
     <div class="d-flex gap-2 m-3 p-3 border">
         <button class="add-cart" data-id="1" onclick="addToCart(1)">add cart</button>
         <button class="add-cart" data-id="1" onclick="addToCart(2)">add cart</button>
         <button class="add-cart" data-id="1" onclick="updateCart(2)">Update cart</button>
         <button onclick="removeFromCart({{ 2 }})"> Remove </button>
-    </div>
+    </div> --}}
 
 
 
