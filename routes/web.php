@@ -58,8 +58,7 @@ Route::prefix('blog')->group(function () {
 
 });
 
-// Dynamic pages (keep last)
-Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
+
 
 
 
@@ -73,9 +72,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-    Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::get('/wishlistcount', [WishlistController::class, 'count'])->name('wishlist.count');
+    Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
 });
+
+// Dynamic pages (keep last)
+Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
 
 require __DIR__ . '/auth.php';

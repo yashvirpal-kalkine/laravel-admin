@@ -47,11 +47,11 @@
                                         <a class="topwish" href="{{ route('page', 'wishlist') }}">
                                             <i class="fa fa-heart hidden-md hidden-lg hidden-sm"></i>
                                         </a>
-                                        <span id="count">1</span>
+                                        <span id="wishlistCount">0</span>
                                     </li>
                                     <li>
                                         @if (Auth::check())
-                                            <a href="{{ route('user.dashboard') }}">
+                                            <a href="{{ route('dashboard') }}">
                                                 <i class="fas fa-user"></i>
                                             </a>
                                         @else
@@ -59,8 +59,6 @@
                                                 <i class="fas fa-user"></i>
                                             </a>
                                         @endif
-
-
                                     </li>
 
                                     <li class="dropdown cart-dropdown">

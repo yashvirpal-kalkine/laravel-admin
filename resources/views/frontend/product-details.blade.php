@@ -123,7 +123,7 @@
                                         :isSingle="true" />
                                 </div>
                             </div>
-                            <x-frontend.add-to-wishlist :isSingle="true" />
+                            <x-frontend.add-to-wishlist :product="$product" :isSingle="true" />
                         </div>
 
                         <!-- ds-memonics -->

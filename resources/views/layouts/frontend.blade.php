@@ -62,6 +62,9 @@
                 cartMini: @json(route('cart.mini')),
                 cartProductQty: @json(route('cart.productQty', ':id')),
                 checkout: @json(route('page', 'checkout')),
+                wishlistToggle: @json(route('wishlist.toggle', ':id')),
+                wishlistCount: @json(route('wishlist.count')),
+
             }
         };
     </script>

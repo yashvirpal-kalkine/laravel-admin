@@ -81,5 +81,10 @@ class User extends Authenticatable
         return null;
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(\App\Models\Wishlist::class);
+    }
+
 
 }

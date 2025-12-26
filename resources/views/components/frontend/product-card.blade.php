@@ -6,7 +6,7 @@
         <figure><img src="{{ $imgurl }}" alt="{{ $item->image_alt ?? $item->title }}"></figure>
         <div class="product-btns">
             <x-frontend.add-to-cart :cartQty="$item->cart_qty" :productId="$item->id" :isSingle="false" />
-            <x-frontend.add-to-wishlist :isSingle="false" />
+            <x-frontend.add-to-wishlist :product="$item" :isSingle="false" />
         </div>
         @if ($item->sale_price)
             <div class="custom-tags-home">

@@ -4,139 +4,125 @@
 @endsection
 
 @section('content')
-
-    <!--  Wishlist page section start here -->
-    <section class="wishlist-page-sec">
+    <section class="all-products-sec">
         <div class="container">
-            <div class="wishlist-table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
+            <div class="row mx-5">
+                <div class="d-flex justify-content-center gap-6 flex-wrap" id="wishlistPage">
+                    @if ($wishlists->count() > 0)
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Stock Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Stock Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                                @forelse($wishlists as $item)
+                                    @php $product = $item->wishlistable; @endphp
+                                    <tr class="product-row" id="wishlist-row-{{ $product->id }}">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="{{ $product->image ?? asset('frontend/assets/images/pro2.jpg') }}"
+                                                    alt="{{ $product->title ?? $product->name }}"
+                                                    class="rounded-circle border shadow-sm"
+                                                    style="width:60px; height:60px; object-fit:cover;">
 
-                        <tr class="product-row align-middle">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <figure class="product-image-container position-relative m-0">
-                                        <img src="{{ asset('frontend/assets/images/pro2.jpg') }}" alt="product"
-                                            class="product-image rounded-circle">
+                                                <h6 class="product-title mb-0 ms-2">
+                                                    <a href="#" class="text-decoration-none text-dark fw-semibold">
+                                                        {{ $product->title ?? $product->name }}
+                                                    </a>
+                                                </h6>
+                                            </div>
+                                        </td>
 
-                                        <a href="#" class="btn-remove" title="Remove from Wishlist">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </figure>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                @if ($product->sale_price)
+                                                    <span class="fw-bold">
+                                                        {{ currencyformat($product->sale_price) }}
+                                                    </span>
+                                                    <small class="text-muted text-decoration-line-through">
+                                                        {{ currencyformat($product->regular_price) }}
+                                                    </small>
+                                                    <span class="badge border border-danger text-danger rounded-pill">
+                                                        {{ $product->discountPercentage() }}% OFF
+                                                    </span>
+                                                @else
+                                                    <span class="fw-bold fs-5 text-dark">
+                                                        {{ currencyformat($product->regular_price) }}
+                                                    </span>
+                                                @endif
+                                            </div>
 
-                                    <h6 class="product-title mb-0">
-                                        <a href="#" class="text-decoration-none text-dark">
-                                            Jovial Vision 7 Mukhi Rudraksha With Silver
-                                        </a>
-                                    </h6>
-                                </div>
-                            </td>
+                                        </td>
 
-                            <td>
-                                <span class="fw-semibold text-nowrap">₹ 1,299</span>
-                            </td>
+                                        <td>
+                                            @if($product->stock ?? true)
+                                                <span class="badge border border-success text-success rounded-pill">
+                                                    <i class="fas fa-check-circle me-1"></i> In Stock
+                                                </span>
+                                            @else
+                                                <span class="badge border border-danger text-danger rounded-pill">
+                                                    <i class="fas fa-times-circle me-1"></i> Out of Stock
+                                                </span>
+                                            @endif
+                                        </td>
 
-                            <td>
-                                <span class="stock-status in-stock me-2">
-                                    <i class="fas fa-check-circle me-1"></i> In Stock
-                                </span>
-                                <span class="stock-status out-stock">
-                                    <i class="fas fa-times-circle"></i> Out of Stock
-                                </span>
-                            </td>
+                                        <td class="text-end">
+                                            @if($product->stock ?? true)
+                                                <button class="btn btn-sm btn-outline-danger me-1" title="Add to Cart"
+                                                    onclick="addToCart({{ $product->id }})">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn btn-sm btn-secondary me-1" disabled title="Out of Stock">
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            @endif
+                                            <button class="btn btn-sm btn-outline-success me-1" onclick="wishlistToggle({{ $product->id }},this)"
+                                                data-id="{{ $product->id }}" data-type="Product" title="{{ $product->is_wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                                              <i class="fas fa-heart"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4">
+                                            <p class="text-muted fs-5 mb-0">
+                                                Your wishlist is empty.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                @endforelse
 
-                            <td>
-                                <button class="btn btn-sm btn-primary">
-                                    <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-                                </button>
-                                <button class="btn btn-sm btn-secondary" disabled>
-                                    <i class="fas fa-cart-plus"></i> Add to Cart
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger ms-2">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3"></td>
-                            <td>
-                                <div class="wishlist-actions">
-                                    <button class="btn btn-share">
-                                        <i class="fas fa-share-alt"></i> Share Wishlist
-                                    </button>
-                                    <button class="btn btn-clear">
-                                        <i class="fas fa-trash-alt"></i> Clear Wishlist
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="product-row align-middle">
+                            </tbody>
+                        </table>
+                    @else
+                        <x-frontend.no-product />
+                    @endif
+                </div>
+                {{-- <div class="col-12 col-md-10 offset-md-1">
 
-                           
-                            <td colspan="4">
-                            
-                                <p class="text-center mb-0">No more products in your wishlist.</p>
-                            </td>
-                        </tr>
+                    <div class="row gy-4 gx-3">
 
-                    </tbody>
-                </table>
+                        @forelse($wishlists as $item)
+                        @php $product = $item->wishlistable; @endphp
+                        <x-frontend.product-card :item="$product" />
+                        @empty <div class="col-12 text-center py-5">
+                            <x-frontend.no-product />
+                        </div>
+                        @endforelse
+
+                    </div>
+                </div> --}}
             </div>
-
-
-
-
-
-
         </div>
     </section>
-    <!--  Wishlist  page section end here -->
-
-
-
-
-    {{--
-
-    <button class="btn btn-outline-danger wishlist-toggle" data-id="{{ $product->id }}" data-type="Product">
-        <i class="bi bi-heart{{ $product->isWishlistedBy(auth()->user()) ? '-fill' : '' }}"></i>
-    </button>
-
-    <script>
-        $('.wishlist-toggle').click(function () {
-            let id = $(this).data('id');
-            let type = $(this).data('type');
-            $.post('{{ route('wishlist.toggle') }}', {
-                id: id,
-                type: type,
-                _token: '{{ csrf_token() }}'
-            }, function (response) {
-                location.reload(); // or update icon dynamically
-            });
-        });
-    </script>
-    <h3>My Wishlist</h3>
-    <ul>
-        @foreach($wishlists as $item)
-        <li>
-            {{ $item->wishlistable->title ?? $item->wishlistable->name }}
-            <form action="{{ route('wishlist.toggle') }}" method="POST">
-                @csrf
-                <input type="hidden" name="type" value="{{ class_basename($item->wishlistable_type) }}">
-                <input type="hidden" name="id" value="{{ $item->wishlistable_id }}">
-                <button class="btn btn-sm btn-danger">Remove</button>
-            </form>
-        </li>
-        @endforeach
-    </ul> --}}
-
-
 @endsection
+@push('scripts')
+
+
+@endpush

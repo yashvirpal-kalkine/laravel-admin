@@ -583,11 +583,106 @@ function productQty(productId) {
     .catch(err => console.error('Qty fetch error:', err));
 }
 
-// document.addEventListener('DOMContentLoaded', function () {
-//   const input = document.querySelector('.qty-input');
-//   if (!input) return;
+/*Wishlist Function */
+function wishlistCount() {
+  fetch(route('wishlistCount'), {
+    headers: { 'Accept': 'application/json' }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) return;
+      const el = document.getElementById('wishlistCount');
+      if (el) el.textContent = data.html;
+    })
+    .catch(err => console.error('Wishlist count error:', err));
+}
 
-//   const productId = input.dataset.productId;
-//   productQty(productId);
-// });
+function wishlistToggle(productId, ele = null) {
 
+  if (!productId || !ele) return;
+  showLoader();
+  ele.disabled = true;
+
+  fetch(route('wishlistToggle', productId), {
+    method: 'POST',
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+      'Accept': 'application/json'
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      wishlistCount();
+
+      const icon = ele.querySelector('i');
+
+      if (!icon) return;
+
+      // toggle heart
+      if (icon.classList.contains('far')) {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        ele.title = 'Remove from Wishlist';
+      } else {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        ele.title = 'Add to Wishlist';
+      }
+      let wishlistPage = document.getElementById('wishlistPage');
+      if (wishlistPage) {
+        //let tr = document.getElementById(`wishlist-row-${productId}`).innerHTML
+        document.getElementById(`wishlist-row-${productId}`).remove()
+      }
+    })
+    .catch(err => {
+      console.error(err);
+    })
+    .finally(() => {
+      ele.disabled = false;
+      hideLoader()
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  wishlistCount();
+
+});
+
+// function wishlistCount() {
+//   fetch(route('wishlistCount'), {
+//     headers: { 'Accept': 'application/json' }
+//   })
+//     .then(res => res.json())
+//     .then(data => {
+//       if (!data.success) return;
+//       const countElem = document.getElementById('wishlistCount');
+//       if (countElem) countElem.innerHTML = data.html;
+//     })
+//     .catch(err => console.error('Wishlist count error:', err));
+// }
+
+// function wishlistToggle(productId) {
+//   if (!productId) return;
+
+
+//   fetch(route('wishlistToggle', productId), {
+//     method: 'POST',
+//     headers: {
+//       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+//       'Content-Type': 'application/json',
+//       'Accept': 'application/json'
+//     },
+//     body: JSON.stringify({ id: productId })
+//   })
+//     .then(res => res.json())
+//     .then(data => {
+//       // handle response
+//       console.log(data);
+//     })
+//     .catch(err => console.error('Wishlist toggle error:', err));
+// }
+
+
+
+//document.addEventListener('DOMContentLoaded', wishlistCount);

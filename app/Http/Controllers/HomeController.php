@@ -13,17 +13,19 @@ use App\Models\Slider;
 use App\Models\ProductCategory;
 use App\Models\Product;
 use App\Models\GlobalSection;
+use App\Models\Wishlist;
 use App\Models\ContactSubmission;
 use App\Models\Newsletter;
 use App\Models\SearchMeta;
 use App\Models\Author;
 
 use App\Services\CartService;
+use App\Services\WishlistService;
 
 
 class HomeController extends Controller
 {
-    public function __construct(protected CartService $cart)
+    public function __construct(protected CartService $cart, protected WishlistService $wishlist)
     {
     }
     public function index()
@@ -46,6 +48,7 @@ class HomeController extends Controller
             ->take(10)
             ->get();
         $popularProducts = $this->cart->attachCartQtyToProducts($popularProducts);
+        $popularProducts = $this->wishlist->attachWishlistFlag($popularProducts);
 
 
         // Bracelet products (limit 10)
@@ -58,7 +61,7 @@ class HomeController extends Controller
             ->take(10)
             ->get();
         $braceletProducts = $this->cart->attachCartQtyToProducts($braceletProducts);
-
+        $braceletProducts = $this->wishlist->attachWishlistFlag($braceletProducts);
 
         // Latest 10 products
         $newProducts = Product::active()
@@ -66,6 +69,7 @@ class HomeController extends Controller
             ->take(10)
             ->get();
         $newProducts = $this->cart->attachCartQtyToProducts($newProducts);
+        $newProducts = $this->wishlist->attachWishlistFlag($newProducts);
 
         $whyChooseSections = GlobalSection::active()
             ->where('template', 0)
@@ -115,11 +119,12 @@ class HomeController extends Controller
             if (!view()->exists("frontend.$template")) {
                 $template = 'default';
             } else if ($page->template == "wishlist") {
-                $productWishlist = Product::active()->paginate(12);
-                return view("frontend.$template", compact('page', 'productWishlist'));
+                $wishlists = Wishlist::with('wishlistable')->where('user_id', Auth::id())->latest()->get();
+                return view("frontend.$template", compact('page', 'wishlists'));
             } else if ($page->template == "shop") {
                 $products = Product::active()->paginate(12);
                 $products = $this->cart->attachCartQtyToProducts($products);
+                $products = $this->wishlist->attachWishlistFlag($products);
 
                 return view("frontend.$template", compact('page', 'products'));
             }
@@ -131,6 +136,7 @@ class HomeController extends Controller
         $query = $request->input('q');
         $products = Product::where('title', 'like', "%{$query}%")->paginate(12);
         $products = $this->cart->attachCartQtyToProducts($products);
+        $products = $this->wishlist->attachWishlistFlag($products);
 
         return view("frontend.search", compact('products', 'query'));
     }
@@ -144,6 +150,7 @@ class HomeController extends Controller
 
         $products = $category ? $category->products()->paginate(12) : Product::active()->paginate(12);
         $products = $this->cart->attachCartQtyToProducts($products);
+        $products = $this->wishlist->attachWishlistFlag($products);
 
         return view('frontend.shop', compact('products', 'category', 'segments'));
     }
@@ -153,6 +160,7 @@ class HomeController extends Controller
     {
         $product = Product::active()->with(['categories', 'tags', 'galleries'])->where('slug', $slug)->firstOrFail();
         $product->cart_qty = $this->cart->getProductQty($product);
+        $product = $this->wishlist->attachWishlistFlagSingle($product);
 
         $categoryIds = $product->categories->pluck('id');
         $relatedProducts = Product::active()

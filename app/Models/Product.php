@@ -145,5 +145,19 @@ class Product extends Model
         return $this->generateImageUrl($this->seo_image);
     }
 
+    // Product.php
+    public function scopeWithWishlistFlag($query, $userId)
+    {
+        return $query->selectRaw(
+            'EXISTS (
+            SELECT 1 FROM wishlists
+            WHERE wishlists.wishlistable_id = products.id
+            AND wishlists.wishlistable_type = ?
+            AND wishlists.user_id = ?
+        ) as is_wishlisted',
+            [self::class, $userId]
+        );
+    }
+
 
 }
