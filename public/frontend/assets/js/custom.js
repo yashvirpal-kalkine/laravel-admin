@@ -306,35 +306,35 @@ $(".color-dot").click(function () {
 /***************************************
  * PRICE RANGE SLIDER
  ***************************************/
-const minRange = document.getElementById("minRange");
-const maxRange = document.getElementById("maxRange");
-const progress = document.getElementById("progressBar");
+// const minRange = document.getElementById("minRange");
+// const maxRange = document.getElementById("maxRange");
+// const progress = document.getElementById("progressBar");
 
-if (minRange && maxRange && progress) {
+// if (minRange && maxRange && progress) {
 
-  function updateUI() {
-    const min = +minRange.value;
-    const max = +maxRange.value;
-    const total = +minRange.max;
+//   function updateUI() {
+//     const min = +minRange.value;
+//     const max = +maxRange.value;
+//     const total = +minRange.max;
 
-    progress.style.left = (min / total * 100) + "%";
-    progress.style.right = (100 - (max / total * 100)) + "%";
-  }
+//     progress.style.left = (min / total * 100) + "%";
+//     progress.style.right = (100 - (max / total * 100)) + "%";
+//   }
 
-  minRange.addEventListener("input", () => {
-    if (+minRange.value > +maxRange.value - 500)
-      minRange.value = +maxRange.value - 500;
-    updateUI();
-  });
+//   minRange.addEventListener("input", () => {
+//     if (+minRange.value > +maxRange.value - 500)
+//       minRange.value = +maxRange.value - 500;
+//     updateUI();
+//   });
 
-  maxRange.addEventListener("input", () => {
-    if (+maxRange.value < +minRange.value + 500)
-      maxRange.value = +minRange.value + 500;
-    updateUI();
-  });
+//   maxRange.addEventListener("input", () => {
+//     if (+maxRange.value < +minRange.value + 500)
+//       maxRange.value = +minRange.value + 500;
+//     updateUI();
+//   });
 
-  updateUI();
-}
+//   updateUI();
+// }
 
 
 document.querySelectorAll(".rating-stars i").forEach(star => {
@@ -380,6 +380,11 @@ function toggleContent(contentId, arrowId) {
   content.classList.toggle("active");
   arrow.classList.toggle("rotate");
 }
+
+
+
+
+
 
 /* Loader functionality */
 function showLoader() {

@@ -239,7 +239,14 @@
                         <label for="is_featured" class="form-check-label">Featured Product</label>
                     </div>
                 </div>
-
+                <div class="mb-3 col-md-6">
+                    <div class="form-check form-switch">
+                        <input type="hidden" name="is_special" value="0">
+                        <input type="checkbox" name="is_special" class="form-check-input" value="1" id="is_special"
+                               {{ old('is_special', $product->is_special ?? false) ? 'checked' : '' }}>
+                        <label for="is_special" class="form-check-label">Special Product</label>
+                    </div>
+                </div>
                 <div class="mb-3 col-md-6">
                     <div class="form-check form-switch">
                         <input type="hidden" name="status" value="0">

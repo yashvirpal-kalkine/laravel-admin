@@ -49,6 +49,7 @@ class ProductRequest extends FormRequest
             // Misc
             'custom_field' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
+            'is_special' => 'boolean',
             'status' => 'boolean',
 
             // Relations

@@ -13,124 +13,12 @@
                 <div class="col-md-12">
                     <div class="top-bar">
                         <div class="top-baar-right">
-                            <select id="sortProduct">
-                                <option value="default">Sort By</option>
-                                <option value="name">Popular</option>
-                                <option value="name">Name (A-Z)</option>
-                                <option value="price-low">Price: Low to High</option>
-                                <option value="price-high">Price: High to Low</option>
-                            </select>
+                            <x-frontend.sorting-shop />
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-3">
-                    <div class="price-filter-ui">
-                        <div class="price-title">Filter by Price</div>
-
-                        <div class="price-slider-box">
-                            <div class="price-progress" id="progressBar"></div>
-                            <input type="range" min="0" max="3000000" value="0" class="range" id="minRange">
-                            <input type="range" min="0" max="3000000" value="3000000" class="range" id="maxRange">
-                        </div>
-
-                        <div class="price-input-row">
-                            <label>Price:</label>
-                            <div class="box">
-                                <span>₹</span>
-                                <input type="number" id="minInput" value="0">
-                            </div>
-                            <span>-</span>
-                            <div class="box">
-                                <span>₹</span>
-                                <input type="number" id="maxInput" value="3000000">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="products-left-side">
-                        <h2> Product Category</h2>
-                        <div class="products-category" id="productsCategory">
-                            <ul class="category-filter-list">
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Bracelets">
-                                        Bracelets (12)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Pendants">
-                                        Pendants (31)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Gold Plated (IGP)">
-                                        Gold Plated (IGP) (8)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Kada">
-                                        Kada (14)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Rudraksh">
-                                        Rudraksh (27)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="God Idols">
-                                        God Idols (19)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Yantra">
-                                        Yantra (22)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Anklets">
-                                        Anklets (6)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Roots & Jadibooti">
-                                        Roots & Jadibooti (4)
-                                    </label>
-                                </li>
-
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="filter.category" value="Shankh">
-                                        Shankh (11)
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="product-advertisement">
-                            <h4>Specials</h4>
-                            <figure>
-                                <a href="#"> <img src="{{ asset('frontend/assets/images/a.jpg') }}"
-                                        alt="Product Advertisement"> </a>
-                            </figure>
-                        </div>
-                    </div>
+                    <x-frontend.shop-sidebar :filters="$filters" />
                 </div>
 
                 <div class="col-md-9">

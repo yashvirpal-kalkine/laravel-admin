@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 use App\Models\Page;
@@ -131,7 +132,37 @@ class HomeController extends Controller
                 $products = $this->cart->attachCartQtyToProducts($products);
                 $products = $this->wishlist->attachWishlistFlag($products);
 
-                return view("frontend.$template", compact('page', 'products'));
+
+                $minPrice = Product::query()
+                    ->whereNotNull('regular_price')
+                    ->select(DB::raw('MIN(COALESCE(sale_price, regular_price)) as min_price'))
+                    ->value('min_price') ?? 0;
+
+                $maxPrice = Product::query()
+                    ->whereNotNull('regular_price')
+                    ->select(DB::raw('MAX(COALESCE(sale_price, regular_price)) as max_price'))
+                    ->value('max_price') ?? 0;
+
+
+                $filters = [
+                    'price' => [
+                        'min' => $minPrice ?? 0,
+                        'max' => $maxPrice ?? 0,
+                    ],
+
+                    'categories' => ProductCategory::withCount('products')
+                        ->get()
+                        ->map(fn($cat) => [
+                            'id' => $cat->id,
+                            'name' => $cat->title,
+                            'slug' => $cat->slug,
+                            'count' => $cat->products_count,
+                        ])
+                        ->toArray(),
+
+                    'special' => Product::where('is_special', 1)->latest()->first(),
+                ];
+                return view("frontend.$template", compact('page', 'products', 'filters'));
             }
             return view("frontend.$template", compact('page'));
         }
@@ -157,7 +188,37 @@ class HomeController extends Controller
         $products = $this->cart->attachCartQtyToProducts($products);
         $products = $this->wishlist->attachWishlistFlag($products);
 
-        return view('frontend.shop', compact('products', 'category', 'segments'));
+        $minPrice = Product::query()
+            ->whereNotNull('regular_price')
+            ->select(DB::raw('MIN(COALESCE(sale_price, regular_price)) as min_price'))
+            ->value('min_price') ?? 0;
+
+        $maxPrice = Product::query()
+            ->whereNotNull('regular_price')
+            ->select(DB::raw('MAX(COALESCE(sale_price, regular_price)) as max_price'))
+            ->value('max_price') ?? 0;
+
+
+        $filters = [
+            'price' => [
+                'min' => $minPrice ?? 0,
+                'max' => $maxPrice ?? 0,
+            ],
+
+            'categories' => ProductCategory::withCount('products')
+                ->get()
+                ->map(fn($cat) => [
+                    'id' => $cat->id,
+                    'name' => $cat->title,
+                    'slug' => $cat->slug,
+                    'count' => $cat->products_count,
+                ])
+                ->toArray(),
+
+            'special' => Product::where('is_special', 1)->latest()->first(),
+        ];
+
+        return view('frontend.shop', compact('products', 'category', 'segments', 'filters'));
     }
 
     // --- Product Details ---

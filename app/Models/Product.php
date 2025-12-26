@@ -30,6 +30,7 @@ class Product extends Model
         'canonical_url',
         'custom_field',
         'is_featured',
+        'is_special',
         'status',
         'author_id',
         'brand_id',
