@@ -22,7 +22,7 @@
                             <p>{{ $item->description }}</p>
                         @endif
                         @if($item->button_text)
-                            <a class="btn shop-now-btn" href="{{ $item->button_link ?? '#' }}">
+                            <a class="btn shop-now-btn mybtn" href="{{ $item->button_link ?? '#' }}">
                                 {{ $item->button_text }}
                             </a>
                         @endif
