@@ -31,7 +31,7 @@ Route::prefix('products')->group(function () {
         ->name('products.list');
 });
 Route::prefix('cart')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    //Route::get('/', [HomeController::class, 'index'])->name('cart.index');
 
     Route::post('add/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::post('update/{product}', [CartController::class, 'update'])->name('cart.update');

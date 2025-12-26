@@ -118,6 +118,11 @@ class HomeController extends Controller
             $template = $page->template ?? 'default';
             if (!view()->exists("frontend.$template")) {
                 $template = 'default';
+
+            } else if ($page->template == "cart") {
+                $cart = $this->cart->getCart();
+                $cart->load('items.product');
+                return view("frontend.$template", compact('page', 'cart'));
             } else if ($page->template == "wishlist") {
                 $wishlists = Wishlist::with('wishlistable')->where('user_id', Auth::id())->latest()->get();
                 return view("frontend.$template", compact('page', 'wishlists'));
