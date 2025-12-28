@@ -9,11 +9,11 @@
     <!-- Inputs -->
     <div class="row g-2 mb-3">
         <div class="col">
-            <input type="number" id="minInput" class="form-control form-control-sm" value="{{ $minPrice }}"
+            <input type="number" id="minPriceInput" class="form-control form-control-sm" value="{{ $minPrice }}"
                 min="{{ $minPrice }}" max="{{ $maxPrice }}">
         </div>
         <div class="col">
-            <input type="number" id="maxInput" class="form-control form-control-sm" value="{{ $maxPrice }}"
+            <input type="number" id="maxPriceInput" class="form-control form-control-sm" value="{{ $maxPrice }}"
                 min="{{ $minPrice }}" max="{{ $maxPrice }}">
         </div>
     </div>
@@ -78,8 +78,8 @@
 
         const minRange = document.getElementById("minRange");
         const maxRange = document.getElementById("maxRange");
-        const minInput = document.getElementById("minInput");
-        const maxInput = document.getElementById("maxInput");
+        const minPriceInput = document.getElementById("minPriceInput");
+        const maxPriceInput = document.getElementById("maxPriceInput");
         const progress = document.querySelector(".range-slider .progress");
         const minVal = document.getElementById("minVal");
         const maxVal = document.getElementById("maxVal");
@@ -101,8 +101,8 @@
             }
 
             // Sync inputs
-            minInput.value = min;
-            maxInput.value = max;
+            minPriceInput.value = min;
+            maxPriceInput.value = max;
 
             // Update labels
             minVal.textContent = min;
@@ -118,13 +118,13 @@
         maxRange.addEventListener("input", update);
 
         // Input events
-        minInput.addEventListener("change", () => {
-            minRange.value = Math.max(minLimit, Math.min(minInput.value, maxRange.value));
+        minPriceInput.addEventListener("change", () => {
+            minRange.value = Math.max(minLimit, Math.min(minPriceInput.value, maxRange.value));
             update();
         });
 
-        maxInput.addEventListener("change", () => {
-            maxRange.value = Math.min(maxLimit, Math.max(maxInput.value, minRange.value));
+        maxPriceInput.addEventListener("change", () => {
+            maxRange.value = Math.min(maxLimit, Math.max(maxPriceInput.value, minRange.value));
             update();
         });
 
@@ -156,6 +156,20 @@
         @endforelse
     </ul>
 </div>
+
+<div class="card shadow-sm p-3 mb-3">
+    <h6>Rating</h6>
+
+    @for($i = 5; $i >= 1; $i--)
+        <div class="form-check">
+            <input class="form-check-input rating-filter" type="radio" name="rating" id="rating-{{ $i }}" value="{{ $i }}">
+            <label class="form-check-label" for="rating-{{ $i }}">
+                {{ $i }} ★ & up
+            </label>
+        </div>
+    @endfor
+</div>
+
 <button type="button" class="btn mybtn mb-3 d-block mx-auto">
     Apply Filter
 </button>

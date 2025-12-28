@@ -1,4 +1,4 @@
-<select id="sortProduct">
+<select id="sortBy">
     <option value="default">Sort By</option>
     <option value="name">Popular</option>
     <option value="name">Name (A-Z)</option>

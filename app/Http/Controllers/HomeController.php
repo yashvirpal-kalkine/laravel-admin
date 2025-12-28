@@ -241,6 +241,7 @@ class HomeController extends Controller
     }
 
 
+
     // --- Blog List (Category/Sub-category) ---
     public function blogList($categories = null)
     {
@@ -459,4 +460,55 @@ class HomeController extends Controller
     //         ], 500);
     //     }
     // }
+
+    public function load(Request $request)
+    {
+        $query = Product::query()
+            ->with('categories')
+            ->active();
+
+        // Category filter (SAFE)
+        // if (is_array($request->categories) && count($request->categories) > 0) {
+        //     $query->whereHas('categories', function ($q) use ($request) {
+        //         $q->whereIn('product_categories.id', $request->categories);
+        //     });
+        // }
+
+        // Price
+        $minPrice = $request->min_price !== '' ? (float) $request->min_price : null;
+        $maxPrice = $request->max_price !== '' ? (float) $request->max_price : null;
+
+        if ($minPrice !== null) {
+            $query->where('regular_price', '>=', $minPrice);
+        }
+
+        if ($maxPrice !== null) {
+            $query->where('regular_price', '<=', $maxPrice);
+        }
+
+        // Sorting
+        $query->latest();
+
+        $products = $query->paginate(6, ['*'], 'page', $request->page);
+        //dd($products);
+        try {
+            return response()->json([
+                'html' => view('components.frontend.product-list', compact('products'))->render(),
+                'hasMore' => $products->hasMorePages(),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ], 500);
+        }
+
+    }
+
+
+
+
+
 }

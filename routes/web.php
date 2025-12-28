@@ -20,8 +20,10 @@ Route::get('/search', [HomeController::class, 'search'])->name('search');
 Route::prefix('products')->group(function () {
     //http://localhost:8000/products/details/sample-product-1
     // Product details (slug always last) - MUST BE FIRST
-    Route::get('details/{slug}', [HomeController::class, 'productDetails'])
-        ->name('products.details');
+    Route::get('details/{slug}', [HomeController::class, 'productDetails'])->name('products.details');
+    
+    Route::post('/products/load', [HomeController::class, 'load'])->name('products.load');
+
 
     // http://localhost:8000/products/pisces
     // http://localhost:8000/products/shop-by-zodiac/pisces
@@ -57,6 +59,7 @@ Route::prefix('blog')->group(function () {
 
 
 });
+Route::post('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
 
 
 
