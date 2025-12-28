@@ -128,21 +128,25 @@ class HomeController extends Controller
                 $wishlists = Wishlist::with('wishlistable')->where('user_id', Auth::id())->latest()->get();
                 return view("frontend.$template", compact('page', 'wishlists'));
             } else if ($page->template == "shop") {
-                $products = Product::active()->paginate(12);
-                $products = $this->cart->attachCartQtyToProducts($products);
-                $products = $this->wishlist->attachWishlistFlag($products);
+                // $products = Product::active()->paginate(12);
+                // $products = $this->cart->attachCartQtyToProducts($products);
+                // $products = $this->wishlist->attachWishlistFlag($products);
 
 
                 $minPrice = Product::query()
                     ->whereNotNull('regular_price')
                     ->select(DB::raw('MIN(COALESCE(sale_price, regular_price)) as min_price'))
+                    ->where('status', 1)
+                    ->where('stock', '>', 0)
                     ->value('min_price') ?? 0;
 
                 $maxPrice = Product::query()
                     ->whereNotNull('regular_price')
                     ->select(DB::raw('MAX(COALESCE(sale_price, regular_price)) as max_price'))
+                    ->where('status', 1)
+                    ->where('stock', '>', 0)
                     ->value('max_price') ?? 0;
-
+                //dd($minPrice, $maxPrice);
 
                 $filters = [
                     'price' => [
@@ -150,19 +154,21 @@ class HomeController extends Controller
                         'max' => $maxPrice ?? 0,
                     ],
 
-                    'categories' => ProductCategory::withCount('products')
-                        ->get()
-                        ->map(fn($cat) => [
-                            'id' => $cat->id,
-                            'name' => $cat->title,
-                            'slug' => $cat->slug,
-                            'count' => $cat->products_count,
+                    'categories' => ProductCategory::active()
+                        ->whereNull('parent_id')
+                        ->withCount('products')
+                        ->with([
+                            'children' => function ($q) {
+                                $q->withCount('products')->where('status', 1);
+                            }
                         ])
+                        ->get()
+
                         ->toArray(),
 
                     'special' => Product::where('is_special', 1)->latest()->first(),
                 ];
-                return view("frontend.$template", compact('page', 'products', 'filters'));
+                return view("frontend.$template", compact('page', 'filters'));
             }
             return view("frontend.$template", compact('page'));
         }
@@ -463,9 +469,8 @@ class HomeController extends Controller
 
     public function load(Request $request)
     {
-        $query = Product::query()
-            ->with('categories')
-            ->active();
+
+        $query = Product::query()->stock()->active();
 
         // Category filter (SAFE)
         // if (is_array($request->categories) && count($request->categories) > 0) {
@@ -473,27 +478,72 @@ class HomeController extends Controller
         //         $q->whereIn('product_categories.id', $request->categories);
         //     });
         // }
+        if (!empty($request->categories) && is_array($request->categories) && count($request->categories) > 0) {
+
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->whereIn('product_categories.id', $request->categories);
+            });
+        }
 
         // Price
         $minPrice = $request->min_price !== '' ? (float) $request->min_price : null;
         $maxPrice = $request->max_price !== '' ? (float) $request->max_price : null;
 
         if ($minPrice !== null) {
-            $query->where('regular_price', '>=', $minPrice);
+            $query->where(function ($q) use ($minPrice) {
+                $q->where('sale_price', '>=', $minPrice)
+                    ->orWhere('sale_price', null)
+                    ->where('regular_price', '>=', $minPrice);
+            });
         }
 
         if ($maxPrice !== null) {
-            $query->where('regular_price', '<=', $maxPrice);
+            $query->where(function ($q) use ($maxPrice) {
+                $q->where('sale_price', '<=', $maxPrice)
+                    ->orWhere('sale_price', null)
+                    ->where('regular_price', '<=', $maxPrice);
+            });
         }
 
         // Sorting
-        $query->latest();
+        switch ($request->sort) {
+            case 'popular':
+                $query->orderBy('views', 'desc'); // or 'rating', 'sold_count' etc.
+                break;
 
-        $products = $query->paginate(6, ['*'], 'page', $request->page);
+            case 'name-asc':
+                $query->orderBy('title', 'asc');
+                break;
+
+            case 'name-desc':
+                $query->orderBy('title', 'desc');
+                break;
+
+            case 'price-low':
+                // Use COALESCE to consider sale_price if available
+                $query->orderByRaw('COALESCE(sale_price, regular_price) ASC');
+                break;
+
+            case 'price-high':
+                $query->orderByRaw('COALESCE(sale_price, regular_price) DESC');
+                break;
+
+            default:
+                $query->latest(); // default sorting by created_at
+                break;
+        }
+
+
+
+        $products = $query->paginate(12, ['*'], 'page', $request->page);
         //dd($products);
+        // $products = Product::active()->stock()->paginate(12);
+        //  $products = $this->cart->attachCartQtyToProducts($products);
+        // $products = $this->wishlist->attachWishlistFlag($products);
         try {
             return response()->json([
                 'html' => view('components.frontend.product-list', compact('products'))->render(),
+                'count' => $products->count(),
                 'hasMore' => $products->hasMorePages(),
             ]);
         } catch (\Throwable $e) {

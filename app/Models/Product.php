@@ -110,6 +110,10 @@ class Product extends Model
     {
         return $query->where('is_featured', true);
     }
+    public function scopeStock($query)
+    {
+        return $query->where('stock', ">=", 1);
+    }
 
     //$featuredProducts = Product::featured()->take(10)->get();
 

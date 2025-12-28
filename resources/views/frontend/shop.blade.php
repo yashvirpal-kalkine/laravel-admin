@@ -26,7 +26,7 @@
                     <div id="product-list" class="row gy-4 gx-3"></div>
 
                     <div class="text-center mt-3">
-                        <button id="load-more-btn" class="btn btn-outline-primary d-none">
+                        <button id="load-more-btn" class="btn btn-outline-primary d-none mybtn">
                             Load More
                         </button>
                     </div>
