@@ -132,42 +132,8 @@ class HomeController extends Controller
                 // $products = $this->cart->attachCartQtyToProducts($products);
                 // $products = $this->wishlist->attachWishlistFlag($products);
 
+                $filters = $this->filterData();
 
-                $minPrice = Product::query()
-                    ->whereNotNull('regular_price')
-                    ->select(DB::raw('MIN(COALESCE(sale_price, regular_price)) as min_price'))
-                    ->where('status', 1)
-                    ->where('stock', '>', 0)
-                    ->value('min_price') ?? 0;
-
-                $maxPrice = Product::query()
-                    ->whereNotNull('regular_price')
-                    ->select(DB::raw('MAX(COALESCE(sale_price, regular_price)) as max_price'))
-                    ->where('status', 1)
-                    ->where('stock', '>', 0)
-                    ->value('max_price') ?? 0;
-                //dd($minPrice, $maxPrice);
-
-                $filters = [
-                    'price' => [
-                        'min' => $minPrice ?? 0,
-                        'max' => $maxPrice ?? 0,
-                    ],
-
-                    'categories' => ProductCategory::active()
-                        ->whereNull('parent_id')
-                        ->withCount('products')
-                        ->with([
-                            'children' => function ($q) {
-                                $q->withCount('products')->where('status', 1);
-                            }
-                        ])
-                        ->get()
-
-                        ->toArray(),
-
-                    'special' => Product::where('is_special', 1)->latest()->first(),
-                ];
                 return view("frontend.$template", compact('page', 'filters'));
             }
             return view("frontend.$template", compact('page'));
@@ -190,20 +156,33 @@ class HomeController extends Controller
 
         $category = ProductCategory::active()->where('slug', $categorySlug)->first();
 
-        $products = $category ? $category->products()->paginate(12) : Product::active()->paginate(12);
+        $products = $category->products()->paginate(12);
         $products = $this->cart->attachCartQtyToProducts($products);
         $products = $this->wishlist->attachWishlistFlag($products);
 
+        $filters = $this->filterData();
+
+        return view("frontend.product-category", compact('category', 'filters', 'segments'));
+
+        return view('frontend.shop', compact('products', 'category', 'segments', 'filters'));
+    }
+
+    private function filterData()
+    {
         $minPrice = Product::query()
             ->whereNotNull('regular_price')
             ->select(DB::raw('MIN(COALESCE(sale_price, regular_price)) as min_price'))
+            ->where('status', 1)
+            ->where('stock', '>', 0)
             ->value('min_price') ?? 0;
 
         $maxPrice = Product::query()
             ->whereNotNull('regular_price')
             ->select(DB::raw('MAX(COALESCE(sale_price, regular_price)) as max_price'))
+            ->where('status', 1)
+            ->where('stock', '>', 0)
             ->value('max_price') ?? 0;
-
+        //dd($minPrice, $maxPrice);
 
         $filters = [
             'price' => [
@@ -211,20 +190,22 @@ class HomeController extends Controller
                 'max' => $maxPrice ?? 0,
             ],
 
-            'categories' => ProductCategory::withCount('products')
-                ->get()
-                ->map(fn($cat) => [
-                    'id' => $cat->id,
-                    'name' => $cat->title,
-                    'slug' => $cat->slug,
-                    'count' => $cat->products_count,
+            'categories' => ProductCategory::active()
+                ->whereNull('parent_id')
+                ->withCount('products')
+                ->with([
+                    'children' => function ($q) {
+                        $q->withCount('products')->where('status', 1);
+                    }
                 ])
+                ->get()
+
                 ->toArray(),
 
             'special' => Product::where('is_special', 1)->latest()->first(),
         ];
 
-        return view('frontend.shop', compact('products', 'category', 'segments', 'filters'));
+        return $filters;
     }
 
     // --- Product Details ---
