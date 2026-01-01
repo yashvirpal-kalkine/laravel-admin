@@ -597,7 +597,7 @@ function wishlistCount() {
     .then(data => {
       if (!data.success) return;
       const el = document.getElementById('wishlistCount');
-      if (el) el.textContent = data.html;
+      if (el) el.textContent = data.count;
     })
     .catch(err => console.error('Wishlist count error:', err));
 }

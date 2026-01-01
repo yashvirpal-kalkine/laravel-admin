@@ -50,9 +50,15 @@ class WishlistController extends Controller
 
     public function count()
     {
+        $userId = Auth::id();
+
+        $count = $userId ? Wishlist::where('user_id', $userId)->count() : 0;
+
         return response()->json([
             'success' => true,
-            'html' => Wishlist::where('user_id', Auth::id())->count()
+            'count' => $count,
         ]);
+
+
     }
 }

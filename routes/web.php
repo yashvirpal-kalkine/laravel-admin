@@ -61,7 +61,7 @@ Route::prefix('blog')->group(function () {
 });
 Route::post('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
 
-
+ Route::get('/wishlistcount', [WishlistController::class, 'count'])->name('wishlist.count');
 
 
 
@@ -74,8 +74,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    Route::get('/wishlistcount', [WishlistController::class, 'count'])->name('wishlist.count');
     Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
 });
