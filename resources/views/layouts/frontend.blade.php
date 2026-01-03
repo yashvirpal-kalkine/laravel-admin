@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/all.min.css') }}">
 
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    @vite(['resources/js/app.js'])
 
 
     <link rel="stylesheet" as="style" type="text/css" href="{{ asset('frontend/assets/css/style.css') }}" media="all" />
@@ -51,6 +52,7 @@
     <script src="{{ asset('frontend/assets/js/jquery.magnific-popup.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/glightbox.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/aos.js') }}"></script>
+    <script src="{{ asset('frontend/assets/js/custom.js') }}"> </script>
 
     <script>
         window.App = {
@@ -68,14 +70,6 @@
             }
         };
     </script>
-
-
-
-
-    <script src="{{ asset('frontend/assets/js/custom.js') }}"> </script>
-
-
-
     {{-- Stack Script --}}
     @stack('scripts')
 </body>

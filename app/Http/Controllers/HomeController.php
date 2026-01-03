@@ -117,6 +117,7 @@ class HomeController extends Controller
             return response()->view('frontend.404', [], 404);
         } else {
             $template = $page->template ?? 'default';
+
             if (!view()->exists("frontend.$template")) {
                 $template = 'default';
 
@@ -135,8 +136,16 @@ class HomeController extends Controller
                 $filters = $this->filterData();
 
                 return view("frontend.$template", compact('page', 'filters'));
+            } else {
+                if ($template == 'auth') {
+                    if (Auth::check()) {
+                        return redirect(route('dashboard', absolute: false));
+                    }
+                    return view("frontend.$template.$page->slug", compact('page'));
+                }
+                return view("frontend.$template", compact('page'));
             }
-            return view("frontend.$template", compact('page'));
+
         }
     }
     public function search(Request $request)

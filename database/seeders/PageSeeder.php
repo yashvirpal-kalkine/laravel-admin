@@ -28,6 +28,8 @@ class PageSeeder extends Seeder
             'Checkout',
             'Login',
             'Register',
+            'Forgot Password',
+            'Reset Password',
             'Shop',
             'Category'
         ];
@@ -47,6 +49,8 @@ class PageSeeder extends Seeder
             'checkout' => 'checkout',
             'login' => 'auth',
             'register' => 'auth',
+            'forgot-password' => 'auth',
+            'reset-password' => 'auth',
             'shop' => 'shop',
             'category' => 'category',
         ];
