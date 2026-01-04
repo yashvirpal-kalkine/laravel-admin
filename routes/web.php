@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WishlistController;
@@ -21,7 +22,7 @@ Route::prefix('products')->group(function () {
     //http://localhost:8000/products/details/sample-product-1
     // Product details (slug always last) - MUST BE FIRST
     Route::get('details/{slug}', [HomeController::class, 'productDetails'])->name('products.details');
-    
+
     Route::post('/products/load', [HomeController::class, 'load'])->name('products.load');
 
 
@@ -60,8 +61,11 @@ Route::prefix('blog')->group(function () {
 
 });
 Route::post('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
+Route::get('/wishlistcount', [WishlistController::class, 'count'])->name('wishlist.count');
 
- Route::get('/wishlistcount', [WishlistController::class, 'count'])->name('wishlist.count');
+
+Route::post('/checkout/login', [CheckoutController::class, 'login'])->name('checkoutLogin');
+Route::post('/checkout/create-order', [CheckoutController::class, 'checkOut'])->name('createOrder');
 
 
 

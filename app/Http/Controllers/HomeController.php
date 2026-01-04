@@ -121,9 +121,11 @@ class HomeController extends Controller
             if (!view()->exists("frontend.$template")) {
                 $template = 'default';
 
-            } else if ($page->template == "cart") {
+            } else if ($page->template == "cart" || $page->template == "checkout") {
                 $cart = $this->cart->getCart();
                 $cart->load('items.product');
+              //  $addresses = Auth::user()->addresses()->latest()->get();
+               // dd($addresses);
                 return view("frontend.$template", compact('page', 'cart'));
             } else if ($page->template == "wishlist") {
                 $wishlists = Wishlist::with('wishlistable')->where('user_id', Auth::id())->latest()->get();

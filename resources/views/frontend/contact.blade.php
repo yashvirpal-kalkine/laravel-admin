@@ -108,3 +108,20 @@
     </section>
     <!-- contact us section end here -->
 @endsection
+
+@push('scripts')
+    <x-frontend.intl-tel-input />
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadPhoneInput("#phone");
+            const rules = [
+                { selector: "#name", rule: "name" },
+                { selector: "#email", rule: "email" },
+                { selector: "#phone", rule: "phone" },
+                { selector: "#message", rule: "message" }
+            ];
+
+            initFormValidator("#contactForm", rules);
+        });
+    </script>
+@endpush
