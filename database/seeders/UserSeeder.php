@@ -27,6 +27,8 @@ class UserSeeder extends Seeder
             // Add addresses for test user
             Address::create([
                 'user_id' => $user->id,
+                'first_name' => "Yashvir",
+                'last_name' => "Pal",
                 'type' => 'billing',
                 'address_line1' => '123 Main Street',
                 'address_line2' => 'Apt 101',
@@ -40,6 +42,8 @@ class UserSeeder extends Seeder
 
             Address::create([
                 'user_id' => $user->id,
+                'first_name' => "Yash",
+                'last_name' => "Pal",
                 'type' => 'shipping',
                 'address_line1' => '456 Second Street',
                 'address_line2' => '',

@@ -28,18 +28,14 @@
     <div class="shipping-options">
         <div class="shipping-header">
             <span><i class="fas fa-shipping-fast"></i> Shipping Method</span>
-            <span class="price">{{ currencyformat($cart->total()) }}</span>
+            <span class="price">{{ currencyformat(0) }}</span>
         </div>
-
-        <div class="shipping-option">
-            <input type="radio" id="freeShip" name="shipping" checked>
-            <label for="freeShip">Free Shipping</label>
-        </div>
-
-        <div class="shipping-option">
-            <input type="radio" id="flatRate" name="shipping">
-            <label for="flatRate">Flat Rate</label>
-        </div>
+        @foreach (enabledShippingMethods() as $sm => $smData)
+            <div class="shipping-option">
+                <input type="radio" id="sm_{{ $sm }}" name="shipping" data-amount="{{ $smData['amount'] }}">
+                <label for="sm_{{ $sm }}">{{ labelFromKey($sm) }}</label>
+            </div>
+        @endforeach
     </div>
 
     <div class="total-section">
@@ -50,44 +46,20 @@
     </div>
 
     <div class="payment-methods">
-
-        <div class="payment-option">
-            <div class="payment-header">
-                <input type="radio" id="bankTransfer" name="payment">
-                <label for="bankTransfer">
-                    <i class="fas fa-university"></i> Direct Bank Transfer
-                </label>
+        @foreach (enabledPaymentGateways() as $pg => $pgData)
+            <div class="payment-option">
+                <div class="payment-header">
+                    <input type="radio" id="pg_{{ strtolower($pg) }}" name="payment">
+                    <label for="pg_{{ strtolower($pg) }}">
+                        {{-- <i class="fas fa-money-bill-wave"></i> --}}
+                        {{ strtoupper($pg) }}
+                    </label>
+                </div>
+                @if ($pgData['description'])
+                    <p class="payment-description"> {{ $pgData['description'] ?? ""}} </p>
+                @endif
             </div>
-            <p class="payment-description">
-                Make your payment directly into our bank account. Use Order ID as reference. Your
-                order will not
-                ship until funds clear.
-            </p>
-        </div>
-
-        <div class="payment-option">
-            <div class="payment-header">
-                <input type="radio" id="cashDelivery" name="payment">
-                <label for="cashDelivery">
-                    <i class="fas fa-money-bill-wave"></i> Cash on Delivery
-                </label>
-            </div>
-            <p class="payment-description">Pay with cash upon delivery.</p>
-        </div>
-
-        <div class="payment-option active">
-            <div class="payment-header">
-                <input type="radio" id="paypal" name="payment" checked>
-                <label for="paypal">
-                    <i class="fab fa-paypal"></i> PayPal
-                </label>
-            </div>
-            <p class="payment-description">
-                Pay via PayPal; you can also pay with your credit card if you don't have a PayPal
-                account.
-            </p>
-        </div>
-
+        @endforeach
     </div>
 
     <button type="submit" class="checkout-button">

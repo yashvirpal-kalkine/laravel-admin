@@ -28,6 +28,10 @@
                             type="button" role="tab">Payment</button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping"
+                            type="button" role="tab">Shipping</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="smtp-tab" data-bs-toggle="tab" data-bs-target="#smtp" type="button"
                             role="tab">SMTP</button>
                     </li>
@@ -121,41 +125,86 @@
                         <div class="row">
                             @foreach($paymentGateways as $pg)
                                 @php
-                                    $pgData = $settings['payment_gateway'][$pg] ?? [];
+                                    $pgData = $settings['payment_gateways'][$pg] ?? [];
                                 @endphp
+
+
+
                                 <div class="col-md-12 mb-4 border rounded p-3 bg-light">
                                     <h6 class="fw-semibold text-capitalize">{{ $pg }} Settings</h6>
                                     <div class="form-check form-switch mb-3">
                                         <input class="form-check-input" type="checkbox"
-                                            name="payment_gateway[{{ $pg }}][enabled]" value="1" {{ !empty($pgData['enabled']) ? 'checked' : '' }}>
+                                            name="payment_gateways[{{ $pg }}][enabled]" value="1" {{ !empty($pgData['enabled']) ? 'checked' : '' }}>
                                         <label class="form-check-label">Enabled</label>
                                     </div>
+                                    <div class="col-md-12 mb-3">
+                                        <input type="text" name="payment_gateways[{{ $pg }}][description]" class="form-control"
+                                            placeholder="Description" value="{{ $pgData['description'] ?? '' }}">
+                                    </div>
+                                    @if ($pg !== 'cod')
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <input type="text" name="payment_gateways[{{ $pg }}][merchant_id]"
+                                                    class="form-control" placeholder="Merchant ID"
+                                                    value="{{ $pgData['merchant_id'] ?? '' }}">
+                                            </div>
 
+                                            <div class="col-md-6 mb-3">
+                                                <input type="text" name="payment_gateways[{{ $pg }}][secret_key]"
+                                                    class="form-control" placeholder="Secret Key"
+                                                    value="{{ $pgData['secret_key'] ?? '' }}">
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <input type="text" name="payment_gateways[{{ $pg }}][webhook_key]"
+                                                    class="form-control" placeholder="Webhook Key"
+                                                    value="{{ $pgData['webhook_key'] ?? '' }}">
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <input type="url" name="payment_gateways[{{ $pg }}][webhook_url]"
+                                                    class="form-control" placeholder="Webhook URL"
+                                                    value="{{ $pgData['webhook_url'] ?? '' }}">
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Shippings Tab -->
+                    <div class="tab-pane fade" id="shipping" role="tabpanel">
+                        <div class="row">
+                            @foreach($shippingMethods as $sm)
+                                @php
+                                    $smData = $settings['shipping_methods'][$sm] ?? [];
+                                @endphp
+                                <div class="col-md-12 mb-4 border rounded p-3 bg-light">
+                                    <h6 class="fw-semibold text-capitalize">{{ labelFromKey($sm) }} Settings</h6>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox"
+                                            name="shipping_methods[{{ $sm }}][enabled]" value="1" {{ !empty($smData['enabled']) ? 'checked' : '' }}>
+                                        <label class="form-check-label">Enabled</label>
+                                    </div>
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <input type="text" name="payment_gateway[{{ $pg }}][merchant_id]"
-                                                class="form-control" placeholder="Merchant ID"
-                                                value="{{ $pgData['merchant_id'] ?? '' }}">
-                                        </div>
+                                        {{-- <div class="col-md-6 mb-3">
+                                            <input type="text" name="shipping_methods[{{ $sm }}][title]" class="form-control"
+                                                placeholder="Title" value="{{ $smData['title'] ?? '' }}">
+                                        </div> --}}
 
                                         <div class="col-md-6 mb-3">
-                                            <input type="text" name="payment_gateway[{{ $pg }}][secret_key]"
-                                                class="form-control" placeholder="Secret Key"
-                                                value="{{ $pgData['secret_key'] ?? '' }}">
+                                            <input type="number" name="shipping_methods[{{ $sm }}][amount]" class="form-control"
+                                                placeholder="Amount" value="{{ $smData['amount'] ?? '' }}">
                                         </div>
-
                                         <div class="col-md-6 mb-3">
-                                            <input type="text" name="payment_gateway[{{ $pg }}][webhook_key]"
-                                                class="form-control" placeholder="Webhook Key"
-                                                value="{{ $pgData['webhook_key'] ?? '' }}">
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <input type="url" name="payment_gateway[{{ $pg }}][webhook_url]"
-                                                class="form-control" placeholder="Webhook URL"
-                                                value="{{ $pgData['webhook_url'] ?? '' }}">
+                                            <input type="text" name="shipping_methods[{{ $pg }}][description]"
+                                                class="form-control" placeholder="Description"
+                                                value="{{ $smData['description'] ?? '' }}">
                                         </div>
                                     </div>
+
                                 </div>
 
                             @endforeach

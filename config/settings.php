@@ -32,6 +32,13 @@ return [
         'stripe',
         'razorpay',
         'payu',
+        'cod',
+    ],
+    'shipping_methods' => [
+        'flat_rate',
+        'free_shipping',
+        'local_pickup',
+        'carrier_calculated_rates',
     ],
 
     'templates' => [
