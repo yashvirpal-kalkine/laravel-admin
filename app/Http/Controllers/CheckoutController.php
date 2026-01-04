@@ -45,146 +45,143 @@ class CheckoutController extends Controller
 
     public function checkOut(Request $request): JsonResponse|RedirectResponse
     {
-        dd($request);
-        $this->createUserAddress($request);
-    }
-
-    private function createUserAddress(Request $request)
-    {
         try {
-            //  Validation
-            $validated = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-                'phone' => ['required', 'string', 'unique:users,phone'],
-                'country_code' => ['nullable', 'string', 'max:5'],
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            ]);
 
-            //  Create User
-            $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'phone' => $validated['phone'],
-                'country_code' => $validated['country_code'] ?? '91',
-                'status' => 1,
-            ]);
+            DB::beginTransaction();
 
-            //  Events + Login
-            event(new Registered($user));
-            Auth::login($user);
+            // 1️⃣ Create / Get User
+            $user = $this->createUser($request);
 
-            //  AJAX Response
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Account created successfully.',
-                    'redirect_url' => route('dashboard'),
-                ], 200);
+            // 2️⃣ Create Billing Address (ALWAYS)
+            $billingAddress = $this->createBillingAddress($request, $user->id);
+
+            // 3️⃣ Create Shipping Address (CONDITIONAL)
+            if ($request->boolean('differentShipping')) {
+                $shippingAddress = $this->createShippingAddress($request, $user->id);
+            } else {
+                // Clone billing → shipping
+                $shippingAddress = $billingAddress->replicate();
+                $shippingAddress->type = 'shipping';
+                $shippingAddress->save();
             }
 
-            //  Normal Redirect
-            return redirect()->route('dashboard');
+            // 4️⃣ Create Order
+            $order = $this->createOrder($user, $billingAddress, $shippingAddress);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'redirect_url' => route('order.success', $order->id)
+            ]);
 
         } catch (ValidationException $e) {
+            DB::rollBack();
 
-            //  Validation errors (AJAX)
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $e->errors(),
-                ], 422);
-            }
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors(),
+            ], 422);
 
-            throw $e;
+        } catch (\Throwable $e) {
+            DB::rollBack();
 
-        } catch (\Exception $e) {
-
-            //  Any other error
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Something went wrong. Please try again.',
-                ], 500);
-            }
-
-            return back()->with('error', 'Something went wrong. Please try again.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again.',
+            ], 500);
         }
     }
-    private function createOrder()
-    {
 
-    }
-    public function index()
+    private function createUser(Request $request): User
     {
-        $cart = $this->cart->getCart();
-        $cart->load('items.product');
+        if (auth()->check()) {
+            return auth()->user();
+        }
 
-        return view('frontend.cart', compact('cart'));
-    }
-
-    public function add(Request $request, Product $product)
-    {
-        $request->validate([
-            'quantity' => 'nullable|integer|min:1|max:100'
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'unique:users,email'],
+            'phone' => ['required', 'unique:users,phone'],
+            'password' => ['required', 'confirmed'],
         ]);
 
-        $item = $this->cart->add($product, $request->quantity ?? 1);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Added to cart',
-            'cart_count' => $this->cart->count(),
-            'item' => $item
+        $user = User::create([
+            'name' => $request->billing_first_name . ' ' . $request->billing_last_name,
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'country_code' => $request->country_code ?? '91',
+            'password' => Hash::make($validated['password']),
+            'status' => 1,
         ]);
+
+        event(new Registered($user));
+        Auth::login($user);
+
+        return $user;
     }
 
-    public function update(Request $request, Product $product)
+    private function createBillingAddress(Request $request, int $userId)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1|max:100'
+        $data = $request->validate([
+            'billing_first_name' => 'required|string',
+            'billing_last_name' => 'required|string',
+            'billing_address_line1' => 'required|string',
+            'billing_city' => 'required|string',
+            'billing_state' => 'required|string',
+            'billing_zip' => 'required|string',
+            'billing_phone' => 'required|string',
         ]);
 
-        $this->cart->update($product, $request->quantity);
-
-        return response()->json([
-            'success' => true,
-            'cart_count' => $this->cart->count(),
-            'product_subtotal' => $this->cart->itemSubtotal($product),
-            'cart_total' => $this->cart->total()
-        ]);
-    }
-
-    public function remove(Product $product)
-    {
-        $this->cart->remove($product);
-
-        return response()->json([
-            'success' => true,
-            'cart_total' => $this->cart->total(),
-            'cart_count' => $this->cart->count()
+        return UserAddress::create([
+            'user_id' => $userId,
+            'type' => 'billing',
+            'first_name' => $data['billing_first_name'],
+            'last_name' => $data['billing_last_name'],
+            'address_line1' => $data['billing_address_line1'],
+            'city' => $data['billing_city'],
+            'state' => $data['billing_state'],
+            'zip' => $data['billing_zip'],
+            'phone' => $data['billing_phone'],
         ]);
     }
 
-    public function mini()
+    private function createShippingAddress(Request $request, int $userId)
     {
-        $cart = $this->cart->getCart();
-        $cart->load('items.product');
+        $data = $request->validate([
+            'shipping_first_name' => 'required|string',
+            'shipping_last_name' => 'required|string',
+            'shipping_address_line1' => 'required|string',
+            'shipping_city' => 'required|string',
+            'shipping_state' => 'required|string',
+            'shipping_zip' => 'required|string',
+            'shipping_phone' => 'required|string',
+        ]);
 
-        return response()->json([
-            'success' => true,
-            'html' => view('components.frontend.mini-cart', compact('cart'))->render(),
-            'cart_count' => $this->cart->count()
+        return UserAddress::create([
+            'user_id' => $userId,
+            'type' => 'shipping',
+            'first_name' => $data['shipping_first_name'],
+            'last_name' => $data['shipping_last_name'],
+            'address_line1' => $data['shipping_address_line1'],
+            'city' => $data['shipping_city'],
+            'state' => $data['shipping_state'],
+            'zip' => $data['shipping_zip'],
+            'phone' => $data['shipping_phone'],
         ]);
     }
 
-    public function productQty(Product $product)
+    private function createOrder($user, $billing, $shipping)
     {
-        return response()->json([
-            'qty' => $this->cart->getProductQty($product)
+        return Order::create([
+            'user_id' => $user->id,
+            'billing_address_id' => $billing->id,
+            'shipping_address_id' => $shipping->id,
+            'status' => 'pending',
+            'notes' => request('order_notes'),
+            'total' => cartTotal(),
         ]);
     }
+
 
 
 

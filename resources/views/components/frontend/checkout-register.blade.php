@@ -59,6 +59,8 @@
     <!-- Different Shipping -->
     <div class="notification-card" style="margin-top: 25px;">
         <div class="checkbox-group" style="margin: 0;">
+            {{-- <input type="checkbox" name="differentShipping" id="differentShipping" value="1"> --}}
+
             <input type="checkbox" name="differentShipping" id="differentShipping"
                 onclick="toggleContent('shippingContent')">
             <label for="differentShipping">Ship to a different address?</label>
