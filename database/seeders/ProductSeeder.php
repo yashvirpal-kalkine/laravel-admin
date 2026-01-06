@@ -46,12 +46,12 @@ class ProductSeeder extends Seeder
         ]);
 
         $concernItems = [
-            ['title' => 'Love', 'image' => 'assets/images/s1.jpg'],
-            ['title' => 'Money', 'image' => 'assets/images/s2.jpg'],
-            ['title' => 'Career', 'image' => 'assets/images/s3.jpg'],
-            ['title' => 'Health', 'image' => 'assets/images/s4.jpg'],
-            ['title' => 'Marriage', 'image' => 'assets/images/s5.jpg'],
-            ['title' => 'Gifts', 'image' => 'assets/images/s6.jpg'],
+            ['title' => 'Love', 'image' => null],
+            ['title' => 'Money', 'image' => null],
+            ['title' => 'Career', 'image' => null],
+            ['title' => 'Health', 'image' => null],
+            ['title' => 'Marriage', 'image' => null],
+            ['title' => 'Gifts', 'image' => null],
         ];
 
         foreach ($concernItems as $item) {
@@ -77,18 +77,18 @@ class ProductSeeder extends Seeder
         ]);
 
         $zodiacItems = [
-            ['title' => 'Aries', 'image' => 'assets/images/m1.png'],
-            ['title' => 'Taurus', 'image' => 'assets/images/m2.png'],
-            ['title' => 'Gemini', 'image' => 'assets/images/m3.png'],
-            ['title' => 'Cancer', 'image' => 'assets/images/m4.png'],
-            ['title' => 'Leo', 'image' => 'assets/images/m5.png'],
-            ['title' => 'Virgo', 'image' => 'assets/images/m6.png'],
-            ['title' => 'Libra', 'image' => 'assets/images/m7.png'],
-            ['title' => 'Scorpio', 'image' => 'assets/images/m8.png'],
-            ['title' => 'Sagittarius', 'image' => 'assets/images/m9.png'],
-            ['title' => 'Capricorn', 'image' => 'assets/images/m10.png'],
-            ['title' => 'Aquarius', 'image' => 'assets/images/m11.png'],
-            ['title' => 'Pisces', 'image' => 'assets/images/m12.png'],
+            ['title' => 'Aries', 'image' => null],
+            ['title' => 'Taurus', 'image' => null],
+            ['title' => 'Gemini', 'image' => null],
+            ['title' => 'Cancer', 'image' => null],
+            ['title' => 'Leo', 'image' => null],
+            ['title' => 'Virgo', 'image' => null],
+            ['title' => 'Libra', 'image' => null],
+            ['title' => 'Scorpio', 'image' => null],
+            ['title' => 'Sagittarius', 'image' => null],
+            ['title' => 'Capricorn', 'image' => null],
+            ['title' => 'Aquarius', 'image' => null],
+            ['title' => 'Pisces', 'image' => null],
         ];
 
         foreach ($zodiacItems as $item) {
@@ -151,6 +151,33 @@ class ProductSeeder extends Seeder
         for ($i = 1; $i <= 11; $i++) {
             if ($i == 1) {
                 $title = "Customised Bracelets";
+                $product = Product::firstOrCreate(
+                    ['slug' => Str::slug($title)],
+                    [
+                        'title' => $title,
+                        'short_description' => "Short description for {$title}",
+                        'description' => "Full description for {$title}. Lorem ipsum dolor sit amet.",
+                        'regular_price' => rand(50, 500),
+                        'sale_price' => rand(30, 100),
+                        'stock' => rand(10, 100),
+                        'is_featured' => rand(0, 1),
+                        'status' => true,
+                        'author_id' => $author?->id,
+                    ]
+                );
+
+                // 4️⃣ Attach random categories
+                $product->categories()->sync(
+                    $categoriesAll->random(rand(1, 2))->pluck('id')->toArray()
+                );
+
+                // 5️⃣ Attach random tags
+                $product->tags()->sync(
+                    $tagsAll->random(rand(1, 2))->pluck('id')->toArray()
+                );
+            }
+            if ($i == 2) {
+                $title = "Membership Plans";
                 $product = Product::firstOrCreate(
                     ['slug' => Str::slug($title)],
                     [

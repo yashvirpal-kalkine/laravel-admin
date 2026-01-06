@@ -13,8 +13,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'country_code',
         'phone',
         'password',
+        'profile_image',
         'status',
     ];
 
@@ -27,6 +29,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => 'boolean',
         ];
@@ -79,6 +82,11 @@ class User extends Authenticatable
         }
 
         return null;
+    }
+
+    public function wishlists()
+    {
+        return $this->hasMany(\App\Models\Wishlist::class);
     }
 
 

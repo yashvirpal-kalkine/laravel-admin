@@ -20,6 +20,7 @@ class SettingController extends Controller
         $currencies = config('settings.currencies');
         $socialPlatforms = config('settings.social_platforms');
         $paymentGateways = config('settings.payment_gateways');
+        $shippingMethods = config('settings.shipping_methods');
 
         // $settings = Setting::all()->pluck('value', 'key')->toArray();
 
@@ -33,15 +34,20 @@ class SettingController extends Controller
             ? json_decode($settings['social'], true)
             : ($settings['social'] ?? []);
 
-        $settings['payment_gateway'] = !empty($settings['payment_gateway']) && is_string($settings['payment_gateway'])
-            ? json_decode($settings['payment_gateway'], true)
-            : ($settings['payment_gateway'] ?? []);
+        $settings['payment_gateways'] = !empty($settings['payment_gateways']) && is_string($settings['payment_gateways'])
+            ? json_decode($settings['payment_gateways'], true)
+            : ($settings['payment_gateways'] ?? []);
+
+        $settings['shipping_methods'] = !empty($settings['shipping_methods']) && is_string($settings['shipping_methods'])
+            ? json_decode($settings['shipping_methods'], true)
+            : ($settings['shipping_methods'] ?? []);
 
         return view('admin.settings.index', compact(
             'settings',
             'currencies',
             'socialPlatforms',
-            'paymentGateways'
+            'paymentGateways',
+            'shippingMethods'
         ));
     }
 
@@ -55,11 +61,13 @@ class SettingController extends Controller
             $data['currency_symbol'] = $symbol;
         }
         $socialData = $request->input('social', []);
-        $paymentData = $request->input('payment_gateway', []);
+        $paymentData = $request->input('payment_gateways', []);
+        $shippingData = $request->input('shipping_methods', []);
 
         // Save grouped data
         Setting::set('social', json_encode($socialData));
-        Setting::set('payment_gateway', json_encode($paymentData));
+        Setting::set('payment_gateways', json_encode($paymentData));
+        Setting::set('shipping_methods', json_encode($shippingData));
 
         // Handle file uploads
         foreach (['header_logo', 'footer_logo', 'favicon'] as $fileKey) {
@@ -75,7 +83,7 @@ class SettingController extends Controller
 
         // Save other settings
         foreach ($data as $key => $value) {
-            if (in_array($key, ['social', 'payment_gateway'])) {
+            if (in_array($key, ['social', 'payment_gateways', 'shipping_methods'])) {
                 continue;
             }
             Setting::set($key, is_array($value) ? json_encode($value) : $value);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WishlistController;
@@ -20,8 +21,10 @@ Route::get('/search', [HomeController::class, 'search'])->name('search');
 Route::prefix('products')->group(function () {
     //http://localhost:8000/products/details/sample-product-1
     // Product details (slug always last) - MUST BE FIRST
-    Route::get('details/{slug}', [HomeController::class, 'productDetails'])
-        ->name('products.details');
+    Route::get('details/{slug}', [HomeController::class, 'productDetails'])->name('products.details');
+
+    Route::post('/products/load', [HomeController::class, 'load'])->name('products.load');
+
 
     // http://localhost:8000/products/pisces
     // http://localhost:8000/products/shop-by-zodiac/pisces
@@ -31,11 +34,14 @@ Route::prefix('products')->group(function () {
         ->name('products.list');
 });
 Route::prefix('cart')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    //Route::get('/', [HomeController::class, 'index'])->name('cart.index');
 
     Route::post('add/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::post('update/{product}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('mini', [CartController::class, 'mini'])->name('cart.mini');
+    Route::get('/cart/product-qty/{product}', [CartController::class, 'productQty'])->name('cart.productQty');
+
 });
 
 
@@ -54,9 +60,12 @@ Route::prefix('blog')->group(function () {
 
 
 });
+Route::post('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
+Route::get('/wishlistcount', [WishlistController::class, 'count'])->name('wishlist.count');
 
-// Dynamic pages (keep last)
-Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
+
+Route::post('/checkout/login', [CheckoutController::class, 'login'])->name('checkoutLogin');
+Route::post('/checkout/create-order', [CheckoutController::class, 'checkOut'])->name('createOrder');
 
 
 
@@ -69,10 +78,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
 });
+
+// Dynamic pages (keep last)
+Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
 
 require __DIR__ . '/auth.php';

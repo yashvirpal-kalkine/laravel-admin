@@ -104,6 +104,28 @@ if (!function_exists('setting')) {
     }
     //  {{ setting('currency_symbol') }}
 }
+
+if (!function_exists('enabledPaymentGateways')) {
+    function enabledPaymentGateways()
+    {
+        return collect(json_decode(setting('payment_gateways') ?? '{}', true))
+            ->filter(fn($g) => isset($g['enabled']) && (int) $g['enabled'] === 1);
+    }
+}
+if (!function_exists('enabledShippingMethods')) {
+    function enabledShippingMethods()
+    {
+        return collect(json_decode(setting('shipping_methods') ?? '{}', true))
+            ->filter(fn($g) => isset($g['enabled']) && (int) $g['enabled'] === 1);
+    }
+}
+if (!function_exists('labelFromKey')) {
+    function labelFromKey(string $value): string
+    {
+        return ucwords(str_replace('_', ' ', $value));
+    }
+}
+
 if (!function_exists('image_url')) {
     /**
      * Get public URL of an image by type and size.

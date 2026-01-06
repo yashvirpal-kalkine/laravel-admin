@@ -30,6 +30,7 @@ class Product extends Model
         'canonical_url',
         'custom_field',
         'is_featured',
+        'is_special',
         'status',
         'author_id',
         'brand_id',
@@ -102,12 +103,16 @@ class Product extends Model
     }
     public function scopeActive($query)
     {
-        return $query->where('status', true);
+        return $query->where('status', 1);
     }
 
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+    public function scopeStock($query)
+    {
+        return $query->where('stock', ">=", 1);
     }
 
     //$featuredProducts = Product::featured()->take(10)->get();
@@ -143,6 +148,20 @@ class Product extends Model
     public function getSeoImageUrlAttribute(): ?string
     {
         return $this->generateImageUrl($this->seo_image);
+    }
+
+    // Product.php
+    public function scopeWithWishlistFlag($query, $userId)
+    {
+        return $query->selectRaw(
+            'EXISTS (
+            SELECT 1 FROM wishlists
+            WHERE wishlists.wishlistable_id = products.id
+            AND wishlists.wishlistable_type = ?
+            AND wishlists.user_id = ?
+        ) as is_wishlisted',
+            [self::class, $userId]
+        );
     }
 
 

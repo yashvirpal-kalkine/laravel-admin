@@ -46,7 +46,9 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'cart_count' => $this->cart->count()
+            'cart_count' => $this->cart->count(),
+            'product_subtotal' => $this->cart->itemSubtotal($product),
+            'cart_total' => $this->cart->total()
         ]);
     }
 
@@ -56,8 +58,32 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
+            'cart_total' => $this->cart->total(),
             'cart_count' => $this->cart->count()
         ]);
     }
+
+    public function mini()
+    {
+        $cart = $this->cart->getCart();
+        $cart->load('items.product');
+
+        return response()->json([
+            'success' => true,
+            'html' => view('components.frontend.mini-cart', compact('cart'))->render(),
+            'cart_count' => $this->cart->count()
+        ]);
+    }
+
+    public function productQty(Product $product)
+    {
+        return response()->json([
+            'qty' => $this->cart->getProductQty($product)
+        ]);
+    }
+
+
+
+
 }
 

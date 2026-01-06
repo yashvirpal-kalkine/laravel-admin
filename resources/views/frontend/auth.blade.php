@@ -6,8 +6,9 @@
 @endsection
 
 @section('content')
-    @if (in_array($page->slug, ['login', 'register']))
-        @include('frontend.auth.' . $page->slug . '-form')
+    @if (in_array($page->slug, ['login', 'register', 'forgot-password', 'reset-password']))
+        {{-- @include('frontend.auth.' . $page->slug) --}}
+        <div>{!! $page->description !!}</div>
     @else
         <div>{!! $page->description !!}</div>
     @endif

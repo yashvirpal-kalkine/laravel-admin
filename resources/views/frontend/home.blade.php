@@ -32,7 +32,7 @@
                                             <h2>{{ $item->title ?? "" }} </h2>
                                             <h3>{{ $item->subtitle ?? "" }} </h3>
                                             @if($item->button_text)
-                                                <a class="btn" href="{{ $item->button_link ?? "" }}">
+                                                <a class="btn mybtn" href="{{ $item->button_link ?? "" }}">
                                                     {{ $item->button_text ?? "Call Us Now" }}
                                                 </a>
                                             @endif
@@ -159,9 +159,7 @@
                             <div class="col-md-6">
                                 <div class="customised-img-box">
                                     <div class="owl-carousel owl-theme" id="customised-img">
-                                        @foreach ($customizeBracelet->galleries as $item)
-                                            <x-frontend.image-carousel :item="$item" :product="$customizeBracelet" />
-                                        @endforeach
+                                        <x-frontend.image-carousel :item="$customizeBracelet" />
                                     </div>
                                 </div>
                             </div>

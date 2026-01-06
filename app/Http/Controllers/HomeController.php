@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 use App\Models\Page;
@@ -13,14 +14,21 @@ use App\Models\Slider;
 use App\Models\ProductCategory;
 use App\Models\Product;
 use App\Models\GlobalSection;
+use App\Models\Wishlist;
 use App\Models\ContactSubmission;
 use App\Models\Newsletter;
 use App\Models\SearchMeta;
 use App\Models\Author;
 
+use App\Services\CartService;
+use App\Services\WishlistService;
+
 
 class HomeController extends Controller
 {
+    public function __construct(protected CartService $cart, protected WishlistService $wishlist)
+    {
+    }
     public function index()
     {
         // Load home page
@@ -40,6 +48,9 @@ class HomeController extends Controller
             ->where('is_featured', true)
             ->take(10)
             ->get();
+        $popularProducts = $this->cart->attachCartQtyToProducts($popularProducts);
+        $popularProducts = $this->wishlist->attachWishlistFlag($popularProducts);
+
 
         // Bracelet products (limit 10)
         $braceletCategory = ProductCategory::where('slug', 'bracelets')->first();
@@ -50,13 +61,16 @@ class HomeController extends Controller
             })
             ->take(10)
             ->get();
-
+        $braceletProducts = $this->cart->attachCartQtyToProducts($braceletProducts);
+        $braceletProducts = $this->wishlist->attachWishlistFlag($braceletProducts);
 
         // Latest 10 products
         $newProducts = Product::active()
             ->orderBy('id', 'desc')
             ->take(10)
             ->get();
+        $newProducts = $this->cart->attachCartQtyToProducts($newProducts);
+        $newProducts = $this->wishlist->attachWishlistFlag($newProducts);
 
         $whyChooseSections = GlobalSection::active()
             ->where('template', 0)
@@ -77,6 +91,7 @@ class HomeController extends Controller
         // Customize Bracelet (single product)
         $customizeBracelet = Product::active()->where('id', 1)->with(['galleries'])->find(1);
         //dd($customizeBracelet);
+
         return view(
             'frontend.home',
             compact(
@@ -100,25 +115,49 @@ class HomeController extends Controller
         $page = Page::where('slug', $slug)->first();
         if (!$page) {
             return response()->view('frontend.404', [], 404);
+        } else {
+            $template = $page->template ?? 'default';
+
+            if (!view()->exists("frontend.$template")) {
+                $template = 'default';
+
+            } else if ($page->template == "cart" || $page->template == "checkout") {
+                $cart = $this->cart->getCart();
+                $cart->load('items.product');
+              //  $addresses = Auth::user()->addresses()->latest()->get();
+               // dd($addresses);
+                return view("frontend.$template", compact('page', 'cart'));
+            } else if ($page->template == "wishlist") {
+                $wishlists = Wishlist::with('wishlistable')->where('user_id', Auth::id())->latest()->get();
+                return view("frontend.$template", compact('page', 'wishlists'));
+            } else if ($page->template == "shop") {
+                // $products = Product::active()->paginate(12);
+                // $products = $this->cart->attachCartQtyToProducts($products);
+                // $products = $this->wishlist->attachWishlistFlag($products);
+
+                $filters = $this->filterData();
+
+                return view("frontend.$template", compact('page', 'filters'));
+            } else {
+                if ($template == 'auth') {
+                    if (Auth::check()) {
+                        return redirect(route('dashboard', absolute: false));
+                    }
+                    return view("frontend.$template.$page->slug", compact('page'));
+                }
+                return view("frontend.$template", compact('page'));
+            }
+
         }
-        $template = $page->template ?? 'default';
-        if (!view()->exists("frontend.$template")) {
-            $template = 'default';
-        }
-        if ($page->template == "shop") {
-            $products = Product::active()->paginate(12);
-            return view("frontend.$template", compact('page', 'products'));
-        }
-        return view("frontend.$template", compact('page'));
     }
     public function search(Request $request)
     {
         $query = $request->input('q');
-        $results = Product::where('title', 'like', "%{$query}%")
-            ->orWhere('description', 'like', "%{$query}%")
-            ->paginate(10);
+        $products = Product::where('title', 'like', "%{$query}%")->paginate(12);
+        $products = $this->cart->attachCartQtyToProducts($products);
+        $products = $this->wishlist->attachWishlistFlag($products);
 
-        return view("frontend.search", compact('results', 'query'));
+        return view("frontend.search", compact('products', 'query'));
     }
 
     public function productList($categories = null)
@@ -127,15 +166,66 @@ class HomeController extends Controller
         $categorySlug = end($segments);
 
         $category = ProductCategory::active()->where('slug', $categorySlug)->first();
-        $products = $category ? $category->products()->paginate(12) : Product::active()->paginate(12);
 
-        return view('frontend.shop', compact('products', 'category', 'segments', ));
+        $products = $category->products()->paginate(12);
+        $products = $this->cart->attachCartQtyToProducts($products);
+        $products = $this->wishlist->attachWishlistFlag($products);
+
+        $filters = $this->filterData();
+
+        return view("frontend.product-category", compact('category', 'filters', 'segments'));
+
+        return view('frontend.shop', compact('products', 'category', 'segments', 'filters'));
+    }
+
+    private function filterData()
+    {
+        $minPrice = Product::query()
+            ->whereNotNull('regular_price')
+            ->select(DB::raw('MIN(COALESCE(sale_price, regular_price)) as min_price'))
+            ->where('status', 1)
+            ->where('stock', '>', 0)
+            ->value('min_price') ?? 0;
+
+        $maxPrice = Product::query()
+            ->whereNotNull('regular_price')
+            ->select(DB::raw('MAX(COALESCE(sale_price, regular_price)) as max_price'))
+            ->where('status', 1)
+            ->where('stock', '>', 0)
+            ->value('max_price') ?? 0;
+        //dd($minPrice, $maxPrice);
+
+        $filters = [
+            'price' => [
+                'min' => $minPrice ?? 0,
+                'max' => $maxPrice ?? 0,
+            ],
+
+            'categories' => ProductCategory::active()
+                ->whereNull('parent_id')
+                ->withCount('products')
+                ->with([
+                    'children' => function ($q) {
+                        $q->withCount('products')->where('status', 1);
+                    }
+                ])
+                ->get()
+
+                ->toArray(),
+
+            'special' => Product::where('is_special', 1)->latest()->first(),
+        ];
+
+        return $filters;
     }
 
     // --- Product Details ---
     public function productDetails($slug)
     {
         $product = Product::active()->with(['categories', 'tags', 'galleries'])->where('slug', $slug)->firstOrFail();
+        $product->cart_qty = $this->cart->getProductQty($product);
+        $product = $this->wishlist->attachWishlistFlagSingle($product);
+
         $categoryIds = $product->categories->pluck('id');
         $relatedProducts = Product::active()
             ->whereHas('categories', function ($q) use ($categoryIds) {
@@ -144,9 +234,10 @@ class HomeController extends Controller
             ->where('id', '!=', $product->id)
             ->limit(6)
             ->get();
-
+        $relatedProducts = $this->cart->attachCartQtyToProducts($relatedProducts);
         return view('frontend.product-details', compact('product', 'relatedProducts'));
     }
+
 
 
     // --- Blog List (Category/Sub-category) ---
@@ -367,4 +458,99 @@ class HomeController extends Controller
     //         ], 500);
     //     }
     // }
+
+    public function load(Request $request)
+    {
+
+        $query = Product::query()->stock()->active();
+
+        // Category filter (SAFE)
+        // if (is_array($request->categories) && count($request->categories) > 0) {
+        //     $query->whereHas('categories', function ($q) use ($request) {
+        //         $q->whereIn('product_categories.id', $request->categories);
+        //     });
+        // }
+        if (!empty($request->categories) && is_array($request->categories) && count($request->categories) > 0) {
+
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->whereIn('product_categories.id', $request->categories);
+            });
+        }
+
+        // Price
+        $minPrice = $request->min_price !== '' ? (float) $request->min_price : null;
+        $maxPrice = $request->max_price !== '' ? (float) $request->max_price : null;
+
+        if ($minPrice !== null) {
+            $query->where(function ($q) use ($minPrice) {
+                $q->where('sale_price', '>=', $minPrice)
+                    ->orWhere('sale_price', null)
+                    ->where('regular_price', '>=', $minPrice);
+            });
+        }
+
+        if ($maxPrice !== null) {
+            $query->where(function ($q) use ($maxPrice) {
+                $q->where('sale_price', '<=', $maxPrice)
+                    ->orWhere('sale_price', null)
+                    ->where('regular_price', '<=', $maxPrice);
+            });
+        }
+
+        // Sorting
+        switch ($request->sort) {
+            case 'popular':
+                $query->orderBy('views', 'desc'); // or 'rating', 'sold_count' etc.
+                break;
+
+            case 'name-asc':
+                $query->orderBy('title', 'asc');
+                break;
+
+            case 'name-desc':
+                $query->orderBy('title', 'desc');
+                break;
+
+            case 'price-low':
+                // Use COALESCE to consider sale_price if available
+                $query->orderByRaw('COALESCE(sale_price, regular_price) ASC');
+                break;
+
+            case 'price-high':
+                $query->orderByRaw('COALESCE(sale_price, regular_price) DESC');
+                break;
+
+            default:
+                $query->latest(); // default sorting by created_at
+                break;
+        }
+
+
+
+        $products = $query->paginate(12, ['*'], 'page', $request->page);
+        //dd($products);
+        // $products = Product::active()->stock()->paginate(12);
+        //  $products = $this->cart->attachCartQtyToProducts($products);
+        // $products = $this->wishlist->attachWishlistFlag($products);
+        try {
+            return response()->json([
+                'html' => view('components.frontend.product-list', compact('products'))->render(),
+                'count' => $products->count(),
+                'hasMore' => $products->hasMorePages(),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ], 500);
+        }
+
+    }
+
+
+
+
+
 }

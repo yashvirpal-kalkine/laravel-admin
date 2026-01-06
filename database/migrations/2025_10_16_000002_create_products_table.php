@@ -42,6 +42,7 @@ return new class extends Migration {
             // Misc
             $table->string('custom_field')->nullable();
             $table->boolean('is_featured')->default(false);
+            $table->boolean('is_special')->default(false);
 
             // Status & Author
             $table->boolean('status')->default(true);

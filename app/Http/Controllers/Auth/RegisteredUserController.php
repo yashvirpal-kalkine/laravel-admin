@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\JsonResponse;
 
 class RegisteredUserController extends Controller
 {
@@ -27,24 +29,90 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+
+
+    public function store(Request $request): JsonResponse|RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        try {
+            //  Validation
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+                'phone' => ['required', 'string', 'unique:users,phone'],
+                'country_code' => ['nullable', 'string', 'max:5'],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+            //  Create User
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'phone' => $validated['phone'],
+                'country_code' => $validated['country_code'] ?? '91',
+                'status' => 1,
+            ]);
 
-        event(new Registered($user));
+            //  Events + Login
+            event(new Registered($user));
+            Auth::login($user);
 
-        Auth::login($user);
+            //  AJAX Response
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Account created successfully.',
+                    'redirect_url' => route('dashboard'),
+                ], 200);
+            }
 
-        return redirect(route('dashboard', absolute: false));
+            //  Normal Redirect
+            return redirect()->route('dashboard');
+
+        } catch (ValidationException $e) {
+
+            //  Validation errors (AJAX)
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            //  Any other error
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Something went wrong. Please try again.',
+                ], 500);
+            }
+
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
     }
+
+    // public function store(Request $request): RedirectResponse
+    // {
+    //     $request->validate([
+    //         'name' => ['required', 'string', 'max:255'],
+    //         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+    //         'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    //     ]);
+
+    //     $user = User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'password' => Hash::make($request->password),
+    //     ]);
+
+    //     event(new Registered($user));
+
+    //     Auth::login($user);
+
+    //     return redirect(route('dashboard', absolute: false));
+    // }
 }
