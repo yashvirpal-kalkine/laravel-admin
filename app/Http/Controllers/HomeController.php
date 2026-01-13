@@ -19,16 +19,21 @@ use App\Models\ContactSubmission;
 use App\Models\Newsletter;
 use App\Models\SearchMeta;
 use App\Models\Author;
+use App\Models\BlogPost as Post;
+use App\Models\BlogCategory;
+use App\Models\BlogPost;
+use Illuminate\Support\Facades\Validator;
 
+
+
+use Illuminate\Support\Facades\Mail;
 use App\Services\CartService;
 use App\Services\WishlistService;
 
 
 class HomeController extends Controller
 {
-    public function __construct(protected CartService $cart, protected WishlistService $wishlist)
-    {
-    }
+    public function __construct(protected CartService $cart, protected WishlistService $wishlist) {}
     public function index()
     {
         // Load home page
@@ -120,12 +125,11 @@ class HomeController extends Controller
 
             if (!view()->exists("frontend.$template")) {
                 $template = 'default';
-
             } else if ($page->template == "cart" || $page->template == "checkout") {
                 $cart = $this->cart->getCart();
                 $cart->load('items.product');
-              //  $addresses = Auth::user()->addresses()->latest()->get();
-               // dd($addresses);
+                //  $addresses = Auth::user()->addresses()->latest()->get();
+                // dd($addresses);
                 return view("frontend.$template", compact('page', 'cart'));
             } else if ($page->template == "wishlist") {
                 $wishlists = Wishlist::with('wishlistable')->where('user_id', Auth::id())->latest()->get();
@@ -147,7 +151,6 @@ class HomeController extends Controller
                 }
                 return view("frontend.$template", compact('page'));
             }
-
         }
     }
     public function search(Request $request)
@@ -264,7 +267,7 @@ class HomeController extends Controller
 
     public function sitemapXML()
     {
-        $domain = $this->domain;
+
 
         // Pages (with children)
         $pages = Page::active()
@@ -275,7 +278,7 @@ class HomeController extends Controller
             ->get();
 
         // Categories (with multi-level children)
-        $categories = Category::active()
+        $categories = BlogCategory::active()
             ->with('children.children')
             // ->where('domain_id', $domain->id)
             ->whereNull('parent_id')
@@ -283,15 +286,14 @@ class HomeController extends Controller
             ->get();
 
         // Articles
-        $articles = Article::active()
+        $articles = BlogPost::active()
             //->where('domain_id', $domain->id)
             ->orderBy('title')
             ->get();
 
         $xml = $this->generateXml($pages, $categories, $articles);
 
-        return response($xml, 200)
-            ->header('Content-Type', 'application/xml');
+        return response($xml, 200)->header('Content-Type', 'application/xml');
     }
 
     private function generateXml($pages, $categories, $articles)
@@ -383,81 +385,81 @@ class HomeController extends Controller
     }
 
 
-    // public function contactFormSubmit(Request $request)
-    // {
-    //     $validator = \Validator::make($request->all(), [
-    //         'name' => 'required',
-    //         'phone' => 'required',
-    //         'email' => 'required|email:rfc,dns',
-    //         // 'subject' => 'required',
-    //         'message' => 'required|min:5',
-    //     ]);
+    public function contactFormSubmit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email:rfc,dns',
+            // 'subject' => 'required',
+            'message' => 'required|min:5',
+        ]);
 
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-    //     try {
-    //         ContactSubmission::create($request->only('name', 'phone', 'email', 'message'));
-    //         Mail::send('emails.contact', ['request' => $request], function ($mail) use ($request) {
-    //             $mail->to('yashvir.pal@kalkine.co.in')
-    //                 ->subject('New Contact Message: ' . $request->subject)
-    //                 ->replyTo($request->email);
-    //         });
-    //         return response()->json([
-    //             'status' => true,
-    //             'message' => 'Thanks for reaching out! We’ll get back to you soon.',
-    //             'redirect_url' => route('page', 'thank-you'),
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+        try {
+            ContactSubmission::create($request->only('name', 'phone', 'email', 'message'));
+            Mail::send('emails.contact', ['request' => $request], function ($mail) use ($request) {
+                $mail->to('yashvir.pal@kalkine.co.in')
+                    ->subject('New Contact Message: ' . $request->subject)
+                    ->replyTo($request->email);
+            });
+            return response()->json([
+                'status' => true,
+                'message' => 'Thanks for reaching out! We’ll get back to you soon.',
+                'redirect_url' => route('page', 'thank-you'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
-    // public function newsletterSubscribe(Request $request)
-    // {
-    //     $validator = \Validator::make($request->all(), [
-    //         'email' => 'required|email:rfc,dns|unique:newsletters,email',
-    //     ]);
+    public function newsletterSubscribe(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email:rfc,dns|unique:newsletters,email',
+        ]);
 
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-    //     try {
-    //         Newsletter::create($request->only('email'));
-    //         // Send confirmation email
-    //         Mail::send('emails.newsletter', ['email' => $request->email], function ($mail) use ($request) {
-    //             $mail->to($request->email)
-    //                 ->subject('Thanks for Subscribing to Our Newsletter');
-    //         });
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        try {
+            Newsletter::create($request->only('email'));
+            // Send confirmation email
+            Mail::send('emails.newsletter', ['email' => $request->email], function ($mail) use ($request) {
+                $mail->to($request->email)
+                    ->subject('Thanks for Subscribing to Our Newsletter');
+            });
 
-    //         // Send email to admin
-    //         // Mail::send('emails.newsletter_admin', [
-    //         //     'email' => $request->email
-    //         // ], function ($mail) {
-    //         //     $mail->to('admin@example.com')
-    //         //         ->subject('New Newsletter Subscriber');
-    //         // });
-    //         return response()->json([
-    //             'status' => true,
-    //             'message' => 'Subscription successful! You’ll start receiving updates soon.'
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+            // Send email to admin
+            // Mail::send('emails.newsletter_admin', [
+            //     'email' => $request->email
+            // ], function ($mail) {
+            //     $mail->to('admin@example.com')
+            //         ->subject('New Newsletter Subscriber');
+            // });
+            return response()->json([
+                'status' => true,
+                'message' => 'Subscription successful! You’ll start receiving updates soon.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function load(Request $request)
     {
@@ -546,11 +548,5 @@ class HomeController extends Controller
                 'line' => $e->getLine(),
             ], 500);
         }
-
     }
-
-
-
-
-
 }

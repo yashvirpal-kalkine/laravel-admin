@@ -41,7 +41,6 @@ Route::prefix('cart')->group(function () {
     Route::delete('remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('mini', [CartController::class, 'mini'])->name('cart.mini');
     Route::get('/cart/product-qty/{product}', [CartController::class, 'productQty'])->name('cart.productQty');
-
 });
 
 
@@ -57,15 +56,18 @@ Route::prefix('blog')->group(function () {
     Route::get('{categories?}', [HomeController::class, 'blogList'])
         ->where('categories', '.*') // catch nested categories
         ->name('blog.list');
-
-
 });
-Route::post('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
+//Route::post('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
 Route::get('/wishlistcount', [WishlistController::class, 'count'])->name('wishlist.count');
 
 
 Route::post('/checkout/login', [CheckoutController::class, 'login'])->name('checkoutLogin');
 Route::post('/checkout/create-order', [CheckoutController::class, 'checkOut'])->name('createOrder');
+
+
+Route::post('/contact-form-submit', [HomeController::class, 'contactFormSubmit'])->name('contact.submit');
+Route::post('/newsletter/subscribe', [HomeController::class, 'newsletterSubscribe'])->name('newsletter.subscribe');
+Route::get('/sitemap.xml', [HomeController::class, 'sitemapXML'])->name('sitemapxml');
 
 
 
@@ -79,7 +81,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-
 });
 
 // Dynamic pages (keep last)
