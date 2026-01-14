@@ -161,4 +161,17 @@ if (!function_exists('image_url')) {
     }
 }
 
+if (!function_exists('cart')) {
+    function cart() {
+        return app(\App\Services\CartService::class);
+    }
+}
+
+if (!function_exists('wishlist')) {
+    function wishlist() {
+        return app(\App\Services\WishlistService::class);
+    }
+}
+
+
 

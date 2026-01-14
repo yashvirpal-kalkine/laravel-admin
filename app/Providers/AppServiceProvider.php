@@ -10,6 +10,12 @@ use App\Models\ProductCategory;
 use App\Models\Page;
 use App\Models\Product;
 
+use Illuminate\Foundation\AliasLoader;
+use App\Facades\Cart;
+use App\Facades\Wishlist;
+use App\Services\CartService;
+use App\Services\WishlistService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -18,6 +24,13 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+        $this->app->singleton('cart', function ($app) {
+            return new CartService();
+        });
+
+        $this->app->singleton('wishlist', function ($app) {
+            return new WishlistService();
+        });
     }
 
     /**
@@ -25,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $loader = AliasLoader::getInstance();
+        $loader->alias('Cart', Cart::class);
+        $loader->alias('Wishlist', Wishlist::class);
 
         View::composer('*', function ($view) {
             // Mega menu parents
@@ -51,6 +67,7 @@ class AppServiceProvider extends ServiceProvider
                 ->where('status', 1)
                 ->with('children')
                 ->get();
+
 
             $view->with([
                 'megaCategoriesHeaderMenu' => $megaCategoriesHeaderMenu,
