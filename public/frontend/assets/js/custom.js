@@ -448,15 +448,20 @@ function addToCart(productId, qty = 1, buyNow = false) {
   })
     .then(res => res.json())
     .then(data => {
+      if (data.status === false) {
+        toastr.error(data.message);
+        return;
+      }
       loadMiniCart();
       document.querySelectorAll('.cartCount').forEach(el => el.innerText = data.cart_count);
 
       const buyNowBtn = document.querySelector(`#buyNow${productId}`);
-
+      toastr.success(data.message);
       if (buyNowBtn) {
+
         const addCart = document.querySelector(`#addCart${productId}`);
         addCart.disabled = true;
-        addCart.textContent = 'Already in Cart';
+        addCart.textContent = data.message;
         buyNowBtn.disabled = true;
 
         const wrapper = document.querySelector(`#qtywrapper${productId}`);
@@ -466,10 +471,11 @@ function addToCart(productId, qty = 1, buyNow = false) {
 
 
       } else {
+
         const addCartButtons = document.querySelectorAll(`.addCart${productId}`);
         addCartButtons.forEach(function (item) {
           item.disabled = true;
-          item.setAttribute('title', 'Already in Cart');
+          item.setAttribute('title', data.message);
         });
       }
       if (buyNow) {
@@ -479,7 +485,10 @@ function addToCart(productId, qty = 1, buyNow = false) {
       }
 
     })
-    .catch(err => console.error(err))
+    .catch(err => {
+      console.error("Add To Cart Error: " + err);
+      toast.error(err.message || "⚠️ Oops! Something went wrong. Please try again 😕");
+    })
     .finally(hideLoader);
 }
 
@@ -496,13 +505,21 @@ function updateCart(productId, qty) {
   })
     .then(res => res.json())
     .then(data => {
+      if (data.status === false) {
+        toastr.error(data.message);
+        return;
+      }
+      toastr.success(data.message);
       document.querySelector(`#subtotal-${productId}`).innerText = `₹${data.product_subtotal.toFixed(2)}`;
       document.getElementById('cart-subtotal').innerText = `₹${data.cart_total.toFixed(2)}`;
       document.getElementById('cart-total').innerText = `₹${data.cart_total.toFixed(2)}`;
 
       loadMiniCart()
     })
-    .catch(err => console.error(err))
+    .catch(err => {
+      console.error("Update To Cart Error: " + err);
+      toast.error(err.message || "⚠️ Oops! Something went wrong. Please try again 😕");
+    })
     .finally(hideLoader);
 }
 
@@ -518,7 +535,11 @@ function removeFromCart(productId) {
   })
     .then(res => res.json())
     .then(data => {
-
+      if (data.status === false) {
+        toastr.error(data.message);
+        return;
+      }
+      toastr.success(data.message);
       loadMiniCart();
       // ---- CART PAGE ONLY ----
       const cartItem = document.getElementById(`cart-item-${productId}`);
@@ -545,7 +566,10 @@ function removeFromCart(productId) {
         }
       }
     })
-    .catch(err => console.error(err))
+    .catch(err => {
+      console.error("Remove To Cart Error: " + err);
+      toast.error(err.message || "⚠️ Oops! Something went wrong. Please try again 😕");
+    })
     .finally(hideLoader);
 }
 
@@ -557,12 +581,17 @@ function loadMiniCart() {
   })
     .then(res => res.json())
     .then(data => {
-      if (!data.success) return;
-
+      if (data.status === false) {
+        toastr.error(data.message);
+        return;
+      }
       document.getElementById('minicart').innerHTML = data.html;
       document.querySelectorAll('.cartCount').forEach(el => el.innerText = data.cart_count);
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      console.error("Mini Cart Error: " + err);
+      toast.error(err.message || "⚠️ Oops! Something went wrong. Please try again 😕");
+    })
 }
 
 
@@ -581,11 +610,19 @@ function productQty(productId) {
   })
     .then(res => res.json())
     .then(data => {
+      if (data.status === false) {
+        toastr.error(data.message);
+        return;
+      }
+      toastr.success(data.message);
       if (data.qty > 0) {
         input.value = data.qty;
       }
     })
-    .catch(err => console.error('Qty fetch error:', err));
+    .catch(err => {
+      console.error("Product Quantity Update Error: " + err);
+      toast.error(err.message || "⚠️ Oops! Something went wrong. Please try again 😕");
+    })
 }
 
 /*Wishlist Function */
@@ -595,11 +632,18 @@ function wishlistCount() {
   })
     .then(res => res.json())
     .then(data => {
-      if (!data.success) return;
+      if (data.status === false) {
+        toastr.error(data.message);
+        return;
+      }
+
       const el = document.getElementById('wishlistCount');
       if (el) el.textContent = data.count;
     })
-    .catch(err => console.error('Wishlist count error:', err));
+    .catch(err => {
+      console.error("Wishlist Count Error: " + err);
+      toast.error(err.message || "⚠️ Oops! Something went wrong. Please try again 😕");
+    })
 }
 
 function wishlistToggle(productId, ele = null) {
@@ -618,20 +662,23 @@ function wishlistToggle(productId, ele = null) {
     .then(res => res.json())
     .then(data => {
       wishlistCount();
-
+      if (data.status === false) {
+        toastr.error(data.message);
+        return;
+      }
+      toastr.success(data.message);
       const icon = ele.querySelector('i');
 
       if (!icon) return;
 
+      ele.title = data.message;
       // toggle heart
       if (icon.classList.contains('far')) {
         icon.classList.remove('far');
         icon.classList.add('fas');
-        ele.title = 'Remove from Wishlist';
       } else {
         icon.classList.remove('fas');
         icon.classList.add('far');
-        ele.title = 'Add to Wishlist';
       }
       let wishlistPage = document.getElementById('wishlistPage');
       if (wishlistPage) {
@@ -640,7 +687,8 @@ function wishlistToggle(productId, ele = null) {
       }
     })
     .catch(err => {
-      console.error(err);
+      console.error("Wishlist Toggle Error: " + err);
+      toast.error(err.message || "⚠️ Oops! Something went wrong. Please try again 😕");
     })
     .finally(() => {
       ele.disabled = false;
@@ -653,6 +701,14 @@ document.addEventListener('DOMContentLoaded', () => {
   wishlistCount();
 
 });
+// document.addEventListener("DOMContentLoaded", () => {
+//     console.log("custom.js loaded");
+
+//     // Example toasts
+//     toastr.success("✅ Test success");
+//     toastr.error("❗ Oops! Something went wrong 😕"); // This now always works
+// });
+
 
 // function wishlistCount() {
 //   fetch(route('wishlistCount'), {
