@@ -3,7 +3,7 @@ namespace App\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Wishlist extends Facade
+class WishlistServiceFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {

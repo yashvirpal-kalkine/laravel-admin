@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Validation\ValidationException;
 
+use App\Facades\CartServiceFacade as CartFacade;
+
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -30,6 +32,7 @@ class AuthenticatedSessionController extends Controller
         try {
             $request->authenticate(); // handles email + password
             $request->session()->regenerate();
+            CartFacade::mergeGuestCartIntoUserCart();
 
             if ($request->ajax()) {
                 return response()->json([
@@ -38,6 +41,8 @@ class AuthenticatedSessionController extends Controller
                     'redirect_url' => route('dashboard'),
                 ]);
             }
+           
+
 
             return redirect()->intended(route('dashboard', absolute: false));
 

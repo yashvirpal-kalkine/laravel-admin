@@ -11,8 +11,9 @@ use App\Models\Page;
 use App\Models\Product;
 
 use Illuminate\Foundation\AliasLoader;
-use App\Facades\Cart;
-use App\Facades\Wishlist;
+use App\Facades\CartServiceFacade ;
+use App\Facades\WishlistServiceFacade ;
+
 use App\Services\CartService;
 use App\Services\WishlistService;
 
@@ -39,8 +40,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $loader = AliasLoader::getInstance();
-        $loader->alias('Cart', Cart::class);
-        $loader->alias('Wishlist', Wishlist::class);
+        $loader->alias('CartFacade', CartServiceFacade::class);
+        $loader->alias('WishlistFacade', WishlistServiceFacade::class);
 
         View::composer('*', function ($view) {
             // Mega menu parents

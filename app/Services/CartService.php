@@ -2,12 +2,17 @@
 namespace App\Services;
 
 use App\Models\Cart;
+//use App\Models\Cart as Cart;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+
 
 class CartService
 {
     protected Cart $cart;
+
+
 
     public function getCart(): Cart
     {
@@ -15,14 +20,12 @@ class CartService
             return $this->cart;
         }
 
-        // Logged in user
-        if (auth()->check()) {
+        if (Auth::check()) {
             return $this->cart = Cart::firstOrCreate([
-                'user_id' => auth()->id()
+                'user_id' => Auth::id()
             ]);
         }
 
-        // Guest user
         $sessionId = session()->get('cart_session');
 
         if (!$sessionId) {
@@ -35,6 +38,44 @@ class CartService
         ]);
     }
 
+    public function mergeGuestCartIntoUserCart()
+    {
+        if (!Auth::check())
+            return;
+
+        $userCart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+
+        $sessionId = session()->get('cart_session');
+        if (!$sessionId)
+            return;
+
+        $guestCart = Cart::where('session_id', $sessionId)->first();
+        if (!$guestCart)
+            return;
+
+        foreach ($guestCart->items as $item) {
+            $existing = $userCart->items()->where('product_id', $item->product_id)->first();
+
+            if ($existing) {
+                $existing->update([
+                    'quantity' => $existing->quantity + $item->quantity
+                ]);
+            } else {
+                $item->cart_id = $userCart->id;
+                $item->save();
+            }
+        }
+
+        // Delete guest cart and clear session
+        $guestCart->delete();
+        session()->forget('cart_session');
+
+        // Update CartService internal state
+        $this->cart = $userCart;
+    }
+
+
+
     public function add(Product $product, int $qty = 1)
     {
         $cart = $this->getCart();
@@ -43,7 +84,7 @@ class CartService
             'product_id' => $product->id
         ]);
 
-        $item->quantity += $qty;
+        $item->quantity = max(1, $item->quantity + $qty);
         $item->price = $product->sale_price ?? $product->regular_price;
         $item->save();
 
@@ -68,10 +109,6 @@ class CartService
     {
         return $this->getCart()->items()->sum('quantity');
     }
-    public function itemCount()
-    {
-        return $this->getCart()->items()->sum('quantity');
-    }
 
     // App\Services\CartService.php
 
@@ -87,7 +124,8 @@ class CartService
     }
     public function total(): float
     {
-        return $this->getCart()->total();
+        return (float) $this->getCart()->items()->sum(\DB::raw('price * quantity'));
+
     }
 
     public function getProductQty(Product $product): int
