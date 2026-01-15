@@ -7,6 +7,88 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        Schema::create('product_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->foreignId('parent_id')->nullable()->constrained('product_categories')->onDelete('cascade');
+            $table->string('short_description')->nullable();
+            $table->longText('description')->nullable();
+            $table->string('banner')->nullable();
+            $table->string('banner_alt')->nullable();
+
+            $table->string('image')->nullable();
+            $table->string('image_alt')->nullable();
+
+            $table->string('meta_title')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('seo_image')->nullable();
+            $table->string('canonical_url')->nullable();
+
+            $table->boolean('status')->default(true)->default(1);
+            $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->boolean('is_featured')->default(false);
+
+            $table->string('custom_field')->nullable();
+
+            $table->timestamps();
+        });
+
+        Schema::create('product_tags', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->foreignId('parent_id')->nullable()->constrained('product_tags')->onDelete('cascade');
+            $table->string('short_description')->nullable();
+            $table->longText('description')->nullable();
+            $table->string('banner')->nullable();
+            $table->string('banner_alt')->nullable();
+
+            $table->string('image')->nullable();
+            $table->string('image_alt')->nullable();
+
+            $table->string('meta_title')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('seo_image')->nullable();
+            $table->string('canonical_url')->nullable();
+
+            $table->boolean('status')->default(true)->default(1);
+            $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
+
+            $table->string('custom_field')->nullable();
+
+
+            $table->timestamps();
+        });
+
+        Schema::create('product_brands', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->string('short_description')->nullable();
+            $table->longText('description')->nullable();
+            $table->string('banner')->nullable();
+            $table->string('banner_alt')->nullable();
+
+            $table->string('image')->nullable();
+            $table->string('image_alt')->nullable();
+
+            $table->string('meta_title')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('seo_image')->nullable();
+            $table->string('canonical_url')->nullable();
+
+            $table->boolean('status')->default(true)->default(1);
+            $table->foreignId('author_id')->nullable()->constrained('admins')->nullOnDelete();
+
+            $table->string('custom_field')->nullable();
+
+
+            $table->timestamps();
+        });
         Schema::create('products', function (Blueprint $table) {
             $table->id();
 
@@ -84,6 +166,9 @@ return new class extends Migration {
 
     public function down(): void
     {
+        Schema::dropIfExists('product_categories');
+        Schema::dropIfExists('product_tags');
+        Schema::dropIfExists('product_brands');
         Schema::dropIfExists('product_product_tag');
         Schema::dropIfExists('product_category_product');
         Schema::dropIfExists('products');

@@ -11,6 +11,12 @@ class ContactSubmission extends Model
         'phone',
         'email',
         'subject',
-        'message'
+        'message',
+        'attachment',
+        'status',
+        'custom_field',
+        'referrer_url',
+        'user_agent',
+        'ip_address',
     ];
 }
