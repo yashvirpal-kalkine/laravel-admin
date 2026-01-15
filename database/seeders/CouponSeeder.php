@@ -4,57 +4,110 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Coupon;
+use App\Models\CouponRule;
+use App\Models\CouponAction;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class CouponSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $coupons = [
-            [
-                'title' => 'New Year Discount',
-                'code' => 'NEWYEAR2026',
-                'type' => 'percentage', // 'percentage' or 'fixed'
-                'value' => 15,
-                'status' => true,
-                'valid_from' => Carbon::now(),
-                'valid_until' => Carbon::now()->addMonth(),
-            ],
-            [
-                'title' => 'Holiday Sale',
-                'code' => 'HOLIDAY50',
-                'type' => 'fixed',
-                'value' => 50,
-                'status' => true,
-                'valid_from' => Carbon::now(),
-                'valid_until' => Carbon::now()->addWeeks(2),
-            ],
-            [
-                'title' => 'Inactive Test Coupon',
-                'code' => 'TEST10',
-                'type' => 'percentage',
-                'value' => 10,
-                'status' => true,
-                'valid_from' => Carbon::now()->subDays(10),
-                'valid_until' => Carbon::now()->subDays(1),
-            ],
-        ];
+        // -----------------------------
+        // 1. Fixed discount coupon
+        // -----------------------------
+        $fixed = Coupon::create([
+            'title' => 'Flat 200 OFF',
+            'code' => 'FLAT200',
+            'status' => 1,
+            'starts_at' => now(),
+            'expires_at' => now()->addMonth(),
+            'usage_limit' => 100,
+        ]);
 
-        foreach ($coupons as $coupon) {
-            if (!Coupon::where('code', $coupon['code'])->exists()) {
-                Coupon::create($coupon);
-                $this->command->info("✅ Coupon created: {$coupon['code']}");
-            } else {
-                $this->command->info("ℹ️ Coupon already exists: {$coupon['code']}, skipping...");
-            }
-        }
+        CouponRule::create([
+            'coupon_id' => $fixed->id,
+            'condition' => 'cart_subtotal',
+            'min_value' => 500, // min cart subtotal
+        ]);
 
-        // Optionally, create 5 random coupons
-        Coupon::factory()->count(5)->create();
-        $this->command->info("✅ 5 random coupons created");
+        CouponAction::create([
+            'coupon_id' => $fixed->id,
+            'action' => 'fixed_discount',
+            'value' => 200,
+        ]);
+
+        // -----------------------------
+        // 2. Percentage discount coupon
+        // -----------------------------
+        $percent = Coupon::create([
+            'title' => '10% Off',
+            'code' => 'SAVE10',
+            'status' => 1,
+            'starts_at' => now(),
+            'expires_at' => now()->addMonth(),
+            'usage_limit' => 100,
+        ]);
+
+        CouponRule::create([
+            'coupon_id' => $percent->id,
+            'condition' => 'cart_subtotal',
+            'min_value' => 1000,
+        ]);
+
+        CouponAction::create([
+            'coupon_id' => $percent->id,
+            'action' => 'percentage_discount',
+            'value' => 10,
+        ]);
+
+        // -----------------------------
+        // 3. Buy 1 Get 1 Free (Same product)
+        // -----------------------------
+        $bogo = Coupon::create([
+            'title' => 'BOGO - Product 1',
+            'code' => 'BOGO2026',
+            'status' => 1,
+            'starts_at' => now(),
+            'expires_at' => now()->addMonth(),
+        ]);
+
+        CouponRule::create([
+            'coupon_id' => $bogo->id,
+            'condition' => 'product',
+            'product_id' => 1, // Product ID to buy
+            'min_qty' => 1,
+        ]);
+
+        CouponAction::create([
+            'coupon_id' => $bogo->id,
+            'action' => 'free_product',
+            'product_id' => 1, // Same product free
+            'quantity' => 1,
+        ]);
+
+        // -----------------------------
+        // 4. Buy Product 1 Get Product 2 Free
+        // -----------------------------
+        $buyXgetY = Coupon::create([
+            'title' => 'Buy 1 Get Product 2 Free',
+            'code' => 'BUY1GET2',
+            'status' => 1,
+            'starts_at' => now(),
+            'expires_at' => now()->addMonth(),
+        ]);
+
+        CouponRule::create([
+            'coupon_id' => $buyXgetY->id,
+            'condition' => 'product',
+            'product_id' => 1, // Buy this
+            'min_qty' => 1,
+        ]);
+
+        CouponAction::create([
+            'coupon_id' => $buyXgetY->id,
+            'action' => 'free_product',
+            'product_id' => 2, // Get this free
+            'quantity' => 1,
+        ]);
     }
 }

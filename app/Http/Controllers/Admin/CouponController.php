@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CouponRequest;
 use App\Models\Coupon;
+use App\Models\CouponAction;
+use App\Models\CouponRule;
+use App\Models\Product;
+use App\Models\ProductCategory;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +23,8 @@ class CouponController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Coupon::query()->orderByDesc('id');
+            $query = Coupon::with(['rules.product', 'rules.category', 'actions.product'])
+                ->orderByDesc('id');
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -30,34 +36,49 @@ class CouponController extends Controller
                     }
                     return $coupon->value;
                 })
-                ->addColumn('valid_from', fn($coupon) => dateFormat($coupon->valid_from))
-                ->addColumn('valid_until', fn($coupon) => dateFormat($coupon->valid_until))
+                ->addColumn('starts_at', fn($coupon) => $coupon->starts_at ? $coupon->starts_at->format('d M, Y H:i') : '')
+                ->addColumn('expires_at', fn($coupon) => $coupon->expires_at ? $coupon->expires_at->format('d M, Y H:i') : '')
                 ->addColumn('status', fn($coupon) => status_badge($coupon->status))
+                ->addColumn('rules_actions', function ($coupon) {
+                    return [
+                        'rules' => $coupon->rules->map(fn($r) => [
+                            'condition' => $r->condition,
+                            'product_name' => $r->product?->name,
+                            'category_name' => $r->category?->name,
+                        ])->toArray(),
+                        'actions' => $coupon->actions->map(fn($a) => [
+                            'action' => $a->action,
+                            'product_name' => $a->product?->name,
+                            'value' => $a->value,
+                            'quantity' => $a->quantity,
+                        ])->toArray(),
+                    ];
+                })
                 ->addColumn('actions', function ($coupon) {
-                    $edit = '<a href="' . route('admin.coupons.edit', $coupon->id) . '" class="btn btn-sm btn-primary me-1" title="Edit">
-                                <i class="bi bi-pencil-fill"></i>
-                             </a>';
-                    $delete = '<form method="POST" action="' . route('admin.coupons.destroy', $coupon->id) . '" style="display:inline;">
-                                ' . csrf_field() . method_field('DELETE') . '
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')" title="Delete">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                               </form>';
+                    $edit = '<a href="' . route('admin.coupons.edit', $coupon->id) . '" class="btn btn-sm btn-primary me-1" title="Edit"><i class="bi bi-pencil-fill"></i></a>';
+                    $delete = '<form method="POST" action="' . route('admin.coupons.destroy', $coupon->id) . '" style="display:inline;">' .
+                        csrf_field() . method_field('DELETE') .
+                        '<button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')" title="Delete"><i class="bi bi-trash-fill"></i></button></form>';
                     return $edit . $delete;
                 })
-                ->rawColumns(['status', 'actions'])
+                ->rawColumns(['status', 'actions', 'rules_actions'])
                 ->make(true);
         }
 
         return view('admin.ecommerce.coupons.index');
     }
 
+
     /**
      * Show the form for creating a new coupon.
      */
     public function create()
     {
-        return view('admin.ecommerce.coupons.form');
+        return view('admin.ecommerce.coupons.form', [
+            'products' => Product::get(),
+            'categories' => ProductCategory::get(),
+            'coupon' => new Coupon(),
+        ]);
     }
 
     /**
@@ -68,7 +89,35 @@ class CouponController extends Controller
         DB::beginTransaction();
 
         try {
-            Coupon::create($request->validated());
+            $data = $request->validated();
+
+            // Create coupon
+            $coupon = Coupon::create($data);
+
+            // Save rules if any
+            if (!empty($request->rules)) {
+                foreach ($request->rules as $rule) {
+                    $coupon->rules()->create([
+                        'condition' => $rule['condition'] ?? null,
+                        'product_id' => $rule['product_id'] ?? null,
+                        'category_id' => $rule['category_id'] ?? null,
+                        'min_value' => $rule['min_value'] ?? null,
+                        'min_qty' => $rule['min_qty'] ?? null,
+                    ]);
+                }
+            }
+
+            // Save actions if any
+            if (!empty($request->actions)) {
+                foreach ($request->actions as $action) {
+                    $coupon->actions()->create([
+                        'action' => $action['action'] ?? null,
+                        'product_id' => $action['product_id'] ?? null,
+                        'value' => $action['value'] ?? null,
+                        'quantity' => $action['quantity'] ?? null,
+                    ]);
+                }
+            }
 
             DB::commit();
             return redirect()->route('admin.coupons.index')->with('success', 'Coupon created successfully.');
@@ -88,7 +137,11 @@ class CouponController extends Controller
      */
     public function edit(Coupon $coupon)
     {
-        return view('admin.ecommerce.coupons.form', compact('coupon'));
+        return view('admin.ecommerce.coupons.form', [
+            'coupon' => $coupon->load('rules', 'actions'),
+            'products' => Product::all(),
+            'categories' => ProductCategory::all(),
+        ]);
     }
 
     /**
@@ -99,7 +152,37 @@ class CouponController extends Controller
         DB::beginTransaction();
 
         try {
-            $coupon->update($request->validated());
+            $data = $request->validated();
+
+            // Update coupon
+            $coupon->update($data);
+
+            // Sync rules
+            $coupon->rules()->delete(); // Remove old rules
+            if (!empty($request->rules)) {
+                foreach ($request->rules as $rule) {
+                    $coupon->rules()->create([
+                        'condition' => $rule['condition'] ?? null,
+                        'product_id' => $rule['product_id'] ?? null,
+                        'category_id' => $rule['category_id'] ?? null,
+                        'min_value' => $rule['min_value'] ?? null,
+                        'min_qty' => $rule['min_qty'] ?? null,
+                    ]);
+                }
+            }
+
+            // Sync actions
+            $coupon->actions()->delete(); // Remove old actions
+            if (!empty($request->actions)) {
+                foreach ($request->actions as $action) {
+                    $coupon->actions()->create([
+                        'action' => $action['action'] ?? null,
+                        'product_id' => $action['product_id'] ?? null,
+                        'value' => $action['value'] ?? null,
+                        'quantity' => $action['quantity'] ?? null,
+                    ]);
+                }
+            }
 
             DB::commit();
             return redirect()->route('admin.coupons.index')->with('success', 'Coupon updated successfully.');
@@ -123,7 +206,6 @@ class CouponController extends Controller
 
         try {
             $coupon->delete();
-
             DB::commit();
             return redirect()->route('admin.coupons.index')->with('success', 'Coupon deleted successfully.');
         } catch (\Throwable $e) {
