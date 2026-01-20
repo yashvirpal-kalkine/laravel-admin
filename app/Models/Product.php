@@ -72,7 +72,17 @@ class Product extends Model
         );
     }
 
+    // Variants
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
 
+    // Attributes assigned to product
+    public function attributes()
+    {
+        return $this->belongsToMany(ProductAttribute::class, 'product_product_attribute');
+    }
     public function galleries()
     {
         return $this->hasMany(ProductGallery::class)->orderBy('sort_order');

@@ -42,6 +42,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Products
         Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 
+        Route::resource('product-attributes', \App\Http\Controllers\Admin\ProductAttributeController::class);
+
+        Route::prefix('product-attributes/{product_attribute}')->group(function () {
+            Route::resource('values', \App\Http\Controllers\Admin\ProductAttributeValueController::class)
+                ->names('product-attribute-values');
+        });
+
         // Orders
         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
 
