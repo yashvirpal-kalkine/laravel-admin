@@ -53,6 +53,16 @@
                 <div class="col-lg-6">
                     <div class="product-info">
                         <h2>{{ $product->title }}</h2>
+                        
+                        @foreach ($product->attributes as $attr)
+                            <label>{{ $attr->name }}</label>
+                            <select data-attr="{{ $attr->id }}">
+                                @foreach ($attr->values as $val)
+                                    <option value="{{ $val->id }}">{{ $val->name }}</option>
+                                @endforeach
+                            </select>
+                        @endforeach
+
                         <div class="price ffdd ">
                             @if ($product->sale_price)
                                 <span>

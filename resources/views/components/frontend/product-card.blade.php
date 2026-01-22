@@ -16,23 +16,7 @@
         <h4>
             <a href="{{ route('products.details', $item->slug) }}" class="href">{{ $item->title }}</a>
         </h4>
-        <div class="product-price">
-            @if ($item->sale_price)
-                <span class="price-sale">
-                    {{ currencyformat($item->sale_price) }}
-                </span>
-                <small class="compare-price">
-                    <s> {{ currencyformat($item->regular_price) }}</s>
-                </small>
-                <span class="price-discount-percent">
-                    {{ $item->discountPercentage() }}% Off
-                </span>
-            @else
-                <span class="price-sale">
-                    {{ currencyformat($item->regular_price) }}
-                </span>
-            @endif
-        </div>
+        <x-frontend.price :item="$item"/>
         <div class="product-rating">
             <div class="rating-stars">
                 <i class="fa fa-star"></i>

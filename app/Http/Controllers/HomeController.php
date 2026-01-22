@@ -33,7 +33,9 @@ use App\Services\WishlistService;
 
 class HomeController extends Controller
 {
-    public function __construct(protected CartService $cart, protected WishlistService $wishlist) {}
+    public function __construct(protected CartService $cart, protected WishlistService $wishlist)
+    {
+    }
     public function index()
     {
         // Load home page
@@ -43,16 +45,10 @@ class HomeController extends Controller
         $sliders = Slider::active()->get();
 
         // Featured categories (limit 10)
-        $featuredCategories = ProductCategory::active()
-            ->where('is_featured', true)
-            ->take(10)
-            ->get();
+        $featuredCategories = ProductCategory::active()->where('is_featured', true)->take(10)->get();
 
         // Popular products (limit 10)
-        $popularProducts = Product::active()
-            ->where('is_featured', true)
-            ->take(10)
-            ->get();
+        $popularProducts = Product::active()->with('variants')->where('is_featured', true)->take(10)->get();
         $popularProducts = $this->cart->attachCartQtyToProducts($popularProducts);
         $popularProducts = $this->wishlist->attachWishlistFlag($popularProducts);
 
@@ -60,6 +56,7 @@ class HomeController extends Controller
         // Bracelet products (limit 10)
         $braceletCategory = ProductCategory::where('slug', 'bracelets')->first();
         $braceletProducts = Product::active()
+            ->with('variants')
             ->where('is_featured', true)
             ->whereHas('categories', function ($q) use ($braceletCategory) {
                 $q->where('product_categories.id', $braceletCategory->id);
@@ -70,10 +67,7 @@ class HomeController extends Controller
         $braceletProducts = $this->wishlist->attachWishlistFlag($braceletProducts);
 
         // Latest 10 products
-        $newProducts = Product::active()
-            ->orderBy('id', 'desc')
-            ->take(10)
-            ->get();
+        $newProducts = Product::active()->with('variants')->orderBy('id', 'desc')->take(10)->get();
         $newProducts = $this->cart->attachCartQtyToProducts($newProducts);
         $newProducts = $this->wishlist->attachWishlistFlag($newProducts);
 
@@ -94,7 +88,7 @@ class HomeController extends Controller
         $globalSectionSecond = $globalSections->skip(1)->first();
 
         // Customize Bracelet (single product)
-        $customizeBracelet = Product::active()->where('id', 1)->with(['galleries'])->find(1);
+        $customizeBracelet = Product::active()->with('variants')->where('id', 1)->with(['galleries'])->find(1);
         //dd($customizeBracelet);
 
         return view(
@@ -112,6 +106,8 @@ class HomeController extends Controller
                 'whyChooseSections',
             )
         );
+
+
     }
 
 
@@ -225,7 +221,8 @@ class HomeController extends Controller
     // --- Product Details ---
     public function productDetails($slug)
     {
-        $product = Product::active()->with(['categories', 'tags', 'galleries'])->where('slug', $slug)->firstOrFail();
+
+        $product = Product::active()->with(['categories', 'tags', 'galleries', 'variants.values.attribute', 'attributes.values'])->where('slug', $slug)->firstOrFail();
         $product->cart_qty = $this->cart->getProductQty($product);
         $product = $this->wishlist->attachWishlistFlagSingle($product);
 

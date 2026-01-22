@@ -176,4 +176,32 @@ class Product extends Model
     }
 
 
+
+    public function getTypeAttribute()
+    {
+        return $this->has_variants ? 'Variable' : 'Simple';
+    }
+
+    public function isSimple()
+    {
+        return $this->type === 'simple';
+    }
+
+    public function isVariable()
+    {
+        return $this->variants()->exists();
+    }
+
+    public function minVariantPrice()
+    {
+        return $this->variants()->min(\DB::raw('COALESCE(sale_price, regular_price)'));
+    }
+
+    public function maxVariantPrice()
+    {
+        return $this->variants()->max(\DB::raw('COALESCE(sale_price, regular_price)'));
+    }
+
+
+
 }
