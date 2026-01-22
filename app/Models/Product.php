@@ -17,6 +17,7 @@ class Product extends Model
         'regular_price',
         'sale_price',
         'stock',
+        'has_variants',
         'short_description',
         'description',
         'banner',
@@ -44,7 +45,7 @@ class Product extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(Admin::class, 'author_id');
     }
 
     public function brand()

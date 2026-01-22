@@ -103,6 +103,7 @@ return new class extends Migration {
 
             // Inventory
             $table->integer('stock')->default(0);
+            $table->boolean('has_variants')->default(false);
 
             // Descriptions
             $table->string('short_description')->nullable();
@@ -186,8 +187,8 @@ return new class extends Migration {
         Schema::create('product_product_attribute', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-            $table->foreignId('attribute_id')->constrained('product_attributes')->cascadeOnDelete();
-            $table->unique(['product_id', 'attribute_id']);
+            $table->foreignId('product_attribute_id')->constrained('product_attributes')->cascadeOnDelete();
+            $table->unique(['product_id', 'product_attribute_id']);
             $table->timestamps();
         });
 
