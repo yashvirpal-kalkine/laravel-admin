@@ -79,6 +79,7 @@
                                                 <option value="{{ $cond }}" @selected(($rule['condition'] ?? $rule->condition ?? '') == $cond)>{{ ucfirst($cond) }}</option>
                                             @endforeach
                                         </select>
+                                        
                                     </td>
                                     <td>
 
@@ -86,7 +87,7 @@
                                             <option value="">Select Product</option>
                                             @foreach($products as $product)
                                             {{ $product }}
-                                                <option value="{{ $product->id }}" @selected(($rule['product_id'] ?? $rule->product_id ?? '') == $product->id)>{{ $product->title }} {{ $product }}</option>
+                                                <option value="{{ $product->id }}" @selected(($rule['product_id'] ?? $rule->product_id ?? '') == $product->id)>{{ $product->title }}</option>
                                             @endforeach
                                         </select>
                                         <select name="rules[{{ $i }}][category_id]" class="form-select category-select mt-1">
@@ -175,9 +176,17 @@
 @endsection
 
 @push('scripts')
+@php
+    $ruleIndex = is_array(old('rules')) ? count(old('rules')) : ($coupon->rules->count() ?? 0);
+    $actionIndex = is_array(old('actions')) ? count(old('actions')) : ($coupon->actions->count() ?? 0);
+@endphp
+
+<script>
+    let ruleIndex = {{ $ruleIndex }};
+    let actionIndex = {{ $actionIndex }};
+</script>
     <script>
-        let ruleIndex = {{ old('rules', $coupon->rules->count() ?? 0) }};
-        let actionIndex = {{ old('actions', $coupon->actions->count() ?? 0) }};
+   
 
         // Add Rule
         $('#add-rule').click(function () {
@@ -191,8 +200,8 @@
                             </select>
                         </td>
                         <td>
-                            <select name="rules[${ruleIndex}][product_id]" class="form-select product-select"><option value="">Select Product</option>@foreach($products as $p)<option value="{{ $p->id }}">{{ $p->name }}</option>@endforeach</select>
-                            <select name="rules[${ruleIndex}][category_id]" class="form-select category-select mt-1"><option value="">Select Category</option>@foreach($categories as $c)<option value="{{ $c->id }}">{{ $c->name }}</option>@endforeach</select>
+                            <select name="rules[${ruleIndex}][product_id]" class="form-select product-select"><option value="">Select Product</option>@foreach($products as $p)<option value="{{ $p->id }}">{{ $p->title }}</option>@endforeach</select>
+                            <select name="rules[${ruleIndex}][category_id]" class="form-select category-select mt-1"><option value="">Select Category</option>@foreach($categories as $c)<option value="{{ $c->id }}">{{ $c->title }}</option>@endforeach</select>
                         </td>
                         <td>
                             <input type="number" step="0.01" name="rules[${ruleIndex}][min_value]" class="form-control mb-1" placeholder="Min Value">
@@ -222,7 +231,7 @@
                         </td>
                         <td>
                             <select name="actions[${actionIndex}][product_id]" class="form-select">
-                                <option value="">Select Product</option>@foreach($products as $p)<option value="{{ $p->id }}">{{ $p->name }}</option>@endforeach
+                                <option value="">Select Product</option>@foreach($products as $p)<option value="{{ $p->id }}">{{ $p->title }}</option>@endforeach
                             </select>
                         </td>
                         <td>
