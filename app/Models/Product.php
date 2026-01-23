@@ -182,10 +182,6 @@ class Product extends Model
         return $this->has_variants ? 'Variable' : 'Simple';
     }
 
-    public function isSimple()
-    {
-        return $this->type === 'simple';
-    }
 
     public function isVariable()
     {
