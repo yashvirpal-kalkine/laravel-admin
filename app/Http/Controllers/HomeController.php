@@ -225,6 +225,8 @@ class HomeController extends Controller
         $product = Product::active()->with(['categories', 'tags', 'galleries', 'variants.values.attribute', 'attributes.values'])->where('slug', $slug)->firstOrFail();
         $product->cart_qty = $this->cart->getProductQty($product);
         $product = $this->wishlist->attachWishlistFlagSingle($product);
+        //  $product->load(['variants.values.attribute', 'attributes.values']);
+
 
         $categoryIds = $product->categories->pluck('id');
         $relatedProducts = Product::active()
@@ -546,4 +548,30 @@ class HomeController extends Controller
             ], 500);
         }
     }
+
+    public function getVariantPrice(Request $request)
+    {
+        $product = Product::findOrFail($request->product_id);
+
+        // find matching variant by selected attributes
+        $variant = $product->variants()
+            ->whereHas('values', function ($q) use ($request) {
+                $q->whereIn('attribute_value_id', $request->values);
+            }, '=', count($request->values))
+            ->first();
+
+        if (!$variant) {
+            return response()->json(['found' => false]);
+        }
+
+        return response()->json([
+            'found' => true,
+            'sale_price' => $variant->sale_price,
+            'sale_formatted' => currencyformat($variant->sale_price),
+            'regular_price' => $variant->regular_price,
+            'regular_formatted' => currencyformat($variant->regular_price),
+        ]);
+
+    }
+
 }

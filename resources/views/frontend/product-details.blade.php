@@ -53,35 +53,52 @@
                 <div class="col-lg-6">
                     <div class="product-info">
                         <h2>{{ $product->title }}</h2>
+                        @if($product->has_variants)
                         
-                        @foreach ($product->attributes as $attr)
-                            <label>{{ $attr->name }}</label>
-                            <select data-attr="{{ $attr->id }}">
-                                @foreach ($attr->values as $val)
-                                    <option value="{{ $val->id }}">{{ $val->name }}</option>
-                                @endforeach
-                            </select>
-                        @endforeach
+                            @foreach ($product->attributes as $attr)
+                                <label>{{ $attr->name }}</label>
+                                <select class="variant-select form-control" data-attr="{{ $attr->id }}">
+                                    <option value="">Select {{ $attr->name }}</option>
+                                    @foreach ($attr->values as $val)
+                                        <option value="{{ $val->id }}">{{ $val->name }}</option>
+                                    @endforeach
+                                </select>
+                            @endforeach
 
-                        <div class="price ffdd ">
-                            @if ($product->sale_price)
-                                <span>
-                                    {{ currencyformat($product->sale_price) }}
+                            {{-- Price Display --}}
+                            @php
+                                $min = $product->variants->min('sale_price') ?? $product->variants->min('regular_price');
+                                $max = $product->variants->max('sale_price') ?? $product->variants->max('regular_price');
+                            @endphp
+
+                            <div id="price-block">
+                                <span id="price-range">
+                                    {{ currencyformat($min) }} - {{ currencyformat($max) }}
                                 </span>
-                                <small class="compare-price">
-                                    <s> {{ currencyformat($product->regular_price) }}</s>
-                                </small>
-                                <span>
-                                    <span class="prepaid-offer">
-                                        {{ $product->discountPercentage() }}% Off
+
+                                <span id="variant-price" style="display:none;"></span>
+                            </div>
+                        @else
+                            <div class="price ffdd ">
+                                @if ($product->sale_price)
+                                    <span>
+                                        {{ currencyformat($product->sale_price) }}
                                     </span>
-                                </span>
-                            @else
-                                <span class="price-sale">
-                                    {{ currencyformat($product->regular_price) }}
-                                </span>
-                            @endif
-                        </div>
+                                    <small class="compare-price">
+                                        <s> {{ currencyformat($product->regular_price) }}</s>
+                                    </small>
+                                    <span>
+                                        <span class="prepaid-offer">
+                                            {{ $product->discountPercentage() }}% Off
+                                        </span>
+                                    </span>
+                                @else
+                                    <span class="price-sale">
+                                        {{ currencyformat($product->regular_price) }}
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
                         <p>{{ $product->short_description }}</p>
                         @if ($product->tags->isNotEmpty())
                             <div class="custom_tag_pdp">
@@ -125,11 +142,11 @@
                             <label class="fw-bold">Quantity:</label>
                             <div class="quantity-wrap">
                                 <div class="gap-3 mt-1">
-                                    <x-frontend.quantity :cartQty="$product->cart_qty" :productId="$product->id"
+                                    <x-frontend.quantity :cartQty="$product->cart_qty" :product="$product"
                                         :isSingle="true" />
                                 </div>
                                 <div class="btn-box">
-                                    <x-frontend.add-to-cart :cartQty="$product->cart_qty" :productId="$product->id"
+                                    <x-frontend.add-to-cart :cartQty="$product->cart_qty" :product="$product"
                                         :isSingle="true" />
                                 </div>
                             </div>
@@ -199,9 +216,8 @@
         <!-- Tabs -->
         <div class="product-tabs">
             <button class="product-tab-btn active" data-tab="desc">Description</button>
-            <button class="product-tab-btn" data-tab="reviews">
-                Reviews <span class="count">0</span>
-            </button>
+            <button class="product-tab-btn" data-tab="reviews"> Reviews <span class="count">0</span> </button>
+            <button class="product-tab-btn" data-tab="faq"> FAQ </button>
         </div>
 
         <!-- Description -->
@@ -283,6 +299,11 @@
 
         </div>
 
+        <div id="faq" class="tab-content-box ">
+            <h4>FAQ</h4>
+
+        </div>
+
     </div>
     <!-- pro-details-tabs section end here  -->
     @if($relatedProducts->isNotEmpty())
@@ -306,3 +327,56 @@
         <!-- Bracelets section end here -->
     @endif
 @endsection
+@push('scripts')
+    <script>
+        document.querySelectorAll('.variant-select').forEach(select => {
+            select.addEventListener('change', function () {
+                let values = [];
+                document.querySelectorAll('.variant-select').forEach(s => {
+                    if (s.value !== "") values.push(parseInt(s.value));
+                });
+
+                // check if all attributes selected
+                if (values.length !== document.querySelectorAll('.variant-select').length) {
+                    document.getElementById('variant-price').style.display = 'none';
+                    document.getElementById('price-range').style.display = 'inline';
+                    return;
+                }
+
+                // AJAX Call
+                fetch('/get-variant-price', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        product_id: {{ $product->id }},
+                        values: values,
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.found) {
+                            let priceHtml = '';
+
+                            if (data.sale_price) {
+                                priceHtml = `
+                    <span>${data.sale_formatted}</span>
+                    <small><s>${data.regular_formatted}</s></small>
+                `;
+                            } else {
+                                priceHtml = `<span>${data.regular_formatted}</span>`;
+                            }
+
+                            document.getElementById('price-range').style.display = 'none';
+                            document.getElementById('variant-price').style.display = 'inline';
+                            document.getElementById('variant-price').innerHTML = priceHtml;
+                        }
+
+                    });
+            });
+        });
+    </script>
+
+@endpush

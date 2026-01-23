@@ -17,6 +17,9 @@ require __DIR__ . '/admin.php';
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/search', [HomeController::class, 'search'])->name('search');
 
+Route::post('/get-variant-price', [HomeController::class, 'getVariantPrice']);
+
+
 // Products
 Route::prefix('products')->group(function () {
     //http://localhost:8000/products/details/sample-product-1
