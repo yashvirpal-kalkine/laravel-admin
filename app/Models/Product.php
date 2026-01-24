@@ -94,6 +94,12 @@ class Product extends Model
         return $this->hasOne(ProductGallery::class)->where('is_default', true);
     }
 
+    public function faqs()
+    {
+        return $this->hasMany(ProductFaq::class);
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Helpers

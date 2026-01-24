@@ -218,10 +218,20 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+
+        Schema::create('product_faqs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('question');
+            $table->text('answer');
+            $table->timestamps();
+        });
+
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('product_faqs');
         Schema::dropIfExists('product_variant_values');
         Schema::dropIfExists('product_variants');
         Schema::dropIfExists('product_product_attribute');
