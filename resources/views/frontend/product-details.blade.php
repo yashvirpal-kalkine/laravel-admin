@@ -54,18 +54,20 @@
                     <div class="product-info">
                         <h2>{{ $product->title }}</h2>
                         @if($product->has_variants)
-                        
-                            @foreach ($product->attributes as $attr)
-                                <label>{{ $attr->name }}</label>
-                                <select class="variant-select form-control" data-attr="{{ $attr->id }}">
-                                    <option value="">Select {{ $attr->name }}</option>
-                                    @foreach ($attr->values as $val)
-                                        <option value="{{ $val->id }}">{{ $val->name }}</option>
-                                    @endforeach
-                                </select>
-                            @endforeach
 
-                            {{-- Price Display --}}
+                            <div class="row">
+                                @foreach ($product->attributes as $attr)
+                                    <div class="col-md-6">
+                                        <label>{{ $attr->name }}</label>
+                                        <select class="variant-select form-control" data-attr="{{ $attr->id }}">
+                                            <option value="">Select {{ $attr->name }}</option>
+                                            @foreach ($attr->values as $val)
+                                                <option value="{{ $val->id }}">{{ $val->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endforeach
+                            </div>
                             @php
                                 $min = $product->variants->min('sale_price') ?? $product->variants->min('regular_price');
                                 $max = $product->variants->max('sale_price') ?? $product->variants->max('regular_price');
@@ -178,28 +180,36 @@
                         <div class="custom-html">
                             <div class="bulk-order-enquiry">
                                 <p>Want to buy in bulk?
-                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#enquiryModal"
+                                    <a href="{{ route('page', 'bulk-enquiry') }}"
                                         style="color: var(--bg---color-bg-3)">Enquiry Now</a>
                                 </p>
                             </div>
                         </div>
+                        <!-- <div class="custom-html">
+                                                                <div class="bulk-order-enquiry">
+                                                                    <p>Want to buy in bulk?
+                                                                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#enquiryModal"
+                                                                            style="color: var(--bg---color-bg-3)">Enquiry Now</a>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
 
-                        <div class="modal fade" id="enquiryModal" tabindex="-1" aria-labelledby="enquiryModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="enquiryModalLabel">Enquiry Form</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <x-frontend.custom-bracelet-form full-width="true" />
-                                    </div>
+                                                            <div class="modal fade" id="enquiryModal" tabindex="-1" aria-labelledby="enquiryModalLabel"
+                                                                aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="enquiryModalLabel">Enquiry Form</h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <x-frontend.custom-bracelet-form full-width="true" />
+                                                                        </div>
 
-                                </div>
-                            </div>
-                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div> -->
 
 
 
@@ -217,15 +227,16 @@
         <div class="product-tabs">
             <button class="product-tab-btn active" data-tab="desc">Description</button>
             <button class="product-tab-btn" data-tab="reviews"> Reviews <span class="count">0</span> </button>
-            <button class="product-tab-btn" data-tab="faq"> FAQ </button>
+            @if($product->faqs->count())
+                <button class="product-tab-btn" data-tab="faq"> FAQ </button>
+            @endif
         </div>
 
         <!-- Description -->
         <div id="desc" class="tab-content-box active">
             <h4>Description</h4>
             <p>
-                This 7 Chakra Pendant in Clear Quartz is crafted to enhance positive energy,
-                improve focus, and balance the body’s chakras. Ideal for daily wear and gifting.
+                {!! $product->description !!}
             </p>
         </div>
 
@@ -298,12 +309,30 @@
             </div>
 
         </div>
-
-        <div id="faq" class="tab-content-box ">
-            <h4>FAQ</h4>
-
-        </div>
-
+        @if($product->faqs->count())
+            <div id="faq" class="tab-content-box ">
+                <h3>Product FAQs</h3>
+                <div class="accordion" id="productFaqAccordion">
+                    @foreach($product->faqs as $faq)
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-{{ $faq->id }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse-{{ $faq->id }}" aria-expanded="false"
+                                    aria-controls="collapse-{{ $faq->id }}">
+                                    {{ $faq->question }}
+                                </button>
+                            </h2>
+                            <div id="collapse-{{ $faq->id }}" class="accordion-collapse collapse"
+                                aria-labelledby="heading-{{ $faq->id }}" data-bs-parent="#productFaqAccordion">
+                                <div class="accordion-body">
+                                    {{ $faq->answer }}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
     <!-- pro-details-tabs section end here  -->
     @if($relatedProducts->isNotEmpty())
@@ -362,9 +391,9 @@
 
                             if (data.sale_price) {
                                 priceHtml = `
-                    <span>${data.sale_formatted}</span>
-                    <small><s>${data.regular_formatted}</s></small>
-                `;
+                                                        <span>${data.sale_formatted}</span>
+                                                        <small><s>${data.regular_formatted}</s></small>
+                                                    `;
                             } else {
                                 priceHtml = `<span>${data.regular_formatted}</span>`;
                             }

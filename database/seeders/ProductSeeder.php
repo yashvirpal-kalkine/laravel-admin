@@ -11,8 +11,11 @@ use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductVariant;
+use App\Models\ProductFaq;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Faker\Factory as Faker;
+
 
 class ProductSeeder extends Seeder
 {
@@ -276,5 +279,19 @@ class ProductSeeder extends Seeder
         ]);
         $v2->values()->attach([$s->id, $blue->id]);
         $this->command->info('✅ Product with variants created');
+
+
+        $faker = Faker::create();
+        foreach (range(1, 10) as $i) {
+            $productid= rand(1, 10);
+            ProductFaq::create([
+                'product_id' =>$productid,
+                'question' => $faker->sentence(),
+                'answer' => $faker->paragraph(),
+            ]);
+            $this->command->info('✅ Product Faq created for '.$productid);
+        }
+
+         
     }
 }

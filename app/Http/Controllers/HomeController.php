@@ -222,7 +222,7 @@ class HomeController extends Controller
     public function productDetails($slug)
     {
 
-        $product = Product::active()->with(['categories', 'tags', 'galleries', 'variants.values.attribute', 'attributes.values'])->where('slug', $slug)->firstOrFail();
+        $product = Product::active()->with(['categories', 'tags', 'galleries', 'variants.values.attribute', 'attributes.values','faqs'])->where('slug', $slug)->firstOrFail();
         $product->cart_qty = $this->cart->getProductQty($product);
         $product = $this->wishlist->attachWishlistFlagSingle($product);
         //  $product->load(['variants.values.attribute', 'attributes.values']);

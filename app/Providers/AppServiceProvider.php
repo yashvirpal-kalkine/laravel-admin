@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
             $ourProductsFooterMenu = ProductCategory::whereNull('parent_id')
                 ->where('status', 1)
                 ->get();
-            $quickLinksFooterMenu = Page::whereIn('slug', ['about-us', 'contact-us', 'refund-returns', 'privacy-policy', 'shipping-policy', 'terms-conditions'])
+            $quickLinksFooterMenu = Page::whereIn('slug', ['about-us', 'contact-us', 'refund-returns', 'privacy-policy', 'shipping-policy', 'terms-conditions','bulk-enquiry'])
                 ->where('status', 1)
                 ->with('children')
                 ->get();
