@@ -50,15 +50,19 @@ return new class extends Migration {
                 'fixed_discount',
                 'percentage_discount',
                 'free_product',
-                'discount_product'
+                'discount_product',
+                'bogo'
             ]);
 
-            $table->decimal('value', 10, 2)->nullable();
-            $table->unsignedBigInteger('product_id')->nullable()->index();
-            $table->unsignedInteger('quantity')->nullable();
+            $table->decimal('value', 10, 2)->nullable(); // only for % or fixed
+            $table->unsignedBigInteger('product_id')->nullable()->index(); // target product
+            $table->unsignedInteger('quantity')->nullable(); // for free_product
+            $table->unsignedInteger('buy_qty')->nullable(); // BOGO buy qty
+            $table->unsignedInteger('get_qty')->nullable(); // BOGO get qty
 
             $table->timestamps();
         });
+
     }
 
     public function down(): void

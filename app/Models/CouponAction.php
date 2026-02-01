@@ -15,6 +15,8 @@ class CouponAction extends Model
         'value',
         'product_id',
         'quantity',
+        'buy_qty',
+        'get_qty'
     ];
 
     public function coupon()

@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\Coupon;
 use App\Models\CouponRule;
 use App\Models\CouponAction;
-use Illuminate\Support\Str;
 
 class CouponSeeder extends Seeder
 {
@@ -15,99 +14,113 @@ class CouponSeeder extends Seeder
         // -----------------------------
         // 1. Fixed discount coupon
         // -----------------------------
-        $fixed = Coupon::create([
-            'title' => 'Flat 200 OFF',
-            'code' => 'FLAT200',
-            'status' => 1,
-            'starts_at' => now(),
-            'expires_at' => now()->addMonth(),
-            'usage_limit' => 100,
-        ]);
-
-        CouponRule::create([
-            'coupon_id' => $fixed->id,
-            'condition' => 'cart_subtotal',
-            'min_value' => 500, // min cart subtotal
-        ]);
-
-        CouponAction::create([
-            'coupon_id' => $fixed->id,
-            'action' => 'fixed_discount',
-            'value' => 200,
-        ]);
+        $this->createCoupon(
+            'Flat 200 OFF',
+            'FLAT200',
+            'cart_subtotal',
+            ['min_value' => 500],
+            'fixed_discount',
+            ['value' => 200]
+        );
 
         // -----------------------------
         // 2. Percentage discount coupon
         // -----------------------------
-        $percent = Coupon::create([
-            'title' => '10% Off',
-            'code' => 'SAVE10',
-            'status' => 1,
-            'starts_at' => now(),
-            'expires_at' => now()->addMonth(),
-            'usage_limit' => 100,
-        ]);
-
-        CouponRule::create([
-            'coupon_id' => $percent->id,
-            'condition' => 'cart_subtotal',
-            'min_value' => 1000,
-        ]);
-
-        CouponAction::create([
-            'coupon_id' => $percent->id,
-            'action' => 'percentage_discount',
-            'value' => 10,
-        ]);
+        $this->createCoupon(
+            '10% Off',
+            'SAVE10',
+            'cart_subtotal',
+            ['min_value' => 1000],
+            'percentage_discount',
+            ['value' => 10]
+        );
 
         // -----------------------------
         // 3. Buy 1 Get 1 Free (Same product)
         // -----------------------------
-        $bogo = Coupon::create([
-            'title' => 'BOGO - Product 1',
-            'code' => 'BOGO2026',
-            'status' => 1,
-            'starts_at' => now(),
-            'expires_at' => now()->addMonth(),
-        ]);
-
-        CouponRule::create([
-            'coupon_id' => $bogo->id,
-            'condition' => 'product',
-            'product_id' => 1, // Product ID to buy
-            'min_qty' => 1,
-        ]);
-
-        CouponAction::create([
-            'coupon_id' => $bogo->id,
-            'action' => 'free_product',
-            'product_id' => 1, // Same product free
-            'quantity' => 1,
-        ]);
+        $this->createCoupon(
+            'BOGO - Product 1',
+            'BOGO2026',
+            'product',
+            ['product_id' => 1, 'min_qty' => 1],
+            'bogo',
+            ['product_id' => 1, 'buy_qty' => 1, 'get_qty' => 1]
+        );
 
         // -----------------------------
         // 4. Buy Product 1 Get Product 2 Free
         // -----------------------------
-        $buyXgetY = Coupon::create([
-            'title' => 'Buy 1 Get Product 2 Free',
-            'code' => 'BUY1GET2',
+        $this->createCoupon(
+            'Buy 1 Get Product 2 Free',
+            'BUY1GET2',
+            'product',
+            ['product_id' => 1, 'min_qty' => 1],
+            'free_product',
+            ['product_id' => 2, 'quantity' => 1]
+        );
+
+        // -----------------------------
+        // 5. Discount specific product
+        // -----------------------------
+        $this->createCoupon(
+            '50% Off Product 3',
+            'PROD3DISCOUNT',
+            'product',
+            ['product_id' => 3, 'min_qty' => 1],
+            'discount_product',
+            ['product_id' => 3, 'value' => 50]
+        );
+
+        // -----------------------------
+        // 6. Cart quantity based coupon
+        // -----------------------------
+        $this->createCoupon(
+            'Buy 10 items Get 500 OFF',
+            'BUY10GET500',
+            'cart_quantity',
+            ['min_qty' => 10],
+            'fixed_discount',
+            ['value' => 500]
+        );
+    }
+
+    /**
+     * Helper function to create coupon, rule and action
+     */
+    private function createCoupon(
+        string $title,
+        string $code,
+        string $ruleCondition,
+        array $ruleData,
+        string $actionType,
+        array $actionData
+    ) {
+        $coupon = Coupon::create([
+            'title' => $title,
+            'code' => $code,
             'status' => 1,
             'starts_at' => now(),
             'expires_at' => now()->addMonth(),
+            'usage_limit' => $ruleData['usage_limit'] ?? null,
         ]);
 
-        CouponRule::create([
-            'coupon_id' => $buyXgetY->id,
-            'condition' => 'product',
-            'product_id' => 1, // Buy this
-            'min_qty' => 1,
-        ]);
+        // Create Rule
+        $coupon->rules()->create(array_merge([
+            'condition' => $ruleCondition,
+            'product_id' => $ruleData['product_id'] ?? null,
+            'category_id' => $ruleData['category_id'] ?? null,
+            'min_value' => $ruleData['min_value'] ?? null,
+            'min_qty' => $ruleData['min_qty'] ?? null,
+        ], $ruleData));
 
-        CouponAction::create([
-            'coupon_id' => $buyXgetY->id,
-            'action' => 'free_product',
-            'product_id' => 2, // Get this free
-            'quantity' => 1,
-        ]);
+        // Create Action
+        $coupon->actions()->create(array_merge([
+            'action' => $actionType,
+            'product_id' => $actionData['product_id'] ?? null,
+            'value' => $actionData['value'] ?? null,
+            'quantity' => $actionData['quantity'] ?? null,
+            'buy_qty' => $actionData['buy_qty'] ?? null,
+            'get_qty' => $actionData['get_qty'] ?? null,
+        ], $actionData));
     }
 }

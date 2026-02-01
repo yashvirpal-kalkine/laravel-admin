@@ -23,7 +23,6 @@ class CouponRequest extends FormRequest
             'expires_at' => 'nullable|date|after_or_equal:starts_at',
             'usage_limit' => 'nullable|integer|min:0',
 
-            // Rules validation
             'rules' => 'nullable|array',
             'rules.*.condition' => 'required|string|in:product,category,cart_subtotal,cart_quantity',
             'rules.*.product_id' => 'nullable|exists:products,id',
@@ -31,21 +30,13 @@ class CouponRequest extends FormRequest
             'rules.*.min_value' => 'nullable|numeric|min:0',
             'rules.*.min_qty' => 'nullable|integer|min:0',
 
-            // Actions validation
             'actions' => 'nullable|array',
-            'actions.*.action' => 'required|string|in:fixed_discount,percentage_discount,free_product,discount_product',
+            'actions.*.action' => 'required|string|in:fixed_discount,percentage_discount,free_product,discount_product,bogo',
             'actions.*.product_id' => 'nullable|exists:products,id',
             'actions.*.value' => 'nullable|numeric|min:0',
-            'actions.*.quantity' => 'nullable|integer|min:0',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'expires_at.after_or_equal' => 'Expiry date must be after start date.',
-            'rules.*.condition.in' => 'Invalid rule condition selected.',
-            'actions.*.action.in' => 'Invalid action selected.',
+            'actions.*.quantity' => 'nullable|integer|min:1',
+            'actions.*.buy_qty' => 'nullable|integer|min:1',
+            'actions.*.get_qty' => 'nullable|integer|min:1',
         ];
     }
 }

@@ -2,75 +2,61 @@
 
 namespace App\Services;
 
-use App\Models\Cart;
 use App\Models\Coupon;
 use Illuminate\Support\Collection;
 
 class CouponService
 {
-    protected Cart $cart;
     protected ?Coupon $coupon = null;
 
-    public function __construct(Cart $cart)
+    /**
+     * Load a coupon by code.
+     */
+    public function load(string $code): ?self
     {
-        $this->cart = $cart;
+        $this->coupon = Coupon::with('rules.product', 'rules.category', 'actions.product')
+            ->where('code', $code)
+            ->first();
+        return $this;
     }
 
     /**
-     * Apply a coupon by code
+     * Check if coupon is valid (active, within dates, usage limits)
      */
-    public function apply(string $code): bool
+    public function isValid(): bool
     {
-        $coupon = Coupon::where('code', $code)->first();
+        if (!$this->coupon)
+            return false;
 
-        if (!$coupon || !$coupon->isActive()) {
-            return false; // Invalid coupon
-        }
-
-        if (!$this->rulesSatisfied($coupon)) {
-            return false; // Rules not satisfied
-        }
-
-        $this->coupon = $coupon;
-
-        $this->applyActions($coupon->actions);
+        if (!$this->coupon->status)
+            return false;
+        if ($this->coupon->starts_at && now()->lt($this->coupon->starts_at))
+            return false;
+        if ($this->coupon->expires_at && now()->gt($this->coupon->expires_at))
+            return false;
+        if ($this->coupon->usage_limit && $this->coupon->used_count >= $this->coupon->usage_limit)
+            return false;
 
         return true;
     }
 
     /**
-     * Check if rules are satisfied
+     * Check if cart meets all coupon rules
+     * 
+     * $cartItems = [
+     *   ['product_id' => 1, 'category_id' => 5, 'price' => 500, 'qty' => 2],
+     *   ...
+     * ]
      */
-    protected function rulesSatisfied(Coupon $coupon): bool
+    protected function meetsRules(array $cartItems): bool
     {
-        foreach ($coupon->rules as $rule) {
-            switch ($rule->condition) {
-                case 'product':
-                    $item = $this->cart->items()->where('product_id', $rule->product_id)->first();
-                    if (!$item || $item->quantity < $rule->min_qty)
-                        return false;
-                    break;
+        if ($this->coupon->rules->isEmpty()) {
+            return true; // No rules = always applicable
+        }
 
-                case 'category':
-                    $items = $this->cart->items()->whereHas('product', function ($q) use ($rule) {
-                        $q->where('category_id', $rule->category_id);
-                    })->get();
-
-                    $qty = $items->sum('quantity');
-                    if ($qty < $rule->min_qty)
-                        return false;
-                    break;
-
-                case 'cart_subtotal':
-                    if ($this->cart->subtotal < $rule->min_value)
-                        return false;
-                    break;
-
-                case 'cart_quantity':
-                    $totalQty = $this->cart->items()->sum('quantity');
-                    if ($totalQty < $rule->min_qty)
-                        return false;
-                    break;
+        foreach ($this->coupon->rules as $rule) {
+            if (!$this->checkRule($rule, $cartItems)) {
+                return false; // All rules must pass
             }
         }
 
@@ -78,87 +64,191 @@ class CouponService
     }
 
     /**
-     * Apply all actions
+     * Check individual rule
      */
-    protected function applyActions($actions)
+    protected function checkRule($rule, array $cartItems): bool
     {
-        foreach ($actions as $action) {
+        switch ($rule->condition) {
+            case 'product':
+                // Check if specific product exists in cart
+                foreach ($cartItems as $item) {
+                    if ($item['product_id'] == $rule->product_id) {
+                        // Check min qty if specified
+                        if ($rule->min_qty && $item['qty'] < $rule->min_qty) {
+                            return false;
+                        }
+                        return true;
+                    }
+                }
+                return false;
+
+            case 'category':
+                // Check if any product from specific category exists in cart
+                foreach ($cartItems as $item) {
+                    if (isset($item['category_id']) && $item['category_id'] == $rule->category_id) {
+                        // Check min qty if specified
+                        if ($rule->min_qty && $item['qty'] < $rule->min_qty) {
+                            return false;
+                        }
+                        return true;
+                    }
+                }
+                return false;
+
+            case 'cart_subtotal':
+                // Check if cart subtotal meets minimum
+                $subtotal = array_sum(array_map(fn($item) => $item['price'] * $item['qty'], $cartItems));
+                return $subtotal >= ($rule->min_value ?? 0);
+
+            case 'cart_quantity':
+                // Check if total cart quantity meets minimum
+                $totalQty = array_sum(array_column($cartItems, 'qty'));
+                return $totalQty >= ($rule->min_qty ?? 0);
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Apply coupon to a cart
+     * 
+     * $cartItems = [
+     *   ['product_id' => 1, 'category_id' => 5, 'price' => 500, 'qty' => 2],
+     *   ...
+     * ]
+     */
+    public function apply(array $cartItems): array
+    {
+        if (!$this->coupon || !$this->isValid()) {
+            return [
+                'success' => false,
+                'message' => 'Coupon is invalid or expired.',
+                'discount' => 0,
+                'free_items' => [],
+            ];
+        }
+
+        // Check if cart meets coupon rules
+        if (!$this->meetsRules($cartItems)) {
+            return [
+                'success' => false,
+                'message' => 'Cart does not meet coupon requirements.',
+                'discount' => 0,
+                'free_items' => [],
+            ];
+        }
+
+        $discount = 0;
+        $freeItems = [];
+
+        foreach ($this->coupon->actions as $action) {
+
             switch ($action->action) {
+
                 case 'fixed_discount':
-                    $this->cart->discount_total += $action->value;
+                    $discount += $this->calculateFixedDiscount($action, $cartItems);
                     break;
 
                 case 'percentage_discount':
-                    $this->cart->discount_total += ($this->cart->subtotal * $action->value / 100);
-                    break;
-
-                case 'free_product':
-                    $this->addFreeProduct($action->product_id, $action->quantity);
+                    $discount += $this->calculatePercentageDiscount($action, $cartItems);
                     break;
 
                 case 'discount_product':
-                    $this->discountProduct($action->product_id, $action->value);
+                    $discount += $this->calculateProductDiscount($action, $cartItems);
+                    break;
+
+                case 'free_product':
+                    $freeItems[] = [
+                        'product_id' => $action->product_id,
+                        'quantity' => $action->quantity ?? 1,
+                    ];
+                    break;
+
+                case 'bogo':
+                    $bogoFree = $this->calculateBogo($action, $cartItems);
+                    if (!empty($bogoFree)) {
+                        $freeItems = array_merge($freeItems, $bogoFree);
+                    }
                     break;
             }
         }
 
-        $this->recalculateCart();
+        return [
+            'success' => true,
+            'message' => 'Coupon applied successfully.',
+            'discount' => round($discount, 2),
+            'free_items' => $freeItems,
+        ];
     }
 
     /**
-     * Add free product (BOGO)
+     * Fixed cart discount
      */
-    protected function addFreeProduct(int $productId, int $quantity)
+    protected function calculateFixedDiscount($action, array $cartItems): float
     {
-        $item = $this->cart->items()->where('product_id', $productId)->first();
+        return $action->value ?? 0;
+    }
 
-        if ($item) {
-            $item->quantity += $quantity;
-            $item->price = $item->price; // Price remains same
-            $item->save();
-        } else {
-            $this->cart->items()->create([
-                'product_id' => $productId,
-                'quantity' => $quantity,
-                'price' => 0, // Free product
-            ]);
+    /**
+     * Percentage cart discount
+     */
+    protected function calculatePercentageDiscount($action, array $cartItems): float
+    {
+        $subtotal = array_sum(array_map(fn($item) => $item['price'] * $item['qty'], $cartItems));
+        return ($action->value / 100) * $subtotal;
+    }
+
+    /**
+     * Discount on a specific product
+     */
+    protected function calculateProductDiscount($action, array $cartItems): float
+    {
+        $discount = 0;
+        foreach ($cartItems as $item) {
+            if ($item['product_id'] == $action->product_id) {
+                $discount += ($item['price'] * $item['qty']) * ($action->value / 100);
+            }
+        }
+        return $discount;
+    }
+
+    /**
+     * BOGO logic (Buy X Get Y of the same product free)
+     */
+    protected function calculateBogo($action, array $cartItems): array
+    {
+        $freeItems = [];
+
+        if (!$action->product_id || !$action->buy_qty) {
+            return $freeItems;
+        }
+
+        foreach ($cartItems as $item) {
+            if ($item['product_id'] == $action->product_id && $item['qty'] >= $action->buy_qty) {
+                $times = intdiv($item['qty'], $action->buy_qty);
+                $freeItems[] = [
+                    'product_id' => $action->product_id,
+                    'quantity' => $times * ($action->get_qty ?? 1),
+                ];
+            }
+        }
+
+        return $freeItems;
+    }
+
+    /**
+     * Increment used count after successful checkout
+     */
+    public function markUsed(): void
+    {
+        if ($this->coupon) {
+            $this->coupon->increment('used_count');
         }
     }
 
     /**
-     * Discount a specific product
-     */
-    protected function discountProduct(int $productId, float $value)
-    {
-        $item = $this->cart->items()->where('product_id', $productId)->first();
-        if ($item) {
-            $item->price -= $value;
-            if ($item->price < 0)
-                $item->price = 0;
-            $item->save();
-        }
-    }
-
-    /**
-     * Recalculate cart totals
-     */
-    protected function recalculateCart()
-    {
-        $subtotal = $this->cart->items->sum(function ($i) {
-            return $i->price * $i->quantity;
-        });
-
-        $this->cart->subtotal = $subtotal;
-        $this->cart->grand_total = max(
-            0,
-            $subtotal - $this->cart->discount_total + $this->cart->tax_total + $this->cart->shipping_total
-        );
-
-        $this->cart->save();
-    }
-
-    /**
-     * Return applied coupon
+     * Get the loaded coupon
      */
     public function getCoupon(): ?Coupon
     {

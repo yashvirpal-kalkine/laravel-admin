@@ -35,6 +35,12 @@ class Coupon extends Model
         return $this->hasMany(CouponAction::class);
     }
 
+    public function carts(): BelongsToMany
+    {
+        return $this->belongsToMany(Cart::class, 'cart_coupons')
+            ->withTimestamps();
+    }
+
     // Check if coupon is valid now
     public function isActive(): bool
     {
