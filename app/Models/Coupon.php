@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Coupon extends Model
 {
@@ -18,9 +19,11 @@ class Coupon extends Model
     ];
 
     protected $casts = [
+        'status' => 'boolean',
         'starts_at' => 'datetime',
         'expires_at' => 'datetime',
-        'status' => 'boolean',
+        'usage_limit' => 'integer',
+        'used_count' => 'integer',
     ];
 
     // Coupon rules (conditions)
@@ -38,6 +41,7 @@ class Coupon extends Model
     public function carts(): BelongsToMany
     {
         return $this->belongsToMany(Cart::class, 'cart_coupons')
+            ->withPivot('discount_amount')
             ->withTimestamps();
     }
 

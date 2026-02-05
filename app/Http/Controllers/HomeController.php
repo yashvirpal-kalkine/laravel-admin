@@ -49,7 +49,7 @@ class HomeController extends Controller
 
         // Popular products (limit 10)
         $popularProducts = Product::active()->with('variants')->where('is_featured', true)->take(10)->get();
-        $popularProducts = $this->cart->attachCartQtyToProducts($popularProducts);
+        //  $popularProducts = $this->cart->attachCartQtyToProducts($popularProducts);
         $popularProducts = $this->wishlist->attachWishlistFlag($popularProducts);
 
 
@@ -63,12 +63,12 @@ class HomeController extends Controller
             })
             ->take(10)
             ->get();
-        $braceletProducts = $this->cart->attachCartQtyToProducts($braceletProducts);
+        // $braceletProducts = $this->cart->attachCartQtyToProducts($braceletProducts);
         $braceletProducts = $this->wishlist->attachWishlistFlag($braceletProducts);
 
         // Latest 10 products
         $newProducts = Product::active()->with('variants')->orderBy('id', 'desc')->take(10)->get();
-        $newProducts = $this->cart->attachCartQtyToProducts($newProducts);
+        //  $newProducts = $this->cart->attachCartQtyToProducts($newProducts);
         $newProducts = $this->wishlist->attachWishlistFlag($newProducts);
 
         $whyChooseSections = GlobalSection::active()
@@ -222,10 +222,7 @@ class HomeController extends Controller
     public function productDetails($slug)
     {
 
-        $product = Product::active()->with(['categories', 'tags', 'galleries', 'variants.values.attribute', 'attributes.values','faqs'])->where('slug', $slug)->firstOrFail();
-        $product->cart_qty = $this->cart->getProductQty($product);
-        $product = $this->wishlist->attachWishlistFlagSingle($product);
-        //  $product->load(['variants.values.attribute', 'attributes.values']);
+        $product = Product::active()->with(['categories', 'tags', 'galleries', 'variants.values.attribute', 'attributes.values', 'faqs'])->where('slug', $slug)->firstOrFail();
 
 
         $categoryIds = $product->categories->pluck('id');
@@ -236,7 +233,7 @@ class HomeController extends Controller
             ->where('id', '!=', $product->id)
             ->limit(6)
             ->get();
-        $relatedProducts = $this->cart->attachCartQtyToProducts($relatedProducts);
+
         return view('frontend.product-details', compact('product', 'relatedProducts'));
     }
 
@@ -551,12 +548,17 @@ class HomeController extends Controller
 
     public function getVariantPrice(Request $request)
     {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'values' => 'required|array'
+        ]);
+
         $product = Product::findOrFail($request->product_id);
 
-        // find matching variant by selected attributes
+        // Find variant matching selected attribute values
         $variant = $product->variants()
             ->whereHas('values', function ($q) use ($request) {
-                $q->whereIn('attribute_value_id', $request->values);
+                $q->whereIn('product_attribute_values.id', $request->values);
             }, '=', count($request->values))
             ->first();
 
@@ -564,14 +566,19 @@ class HomeController extends Controller
             return response()->json(['found' => false]);
         }
 
+        $regularPrice = $variant->regular_price ?? $product->regular_price;
+        $salePrice = $variant->sale_price;
+
         return response()->json([
             'found' => true,
-            'sale_price' => $variant->sale_price,
-            'sale_formatted' => currencyformat($variant->sale_price),
-            'regular_price' => $variant->regular_price,
-            'regular_formatted' => currencyformat($variant->regular_price),
+            'variant_id' => $variant->id,
+            'regular_price' => $regularPrice,
+            'sale_price' => $salePrice,
+            'regular_formatted' => currencyformat($regularPrice),
+            'sale_formatted' => $salePrice ? currencyformat($salePrice) : null,
+            'stock' => $variant->stock ?? 0,
+            'sku' => $variant->sku
         ]);
-
     }
 
 }

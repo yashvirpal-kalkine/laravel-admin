@@ -20,6 +20,9 @@ Route::get('/search', [HomeController::class, 'search'])->name('search');
 Route::post('/get-variant-price', [HomeController::class, 'getVariantPrice']);
 
 
+Route::post('/get-variant-price', [HomeController::class, 'getVariantPrice'])->name('product.variant.price');
+
+
 // Products
 Route::prefix('products')->group(function () {
     //http://localhost:8000/products/details/sample-product-1
@@ -36,16 +39,29 @@ Route::prefix('products')->group(function () {
         ->where('categories', '.*') // catch nested categories
         ->name('products.list');
 });
-Route::prefix('cart')->group(function () {
-    //Route::get('/', [HomeController::class, 'index'])->name('cart.index');
+// Route::prefix('cart')->group(function () {
+//     //Route::get('/', [HomeController::class, 'index'])->name('cart.index');
 
-    Route::post('add/{product}', [CartController::class, 'add'])->name('cart.add');
-    Route::post('update/{product}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::get('mini', [CartController::class, 'mini'])->name('cart.mini');
-    Route::get('/cart/product-qty/{product}', [CartController::class, 'productQty'])->name('cart.productQty');
+//     Route::post('add/{product}', [CartController::class, 'add'])->name('cart.add');
+//     Route::post('update/{product}', [CartController::class, 'update'])->name('cart.update');
+//     Route::delete('remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+//     Route::get('mini', [CartController::class, 'mini'])->name('cart.mini');
+//     Route::get('/cart/product-qty/{product}', [CartController::class, 'productQty'])->name('cart.productQty');
+// });
+
+
+
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::get('/mini', [CartController::class, 'mini'])->name('mini');
+    Route::post('/add/{product}', [CartController::class, 'add'])->name('add');
+    Route::put('/update/{itemId}', [CartController::class, 'update'])->name('update');
+    Route::delete('/remove/{itemId}', [CartController::class, 'remove'])->name('remove');
+    Route::delete('/clear', [CartController::class, 'clear'])->name('clear');
+    
+    Route::post('/coupon/apply', [CartController::class, 'applyCoupon'])->name('coupon.apply');
+    Route::delete('/coupon/{couponId}', [CartController::class, 'removeCoupon'])->name('coupon.remove');
 });
-
 
 
 

@@ -205,5 +205,18 @@ class Product extends Model
     }
 
 
+    public function category()
+    {
+        return $this->categories()->first();
+    }
+
+    /**
+     * Get primary category ID
+     */
+    public function getCategoryIdAttribute()
+    {
+        return $this->categories->first()?->id;
+    }
+
 
 }
