@@ -37,7 +37,7 @@
                                                     <div class="applied-coupons-list" id="applied-coupons-list">
                                                         @if($cart->coupons->isNotEmpty())
                                                             @foreach($cart->coupons as $coupon)
-                                                            {{ $coupon }}
+                                                            <!-- {{ $coupon }} -->
                                                                 <div class="d-inline-flex align-items-center bg-success text-white px-3 py-1 rounded me-2 mb-2"
                                                                     data-coupon-id="{{ $coupon->id }}"
                                                                     data-coupon-code="{{ $coupon->code }}">
