@@ -32,17 +32,21 @@
 
     {{-- SHOP / LISTING PAGE --}}
 @else
+
     @if ($product->has_variants)
-        {{-- Variants: Link to product page --}}
-        <a href="{{ route('products.details', $product->slug) }}" class="btn-options" title="Choose Options">
-            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                <g id="Options_Icon" fill="#222">
-                    <path d="M32 6L4 20l28 14 28-14L32 6z" />
-                    <path d="M4 32l28 14 28-14v6L32 52 4 38v-6z" />
-                    <path d="M4 44l28 14 28-14v6L32 64 4 50v-6z" />
-                </g>
-            </svg>
-        </a>
+
+        <button type="button" title="Choose Options">
+            <a href="{{ route('products.details', $product->slug) }}">
+                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Options_Icon" fill="#222">
+                        <path d="M32 6L4 20l28 14 28-14L32 6z" />
+                        <path d="M4 32l28 14 28-14v6L32 52 4 38v-6z" />
+                        <path d="M4 44l28 14 28-14v6L32 64 4 50v-6z" />
+                    </g>
+                </svg>
+            </a>
+        </button>
+
     @else
         {{-- Simple product: Add to cart directly --}}
         <button class="btn-cart {{ $inCart ? 'in-cart' : '' }} addCart{{ $product->id }}" type="button"
