@@ -41,12 +41,18 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
-    public function coupons(): BelongsToMany
+    public function coupons_old(): BelongsToMany
     {
         return $this->belongsToMany(Coupon::class, 'cart_coupons')
             ->withTimestamps();
     }
 
+    public function coupons(): BelongsToMany
+    {
+        return $this->belongsToMany(Coupon::class, 'cart_coupons')
+            ->withPivot('discount_amount')  // ← CRITICAL: This tells Laravel to include discount_amount
+            ->withTimestamps();
+    }
     /**
      * Calculate and update cart totals
      */

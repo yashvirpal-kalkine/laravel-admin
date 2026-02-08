@@ -33,7 +33,7 @@ use App\Services\WishlistService;
 
 class HomeController extends Controller
 {
-    public function __construct(protected CartService $cart, protected WishlistService $wishlist)
+    public function __construct(protected CartService $cartService, protected WishlistService $wishlist)
     {
     }
     public function index()
@@ -122,8 +122,11 @@ class HomeController extends Controller
             if (!view()->exists("frontend.$template")) {
                 $template = 'default';
             } else if ($page->template == "cart" || $page->template == "checkout") {
-                $cart = $this->cart->getCart();
-                $cart->load('items.product');
+                $cart = $this->cartService->getCart(
+                    auth()->id(),
+                    session()->getId()
+                );
+
                 //  $addresses = Auth::user()->addresses()->latest()->get();
                 // dd($addresses);
                 return view("frontend.$template", compact('page', 'cart'));

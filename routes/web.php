@@ -52,7 +52,7 @@ Route::prefix('products')->group(function () {
 
 
 Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('index');
+   // Route::get('/', [CartController::class, 'index'])->name('index');
     Route::get('/mini', [CartController::class, 'mini'])->name('mini');
     Route::post('/add/{product}', [CartController::class, 'add'])->name('add');
     Route::put('/update/{itemId}', [CartController::class, 'update'])->name('update');
