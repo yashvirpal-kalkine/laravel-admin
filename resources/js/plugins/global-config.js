@@ -347,12 +347,13 @@ export function initFormValidator(formSelector, fields = [], onSuccessCallback =
                 "X-Requested-With": "XMLHttpRequest",
                 "Accept": "application/json"
             },
-            beforeSend: showLoader,
+            beforeSend: showLoader(),
             success(response) {
                 hideLoader();
 
                 if (response.message) {
-                    $form.find(".msg").text(response.message).addClass("text-success");
+                    toastr.success(response.message);
+                    //$form.find(".msg").text(response.message).addClass("text-success");
                 }
 
                 if (response.redirect_url) {
@@ -364,7 +365,8 @@ export function initFormValidator(formSelector, fields = [], onSuccessCallback =
 
                 if (xhr.responseJSON?.errors) {
                     Object.keys(xhr.responseJSON.errors).forEach(field => {
-                        $form.find(".error_" + field).text(xhr.responseJSON.errors[field][0]);
+                       // $form.find(".error_" + field).text(xhr.responseJSON.errors[field][0]);
+                        toastr.success(xhr.responseJSON.errors[field][0])
                     });
                 }
             }
