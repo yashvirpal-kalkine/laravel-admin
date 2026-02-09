@@ -120,10 +120,17 @@ if (!function_exists('enabledPaymentGateways')) {
     }
 }
 if (!function_exists('enabledShippingMethods')) {
+    // function enabledShippingMethods()
+    // {
+    //     return collect(json_decode(setting('shipping_methods') ?? '{}', true))
+    //         ->filter(fn($g) => isset($g['enabled']) && (int) $g['enabled'] === 1);
+    // }
     function enabledShippingMethods()
     {
         return collect(json_decode(setting('shipping_methods') ?? '{}', true))
-            ->filter(fn($g) => isset($g['enabled']) && (int) $g['enabled'] === 1);
+            ->filter(fn($g) => isset($g['enabled']) && (int) $g['enabled'] === 1)
+            ->reverse();
+            //->values(); // optional: reindex keys
     }
 }
 if (!function_exists('labelFromKey')) {

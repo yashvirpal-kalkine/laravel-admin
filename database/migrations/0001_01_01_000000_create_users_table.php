@@ -31,6 +31,7 @@ return new class extends Migration {
             $table->enum('type', ['billing', 'shipping']); // Address type
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
+            $table->string('company')->nullable();
             $table->string('address_line1')->nullable();
             $table->string('address_line2')->nullable();
             $table->string('phone')->nullable();

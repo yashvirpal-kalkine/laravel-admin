@@ -64,6 +64,14 @@ Route::prefix('cart')->name('cart.')->group(function () {
 });
 
 
+Route::prefix('checkout')->name('checkout.')->group(function () {
+   
+    Route::post('/login', [CheckoutController::class, 'login'])->name('login');
+    Route::post('/shipping', [CheckoutController::class, 'updateShipping'])->name('shipping');
+    Route::post('/process', [CheckoutController::class, 'checkOut'])->name('process');
+});
+
+
 
 
 // Blog
