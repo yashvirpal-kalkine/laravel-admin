@@ -226,11 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Set initial shipping method
-    const firstShippingRadio = document.querySelector('input[name="shipping"]:checked');
-    if (firstShippingRadio) {
-        updateShipping(firstShippingRadio);
-    }
+    
 });
 </script>
 @endpush

@@ -1,9 +1,42 @@
+@guest
+    <!-- Returning Customer -->
+    <div class="notification-card">
+        <div class="toggle-section" onclick="toggleContent('loginContent','loginArrow')">
+            <i class="fas fa-user-circle"></i>
+            <span>Returning customer? Click here to login</span>
+            <i class="fas fa-chevron-down arrow-icon" id="loginArrow"></i>
+        </div>
+
+        <div id="loginContent" class="expandable-content">
+            <p style="color:#666;margin-bottom:20px;">
+                If you didn't log in, please log in first.
+            </p>
+            <form action="{{ route('checkoutLogin') }}" method="POST" id="checkoutLoginForm">
+                <div class="input-field">
+                    <label>Email</label>
+                    <input type="email" name="email" id="login_email" placeholder="Enter your email">
+                    <small class="text-danger error_email error"></small>
+                </div>
+
+                <div class="input-field">
+                    <label>Password</label>
+                    <input type="password" name="password" id="login_password" placeholder="Enter your password">
+                    <small class="text-danger error_password error"></small>
+                </div>
+                <span class="my-1 msg"></span>
+                <button type="submit" class="submit-buttonn btn mybtn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+@endguest
+
 <!-- Billing Details -->
 <div class="billing-section">
     <h4 class="section-header">
         <i class="fas fa-file-invoice"></i> Billing Details
     </h4>
-    {{ $billingAddress }}
     <div class="row">
         <div class="col-md-6">
             <div class="input-field">
@@ -46,13 +79,16 @@
     <div class="input-field">
         <label>Phone <span class="required-star">*</span></label>
         <input name="billing_phone" id="billing_phone" class="w-100" type="tel"
-            value="{{ old('billing_phone', $billingAddress->phone ?? '')}}" placeholder="+1 234 567 8900">
+            value="{{ old('billing_phone', $billingAddress->phone ?? '')}}" placeholder="+1 234 567 8900"
+            data-phone-input>
+        <input type="hidden" id="billing_phone_full" name="billing_phone_full">
+        <div class="phone-error"></div>
     </div>
 
     <div class="input-field">
         <label>Zip <span class="required-star">*</span></label>
         <input name="billing_zip" id="billing_zip" type="tel"
-            value="{{ old('billing_zip', $billingAddress->zip ?? '')}}" placeholder="110096">
+            value="{{ old('billing_zip', $billingAddress->postal_code ?? '')}}" placeholder="110096">
     </div>
 
     @if (Auth::guest())
@@ -123,11 +159,15 @@
             <div class="input-field">
                 <label>Phone <span class="required-star">*</span></label>
                 <input name="shipping_phone" id="shipping_phone" class="w-100" type="tel"
-                    value="{{ old('shipping_phone', $shippingAddress->phone ?? '')}}" placeholder="+1 234 567 8900">
+                    value="{{ old('shipping_phone', $shippingAddress->phone ?? '')}}" placeholder="+1 234 567 8900"
+                    data-phone-input>
+                <input type="hidden" id="shipping_phone_full" name="shipping_phone_full">
+                <div class="phone-error"></div>
             </div>
             <div class="input-field">
                 <label>Zip <span class="required-star">*</span></label>
-                <input name="shipping_zip" id="shipping_zip" type="tel" value="{{ old('shipping_zip', $shippingAddress->zip ?? '')}}" placeholder="110096">
+                <input name="shipping_zip" id="shipping_zip" type="tel"
+                    value="{{ old('shipping_zip', $shippingAddress->postal_code ?? '')}}" placeholder="110096">
             </div>
         </div>
     </div>

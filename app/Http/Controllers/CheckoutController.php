@@ -294,6 +294,7 @@ class CheckoutController extends Controller
             'billing_first_name' => 'required|string',
             'billing_last_name' => 'required|string',
             'billing_address_line1' => 'required|string',
+            'billing_address_line2' => 'nullable|string',
             'billing_city' => 'required|string',
             'billing_state' => 'required|string',
             'billing_zip' => 'required|string',
@@ -306,13 +307,13 @@ class CheckoutController extends Controller
             'first_name' => $data['billing_first_name'],
             'last_name' => $data['billing_last_name'],
             'address_line1' => $data['billing_address_line1'],
+            'address_line2' => $data['billing_address_line2'] ?? null,
             'city' => $data['billing_city'],
             'state' => $data['billing_state'],
-            'zip' => $data['billing_zip'],
+            'postal_code' => $data['billing_zip'],
             'phone' => $data['billing_phone'],
         ]);
     }
-
     /**
      * Create shipping address
      */
@@ -322,6 +323,7 @@ class CheckoutController extends Controller
             'shipping_first_name' => 'required|string',
             'shipping_last_name' => 'required|string',
             'shipping_address_line1' => 'required|string',
+            'shipping_address_line2' => 'nullable|string',
             'shipping_city' => 'required|string',
             'shipping_state' => 'required|string',
             'shipping_zip' => 'required|string',
@@ -334,12 +336,14 @@ class CheckoutController extends Controller
             'first_name' => $data['shipping_first_name'],
             'last_name' => $data['shipping_last_name'],
             'address_line1' => $data['shipping_address_line1'],
+            'address_line2' => $data['shipping_address_line2'] ?? null,
             'city' => $data['shipping_city'],
             'state' => $data['shipping_state'],
-            'zip' => $data['shipping_zip'],
+            'postal_code' => $data['shipping_zip'],
             'phone' => $data['shipping_phone'],
         ]);
     }
+
 
     /**
      * Create order from cart

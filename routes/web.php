@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Api\GeoLocationController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/admin.php';
@@ -96,6 +97,8 @@ Route::post('/contact-form-submit', [HomeController::class, 'contactFormSubmit']
 Route::post('/newsletter/subscribe', [HomeController::class, 'newsletterSubscribe'])->name('newsletter.subscribe');
 Route::get('/sitemap.xml', [HomeController::class, 'sitemapXML'])->name('sitemapxml');
 
+Route::get('/api/geo/country', [GeoLocationController::class, 'getCountry'])->name('api.geo.country');
+
 
 
 Route::get('/dashboard', function () {
@@ -106,6 +109,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 
     Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 });
