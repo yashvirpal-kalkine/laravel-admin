@@ -1,11 +1,11 @@
 <?php
 // app/Models/Order.php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
@@ -37,58 +37,141 @@ class Order extends Model
         'tax_total' => 'decimal:2',
         'shipping_total' => 'decimal:2',
         'total' => 'decimal:2',
+        'shipping_address' => 'array',
+        'billing_address' => 'array',
     ];
 
-    public function user(): BelongsTo
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            if (empty($order->order_number)) {
+                $order->order_number = static::generateOrderNumber();
+            }
+        });
+    }
+
+    // Relationships
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function billingAddress(): BelongsTo
+    public function billingAddress()
     {
         return $this->belongsTo(Address::class, 'billing_address_id');
     }
 
-    public function shippingAddress(): BelongsTo
+    public function shippingAddress()
     {
         return $this->belongsTo(Address::class, 'shipping_address_id');
     }
 
-    public function items(): HasMany
+    public function items()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function coupons(): HasMany
+    public function coupons()
     {
         return $this->hasMany(OrderCoupon::class);
     }
 
-    public function transactions(): HasMany
+    public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
 
-    /**
-     * Get formatted order number
-     */
-    public function getFormattedOrderNumberAttribute(): string
+    public function latestTransaction()
     {
-        return '#' . $this->order_number;
+        return $this->hasOne(Transaction::class)->latest();
     }
 
-    /**
-     * Get status badge color
-     */
-    public function getStatusColorAttribute(): string
+    // Scopes
+    public function scopePending($query)
     {
-        return match ($this->status) {
-            'pending' => 'warning',
-            'processing' => 'info',
-            'completed' => 'success',
-            'cancelled' => 'danger',
-            'refunded' => 'secondary',
-            default => 'secondary'
-        };
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeProcessing($query)
+    {
+        return $query->where('status', 'processing');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    public function scopeCancelled($query)
+    {
+        return $query->where('status', 'cancelled');
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('payment_status', 'paid');
+    }
+
+    public function scopeUnpaid($query)
+    {
+        return $query->where('payment_status', 'pending');
+    }
+
+    // Accessors
+    public function getStatusBadgeAttribute()
+    {
+        $badges = [
+            'pending' => '<span class="badge bg-warning">Pending</span>',
+            'processing' => '<span class="badge bg-info">Processing</span>',
+            'completed' => '<span class="badge bg-success">Completed</span>',
+            'cancelled' => '<span class="badge bg-danger">Cancelled</span>',
+            'refunded' => '<span class="badge bg-secondary">Refunded</span>',
+        ];
+
+        return $badges[$this->status] ?? '<span class="badge bg-secondary">Unknown</span>';
+    }
+
+    public function getPaymentStatusBadgeAttribute()
+    {
+        $badges = [
+            'pending' => '<span class="badge bg-warning">Pending</span>',
+            'paid' => '<span class="badge bg-success">Paid</span>',
+            'failed' => '<span class="badge bg-danger">Failed</span>',
+            'refunded' => '<span class="badge bg-secondary">Refunded</span>',
+        ];
+
+        return $badges[$this->payment_status] ?? '<span class="badge bg-secondary">Unknown</span>';
+    }
+
+    // Methods
+    public static function generateOrderNumber()
+    {
+        do {
+            $number = 'ORD-' . strtoupper(uniqid());
+        } while (static::where('order_number', $number)->exists());
+
+        return $number;
+    }
+
+    public function getTotalItems()
+    {
+        return $this->items()->sum('quantity');
+    }
+
+    public function canCancel()
+    {
+        return in_array($this->status, ['pending', 'processing']);
+    }
+
+    public function canRefund()
+    {
+        return $this->status === 'completed' && $this->payment_status === 'paid';
+    }
+
+    public function isPaid()
+    {
+        return $this->payment_status === 'paid';
     }
 }

@@ -110,8 +110,43 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/orders', [ProfileController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [ProfileController::class, 'show'])->name('orders.show');
 
     Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+});
+
+
+
+use App\Http\Controllers\UserProfileController;
+
+
+Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [UserProfileController::class, 'dashboard'])->name('dashboard');
+
+    // Profile
+    Route::get('/', [UserProfileController::class, 'profile'])->name('edit');
+    Route::put('/update', [UserProfileController::class, 'updateProfile'])->name('update');
+    Route::put('/password', [UserProfileController::class, 'updatePassword'])->name('password.update');
+
+    // Addresses
+    Route::get('/addresses', [UserProfileController::class, 'addresses'])->name('addresses');
+    Route::get('/addresses/create', [UserProfileController::class, 'createAddress'])->name('addresses.create');
+    Route::post('/addresses', [UserProfileController::class, 'storeAddress'])->name('addresses.store');
+    Route::get('/addresses/{address}/edit', [UserProfileController::class, 'editAddress'])->name('addresses.edit');
+    Route::put('/addresses/{address}', [UserProfileController::class, 'updateAddress'])->name('addresses.update');
+    Route::delete('/addresses/{address}', [UserProfileController::class, 'deleteAddress'])->name('addresses.destroy');
+    Route::post('/addresses/{address}/default', [UserProfileController::class, 'makeDefaultAddress'])->name('addresses.default');
+
+    // Orders
+    Route::get('/orders', [UserProfileController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [UserProfileController::class, 'orderDetail'])->name('orders.show');
+    Route::post('/orders/{order}/cancel', [UserProfileController::class, 'cancelOrder'])->name('orders.cancel');
+
+    // Transactions
+    Route::get('/transactions', [UserProfileController::class, 'transactions'])->name('transactions');
+    Route::get('/transactions/{id}', [UserProfileController::class, 'transactionDetail'])->name('transactions.show');
 });
 
 // Dynamic pages (keep last)

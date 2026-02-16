@@ -38,7 +38,7 @@ return new class extends Migration {
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('country')->nullable();
-            $table->string('postal_code')->nullable();
+            $table->string('zip')->nullable();
             $table->boolean('status')->default(true)->default(1)->comment('Active/Inactive');
             $table->boolean('is_default')->default(true)->default(1);
             $table->timestamps();

@@ -1,10 +1,10 @@
 <?php
 // app/Models/OrderItem.php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderItem extends Model
 {
@@ -21,23 +21,32 @@ class OrderItem extends Model
     ];
 
     protected $casts = [
+        'quantity' => 'integer',
         'price' => 'decimal:2',
         'subtotal' => 'decimal:2',
-        'quantity' => 'integer',
     ];
 
-    public function order(): BelongsTo
+    // Relationships
+    public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    public function product(): BelongsTo
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function variant(): BelongsTo
+    public function variant()
     {
-        return $this->belongsTo(ProductVariant::class);
+        return $this->belongsTo(ProductVariant::class, 'variant_id');
+    }
+
+    // Accessors
+    public function getFullProductNameAttribute()
+    {
+        return $this->variant_name 
+            ? "{$this->product_name} - {$this->variant_name}" 
+            : $this->product_name;
     }
 }

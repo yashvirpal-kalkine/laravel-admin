@@ -57,6 +57,68 @@ class User extends Authenticatable
         return $this->hasMany(Address::class)->where('type', 'shipping');
     }
 
+    public function defaultBillingAddress()
+    {
+        return $this->hasOne(Address::class)
+            ->where('type', 'billing')
+            ->where('is_default', true);
+    }
+
+    public function defaultShippingAddress()
+    {
+        return $this->hasOne(Address::class)
+            ->where('type', 'shipping')
+            ->where('is_default', true);
+    }
+
+     public function orders()
+    {
+        return $this->hasMany(Order::class)->latest();
+    }
+
+    public function transactions()
+    {
+        return $this->hasManyThrough(Transaction::class, Order::class);
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    // Accessors
+    public function getFullPhoneAttribute()
+    {
+        return $this->country_code ? "+{$this->country_code}{$this->phone}" : $this->phone;
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        return $this->profile_image 
+            ? asset('storage/users/' . $this->profile_image) 
+            : asset('images/default-avatar.png');
+    }
+
+    // Methods
+    public function getTotalOrders()
+    {
+        return $this->orders()->count();
+    }
+
+    public function getTotalSpent()
+    {
+        return $this->orders()
+            ->where('payment_status', 'paid')
+            ->sum('total');
+    }
+
+    public function getPendingOrders()
+    {
+        return $this->orders()
+            ->whereIn('status', ['pending', 'processing'])
+            ->count();
+    }
+
     public function getInitialsAttribute()
     {
         $name = trim($this->name);
@@ -74,14 +136,6 @@ class User extends Authenticatable
 
         // If name is single word → take first 2 letters
         return strtoupper(substr($words[0], 0, 2));
-    }
-    public function getProfileImageUrlAttribute()
-    {
-        if ($this->profile_image) {
-            return asset('storage/users/' . $this->profile_image);
-        }
-
-        return null;
     }
 
     public function wishlists()

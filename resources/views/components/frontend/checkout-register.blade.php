@@ -88,7 +88,7 @@
     <div class="input-field">
         <label>Zip <span class="required-star">*</span></label>
         <input name="billing_zip" id="billing_zip" type="tel"
-            value="{{ old('billing_zip', $billingAddress->postal_code ?? '')}}" placeholder="110096">
+            value="{{ old('billing_zip', $billingAddress->zip ?? '')}}" placeholder="110096">
     </div>
 
     @if (Auth::guest())
@@ -167,7 +167,7 @@
             <div class="input-field">
                 <label>Zip <span class="required-star">*</span></label>
                 <input name="shipping_zip" id="shipping_zip" type="tel"
-                    value="{{ old('shipping_zip', $shippingAddress->postal_code ?? '')}}" placeholder="110096">
+                    value="{{ old('shipping_zip', $shippingAddress->zip ?? '')}}" placeholder="110096">
             </div>
         </div>
     </div>

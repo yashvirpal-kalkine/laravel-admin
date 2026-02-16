@@ -219,7 +219,7 @@ class CheckoutController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Order placed successfully!',
-                'redirect_url' => route('order.success', $order->id)
+                'redirect_url' => route('orders.show', $order->id)
             ]);
 
         } catch (ValidationException $e) {
@@ -310,7 +310,7 @@ class CheckoutController extends Controller
             'address_line2' => $data['billing_address_line2'] ?? null,
             'city' => $data['billing_city'],
             'state' => $data['billing_state'],
-            'postal_code' => $data['billing_zip'],
+            'zip' => $data['billing_zip'],
             'phone' => $data['billing_phone'],
         ]);
     }
@@ -339,7 +339,7 @@ class CheckoutController extends Controller
             'address_line2' => $data['shipping_address_line2'] ?? null,
             'city' => $data['shipping_city'],
             'state' => $data['shipping_state'],
-            'postal_code' => $data['shipping_zip'],
+            'zip' => $data['shipping_zip'],
             'phone' => $data['shipping_phone'],
         ]);
     }
