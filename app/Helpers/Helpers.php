@@ -104,6 +104,37 @@ if (!function_exists('status_badge')) {
         return new HtmlString("<span class='badge bg-{$color}'>{$label}</span>");
     }
 }
+
+
+if (!function_exists('paymentStatusBadge')) {
+
+    function paymentStatusBadge($status)
+    {
+        return match ($status) {
+            'pending' => [
+                'class' => 'bg-warning text-dark',
+                'icon'  => 'fa-hourglass-half',
+                'text'  => 'Pending',
+            ],
+            'completed' => [
+                'class' => 'bg-success',
+                'icon'  => 'fa-check',
+                'text'  => 'Completed',
+            ],
+            'cancelled' => [
+                'class' => 'bg-danger',
+                'icon'  => 'fa-times',
+                'text'  => 'Cancelled',
+            ],
+            default => [
+                'class' => 'bg-secondary',
+                'icon'  => 'fa-circle',
+                'text'  => ucfirst($status),
+            ],
+        };
+    }
+}
+
 if (!function_exists('setting')) {
     function setting($key, $default = null)
     {

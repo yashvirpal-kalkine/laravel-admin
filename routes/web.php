@@ -101,53 +101,79 @@ Route::get('/api/geo/country', [GeoLocationController::class, 'getCountry'])->na
 
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+  Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware('auth')->prefix('user')->name('profile.')->group(function () {
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/orders', [ProfileController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [ProfileController::class, 'show'])->name('orders.show');
+    // Route::get('/orders', [ProfileController::class, 'index'])->name('orders.index');
+    // Route::get('/orders/{order}', [ProfileController::class, 'show'])->name('orders.show');
 
-    Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-});
+      Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
+     // Dashboard
+    Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
 
-
-use App\Http\Controllers\UserProfileController;
-
-
-Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [UserProfileController::class, 'dashboard'])->name('dashboard');
-
-    // Profile
-    Route::get('/', [UserProfileController::class, 'profile'])->name('edit');
-    Route::put('/update', [UserProfileController::class, 'updateProfile'])->name('update');
-    Route::put('/password', [UserProfileController::class, 'updatePassword'])->name('password.update');
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('edit');
+    Route::put('/update', [ProfileController::class, 'updateProfile'])->name('update');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 
     // Addresses
-    Route::get('/addresses', [UserProfileController::class, 'addresses'])->name('addresses');
-    Route::get('/addresses/create', [UserProfileController::class, 'createAddress'])->name('addresses.create');
-    Route::post('/addresses', [UserProfileController::class, 'storeAddress'])->name('addresses.store');
-    Route::get('/addresses/{address}/edit', [UserProfileController::class, 'editAddress'])->name('addresses.edit');
-    Route::put('/addresses/{address}', [UserProfileController::class, 'updateAddress'])->name('addresses.update');
-    Route::delete('/addresses/{address}', [UserProfileController::class, 'deleteAddress'])->name('addresses.destroy');
-    Route::post('/addresses/{address}/default', [UserProfileController::class, 'makeDefaultAddress'])->name('addresses.default');
+    Route::get('/addresses', [ProfileController::class, 'addresses'])->name('addresses');
+    Route::get('/addresses/create', [ProfileController::class, 'createAddress'])->name('addresses.create');
+    Route::post('/addresses', [ProfileController::class, 'storeAddress'])->name('addresses.store');
+    Route::get('/addresses/{address}/edit', [ProfileController::class, 'editAddress'])->name('addresses.edit');
+    Route::put('/addresses/{address}', [ProfileController::class, 'updateAddress'])->name('addresses.update');
+    Route::delete('/addresses/{address}', [ProfileController::class, 'deleteAddress'])->name('addresses.destroy');
+    Route::post('/addresses/{address}/default', [ProfileController::class, 'makeDefaultAddress'])->name('addresses.default');
 
     // Orders
-    Route::get('/orders', [UserProfileController::class, 'orders'])->name('orders');
-    Route::get('/orders/{order}', [UserProfileController::class, 'orderDetail'])->name('orders.show');
-    Route::post('/orders/{order}/cancel', [UserProfileController::class, 'cancelOrder'])->name('orders.cancel');
+    Route::get('/orders', [ProfileController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [ProfileController::class, 'orderDetail'])->name('orders.show');
+    Route::post('/orders/{order}/cancel', [ProfileController::class, 'cancelOrder'])->name('orders.cancel');
 
     // Transactions
-    Route::get('/transactions', [UserProfileController::class, 'transactions'])->name('transactions');
-    Route::get('/transactions/{id}', [UserProfileController::class, 'transactionDetail'])->name('transactions.show');
+    Route::get('/transactions', [ProfileController::class, 'transactions'])->name('transactions');
+    Route::get('/transactions/{id}', [ProfileController::class, 'transactionDetail'])->name('transactions.show');
 });
+
+
+
+// use App\Http\Controllers\UserProfileController;
+
+
+// Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
+//     // Dashboard
+//     Route::get('/dashboard', [UserProfileController::class, 'dashboard'])->name('dashboard');
+
+//     // Profile
+//     Route::get('/', [UserProfileController::class, 'profile'])->name('edit');
+//     Route::put('/update', [UserProfileController::class, 'updateProfile'])->name('update');
+//     Route::put('/password', [UserProfileController::class, 'updatePassword'])->name('password.update');
+
+//     // Addresses
+//     Route::get('/addresses', [UserProfileController::class, 'addresses'])->name('addresses');
+//     Route::get('/addresses/create', [UserProfileController::class, 'createAddress'])->name('addresses.create');
+//     Route::post('/addresses', [UserProfileController::class, 'storeAddress'])->name('addresses.store');
+//     Route::get('/addresses/{address}/edit', [UserProfileController::class, 'editAddress'])->name('addresses.edit');
+//     Route::put('/addresses/{address}', [UserProfileController::class, 'updateAddress'])->name('addresses.update');
+//     Route::delete('/addresses/{address}', [UserProfileController::class, 'deleteAddress'])->name('addresses.destroy');
+//     Route::post('/addresses/{address}/default', [UserProfileController::class, 'makeDefaultAddress'])->name('addresses.default');
+
+//     // Orders
+//     Route::get('/orders', [UserProfileController::class, 'orders'])->name('orders');
+//     Route::get('/orders/{order}', [UserProfileController::class, 'orderDetail'])->name('orders.show');
+//     Route::post('/orders/{order}/cancel', [UserProfileController::class, 'cancelOrder'])->name('orders.cancel');
+
+//     // Transactions
+//     Route::get('/transactions', [UserProfileController::class, 'transactions'])->name('transactions');
+//     Route::get('/transactions/{id}', [UserProfileController::class, 'transactionDetail'])->name('transactions.show');
+// });
 
 // Dynamic pages (keep last)
 Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
