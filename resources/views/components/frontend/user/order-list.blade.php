@@ -13,14 +13,14 @@
             </thead>
             <tbody>
                 @if($items->count() > 0)
-                    @foreach($items as $item)
+                    @foreach($items as $order)
                         <tr>
-                            <td>#{{ $item->id }}</td>
-                            <td>{{ dateFormat($item->created_at) }}</td>
-                            <td>{{ currencyformat($item->total) }}</td>
+                            <td>#{{ $order->id }}</td>
+                            <td>{{ dateFormat($order->created_at) }}</td>
+                            <td>{{ currencyformat($order->total) }}</td>
                             <td>
                                 @php
-                                    $status = paymentStatusBadge($item->status);
+                                    $status = paymentStatusBadge($order->status);
                                 @endphp
                                 <span class="badge rounded-pill {{ $status['class'] }}">
                                     <i class="fas {{ $status['icon'] }} me-1"></i>
@@ -29,7 +29,8 @@
 
                             </td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-outline-secondary">View</a>
+                                <a href="{{ route('profile.orders.show', $order->id) }}"
+                                    class="btn btn-sm btn-outline-secondary">View</a>
                             </td>
                         </tr>
                     @endforeach
@@ -43,4 +44,10 @@
             </tbody>
         </table>
     </div>
+    {{-- Pagination Links --}}
+    @if(method_exists($items, 'links'))
+        <div class="p-3">
+            {{ $items->links() }}
+        </div>
+    @endif
 </div>

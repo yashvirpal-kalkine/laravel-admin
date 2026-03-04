@@ -159,7 +159,7 @@ class HomeController extends Controller
             } else {
                 if ($template == 'auth') {
                     if (Auth::check()) {
-                        return redirect(route('dashboard', absolute: false));
+                        return redirect(route('profile.dashboard', absolute: false));
                     }
                     return view("frontend.$template.$page->slug", compact('page'));
                 }

@@ -14,11 +14,21 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
+
 class ProfileController extends Controller
 {
+        use AuthorizesRequests; // 👈 ADD THIS
+
     /**
      * Display the user's profile form.
      */
+    public function __construct()
+    {
+     //   $this->middleware('auth');
+    }
+
     public function show()
     {
         dd('order success');
@@ -82,14 +92,14 @@ class ProfileController extends Controller
 
         $recentOrders = $user->orders()->take(5)->get();
 
-        return view('dashboard', compact('user', 'stats', 'recentOrders'));
+        return view('profile.dashboard', compact('user', 'stats', 'recentOrders'));
     }
 
     // Profile
     public function profile()
     {
         $user = Auth::user();
-        return view('profile.edit', compact('user'));
+        return view('profile.profile-edit', compact('user'));
     }
 
     public function updateProfile(Request $request)
@@ -151,7 +161,7 @@ class ProfileController extends Controller
 
     public function createAddress()
     {
-        return view('profile.addresses.create');
+        return view('profile.addresses.form');
     }
 
     public function storeAddress(Request $request)
@@ -184,7 +194,7 @@ class ProfileController extends Controller
     public function editAddress(Address $address)
     {
         $this->authorize('update', $address);
-        return view('profile.addresses.edit', compact('address'));
+        return view('profile.addresses.form', compact('address'));
     }
 
     public function updateAddress(Request $request, Address $address)

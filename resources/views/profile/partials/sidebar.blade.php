@@ -20,25 +20,33 @@
         </div>
         <ul class="nav-menu">
             <li>
-                <a href="{{ route('profile.dashboard') }}" class="active"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="{{ route('profile.dashboard') }}"
+                    class="{{ request()->routeIs('profile.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
             </li>
             <li>
-                <a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> My profile</a>
+                <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                    <i class="fas fa-user"></i> My profile
+                </a>
             </li>
             <li>
-                <a href="#" onclick="showPage('orders')"><i class="fas fa-shopping-bag"></i> My orders</a>
+                <a href="{{ route('profile.addresses') }}"
+                    class="{{ request()->routeIs('profile.addresses*') ? 'active' : '' }}">
+                    <i class="fas fa-address-card"></i> Addresses
+                </a>
             </li>
             <li>
-                <a href="#" onclick="showPage('review')"><i class="fas fa-star"></i> Product review</a>
+                <a href="{{ route('profile.orders') }}"
+                    class="{{ request()->routeIs('profile.orders*') ? 'active' : '' }}">
+                    <i class="fas fa-shopping-bag"></i> My orders
+                </a>
             </li>
             <li>
-                <a href="#" onclick="showPage('recommendations')"><i class="fas fa-eye"></i> Product recommendations</a>
-            </li>
-            <li>
-                <a href="#" onclick="showPage('membership')"><i class="fas fa-award"></i> Membership</a>
-            </li>
-            <li>
-                <a href="#" onclick="showPage('password')"><i class="fas fa-key"></i> Change password</a>
+                <a href="{{ route('profile.dashboard') }}"
+                    class="{{ request()->routeIs('profile.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-award"></i> Membership
+                </a>
             </li>
             <li>
                 <form id="logout-form" method="POST" action="{{ route('logout') }}">
