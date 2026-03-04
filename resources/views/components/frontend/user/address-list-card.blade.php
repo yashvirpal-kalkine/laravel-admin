@@ -38,8 +38,7 @@
                 class="btn btn-sm btn-outline-primary rounded-pill px-3">
                 <i class="fas fa-edit me-1"></i> Edit
             </a>
-
-            <form action="{{ route('profile.addresses.destroy', $item) }}" method="POST"
+            <form class="delete-address-form" id="myForm{{ $item->id }}" action="{{ route('profile.addresses.destroy', $item) }}" method="POST"
                 onsubmit="return confirm('Are you sure?')">
                 @csrf
                 @method('DELETE')
@@ -48,6 +47,5 @@
                 </button>
             </form>
         </div>
-
     </div>
 </div>

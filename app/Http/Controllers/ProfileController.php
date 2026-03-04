@@ -132,6 +132,7 @@ class ProfileController extends Controller
                     'redirect_url' => route('profile.edit')
                 ]);
             }
+            return redirect()->route('profile.edit')->with('success', 'Profile updated successfully!');
         } catch (ValidationException $e) {
             if ($request->expectsJson()) {
                 return response()->json([
@@ -142,8 +143,7 @@ class ProfileController extends Controller
 
             throw $e;
         }
-        return redirect()->route('profile.edit')
-            ->with('success', 'Profile updated successfully!');
+
     }
 
     public function editPassword()
@@ -266,8 +266,7 @@ class ProfileController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Address updated successfully!',
-                    'address_id' => $address->id,
-                    'is_default' => $address->is_default
+                    'redirect_url' => route('profile.addresses')
                 ]);
             }
 
@@ -285,14 +284,30 @@ class ProfileController extends Controller
         }
     }
 
-    public function deleteAddress(Address $address)
+    public function deleteAddress(Request $request, Address $address)
     {
-        $this->authorize('delete', $address);
+        try {
+            $this->authorize('delete', $address);
+            $address->delete();
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Address deleted successfully!',
+                    'redirect_url' => route('profile.addresses')
+                ]);
+            }
+            return redirect()->route('profile.addresses')->with('success', 'Address deleted successfully!');
 
-        $address->delete();
-
-        return redirect()->route('profile.addresses')
-            ->with('success', 'Address deleted successfully!');
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Something went wrong. Please try again.',
+                    'errors' => $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
     }
 
     public function makeDefaultAddress(Address $address)

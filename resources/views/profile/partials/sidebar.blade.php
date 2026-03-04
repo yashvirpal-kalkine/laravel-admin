@@ -43,6 +43,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('profile.orders') }}"
+                    class="{{ request()->routeIs('profile.orders*') ? 'active' : '' }}">
+                    <i class="fas fa-heart"></i>My Wishlishts
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('profile.dashboard') }}"
                     class="{{ request()->routeIs('profile.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-award"></i> Membership

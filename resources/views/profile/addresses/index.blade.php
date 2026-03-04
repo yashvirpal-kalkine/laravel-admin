@@ -48,3 +48,14 @@
         </div>
     </section>
 @endsection
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rules = [];
+
+            document.querySelectorAll(".delete-address-form").forEach(form => {
+                initFormValidator("#" + form.id, rules);
+            });
+        });
+    </script>
+@endpush
