@@ -19,14 +19,14 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProfileController extends Controller
 {
-        use AuthorizesRequests; // 👈 ADD THIS
+    use AuthorizesRequests; // 👈 ADD THIS
 
     /**
      * Display the user's profile form.
      */
     public function __construct()
     {
-     //   $this->middleware('auth');
+        //   $this->middleware('auth');
     }
 
     public function show()
@@ -105,49 +105,87 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'country_code' => 'nullable|string|max:5',
+                'phone' => 'nullable|string|max:15|unique:users,phone,' . $user->id,
+                'profile_image' => 'nullable|image|max:2048',
+            ]);
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'country_code' => 'nullable|string|max:5',
-            'phone' => 'nullable|string|max:15|unique:users,phone,' . $user->id,
-            'profile_image' => 'nullable|image|max:2048',
-        ]);
+            if ($request->hasFile('profile_image')) {
+                // Delete old image
+                if ($user->profile_image) {
+                    Storage::disk('public')->delete($user->profile_image);
+                }
 
-        if ($request->hasFile('profile_image')) {
-            // Delete old image
-            if ($user->profile_image) {
-                Storage::disk('public')->delete($user->profile_image);
+                $validated['profile_image'] = $request->file('profile_image')
+                    ->store('profile-images', 'public');
             }
 
-            $validated['profile_image'] = $request->file('profile_image')
-                ->store('profile-images', 'public');
+            $user->update($validated);
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Profile updated successfully!',
+                    'redirect_url' => route('profile.edit')
+                ]);
+            }
+        } catch (ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors()
+                ], 422);
+            }
+
+            throw $e;
         }
-
-        $user->update($validated);
-
         return redirect()->route('profile.edit')
             ->with('success', 'Profile updated successfully!');
     }
 
+    public function editPassword()
+    {
+        $user = Auth::user();
+        return view('profile.password-edit', compact('user'));
+    }
     public function updatePassword(Request $request)
     {
-        $request->validate([
-            'current_password' => 'required',
-            'password' => 'required|min:8|confirmed',
-        ]);
+        try {
+            $request->validate([
+                'current_password' => 'required',
+                'password' => 'required|min:8|confirmed',
+            ]);
 
-        $user = Auth::user();
+            $user = Auth::user();
 
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Current password is incorrect']);
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Current password is incorrect']);
+            }
+
+            $user->update([
+                'password' => Hash::make($request->password),
+            ]);
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Password updated successfully!',
+                ]);
+            }
+            return back()->with('success', 'Password updated successfully!');
+        } catch (ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors()
+                ], 422);
+            }
+
+            throw $e;
         }
 
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return back()->with('success', 'Password updated successfully!');
     }
 
     // Addresses
@@ -177,8 +215,8 @@ class ProfileController extends Controller
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'country' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:10',
-            'is_default' => 'boolean',
+            'zip' => 'required|string|max:10',
+            'is_default' => 'nullable|boolean',
         ]);
 
         $address = Auth::user()->addresses()->create($validated);
@@ -199,31 +237,52 @@ class ProfileController extends Controller
 
     public function updateAddress(Request $request, Address $address)
     {
-        $this->authorize('update', $address);
+        try {
+            $this->authorize('update', $address);
 
-        $validated = $request->validate([
-            'type' => 'required|in:billing,shipping',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'company' => 'nullable|string|max:255',
-            'address_line1' => 'required|string|max:255',
-            'address_line2' => 'nullable|string|max:255',
-            'phone' => 'required|string|max:20',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:10',
-            'is_default' => 'boolean',
-        ]);
+            $validated = $request->validate([
+                'type' => 'required|in:billing,shipping',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'company' => 'nullable|string|max:255',
+                'address_line1' => 'required|string|max:255',
+                'address_line2' => 'nullable|string|max:255',
+                'phone' => 'required|string|max:20',
+                'city' => 'required|string|max:255',
+                'state' => 'required|string|max:255',
+                'country' => 'required|string|max:255',
+                'zip' => 'required|string|max:10',
+                'is_default' => 'nullable|boolean',
+            ]);
 
-        $address->update($validated);
+            $validated['is_default'] = $request->boolean('is_default');
 
-        if ($request->is_default) {
-            $address->makeDefault();
+            $address->update($validated);
+
+            if ($validated['is_default']) {
+                $address->makeDefault();
+            }
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Address updated successfully!',
+                    'address_id' => $address->id,
+                    'is_default' => $address->is_default
+                ]);
+            }
+
+            return redirect()->route('profile.addresses')
+                ->with('success', 'Address updated successfully!');
+        } catch (ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors()
+                ], 422);
+            }
+
+            throw $e;
         }
-
-        return redirect()->route('profile.addresses')
-            ->with('success', 'Address updated successfully!');
     }
 
     public function deleteAddress(Address $address)

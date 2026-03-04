@@ -20,7 +20,7 @@ class Address extends Model
         'city',
         'state',
         'country',
-        'postal_code',
+        'zip',
         'status',
         'is_default',
     ];
@@ -101,19 +101,20 @@ class Address extends Model
         return $this;
     }
 
-    public function toArray()
-    {
-        return [
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'company' => $this->company,
-            'address_line1' => $this->address_line1,
-            'address_line2' => $this->address_line2,
-            'phone' => $this->phone,
-            'city' => $this->city,
-            'state' => $this->state,
-            'country' => $this->country,
-            'postal_code' => $this->postal_code,
-        ];
-    }
+    // public function toArray()
+    // {
+    //     return [
+    //         'type'=>$this->type,
+    //         'first_name' => $this->first_name,
+    //         'last_name' => $this->last_name,
+    //         'company' => $this->company,
+    //         'address_line1' => $this->address_line1,
+    //         'address_line2' => $this->address_line2,
+    //         'phone' => $this->phone,
+    //         'city' => $this->city,
+    //         'state' => $this->state,
+    //         'country' => $this->country,
+    //         'postal_code' => $this->postal_code,
+    //     ];
+    // }
 }

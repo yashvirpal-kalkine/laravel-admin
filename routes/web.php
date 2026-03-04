@@ -121,7 +121,8 @@ Route::middleware('auth')->prefix('user')->name('profile.')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'profile'])->name('edit');
     Route::put('/update', [ProfileController::class, 'updateProfile'])->name('update');
-    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::get('/edit-password', [ProfileController::class, 'editPassword'])->name('password.edit');
+    Route::put('/update-password', [ProfileController::class, 'updatePassword'])->name('password.update');
 
     // Addresses
     Route::get('/addresses', [ProfileController::class, 'addresses'])->name('addresses');

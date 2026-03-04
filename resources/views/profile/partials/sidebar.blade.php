@@ -49,6 +49,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('profile.password.edit') }}"
+                    class="{{ request()->routeIs('profile.password.edit*') ? 'active' : '' }}">
+                    <i class="fas fa-key"></i> Change password
+                </a>
+            </li>
+            <li>
                 <form id="logout-form" method="POST" action="{{ route('logout') }}">
                     @csrf
 
