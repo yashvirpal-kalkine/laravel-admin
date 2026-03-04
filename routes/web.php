@@ -114,10 +114,13 @@ Route::middleware('auth')->prefix('user')->name('profile.')->group(function () {
     // Route::get('/orders', [ProfileController::class, 'index'])->name('orders.index');
     // Route::get('/orders/{order}', [ProfileController::class, 'show'])->name('orders.show');
 
-      Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+     // Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
      // Dashboard
     Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
+
+    //Wishlist
+    Route::get('/wishlist', [ProfileController::class, 'wishlist'])->name('wishlist');
 
     Route::get('/profile', [ProfileController::class, 'profile'])->name('edit');
     Route::put('/update', [ProfileController::class, 'updateProfile'])->name('update');

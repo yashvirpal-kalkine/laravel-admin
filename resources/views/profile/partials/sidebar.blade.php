@@ -43,8 +43,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('profile.orders') }}"
-                    class="{{ request()->routeIs('profile.orders*') ? 'active' : '' }}">
+                <a href="{{ route('profile.wishlist') }}"
+                    class="{{ request()->routeIs('profile.wishlist*') ? 'active' : '' }}">
                     <i class="fas fa-heart"></i>My Wishlishts
                 </a>
             </li>

@@ -11,6 +11,7 @@ use Illuminate\View\View;
 
 use App\Models\Address;
 use App\Models\Order;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -93,6 +94,22 @@ class ProfileController extends Controller
         $recentOrders = $user->orders()->take(5)->get();
 
         return view('profile.dashboard', compact('user', 'stats', 'recentOrders'));
+    }
+    //Wishlist
+    public function wishlist()
+    {
+        $wishlists = Wishlist::with('wishlistable')
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->get();
+
+        // Used only for UI (heart color)
+        $wishlistedProductIds = $wishlists->pluck('wishlistable_id')->toArray();
+
+        return view('profile.wishlist', compact(
+            'wishlists',
+            'wishlistedProductIds'
+        ));
     }
 
     // Profile
@@ -204,27 +221,45 @@ class ProfileController extends Controller
 
     public function storeAddress(Request $request)
     {
-        $validated = $request->validate([
-            'type' => 'required|in:billing,shipping',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'company' => 'nullable|string|max:255',
-            'address_line1' => 'required|string|max:255',
-            'address_line2' => 'nullable|string|max:255',
-            'phone' => 'required|string|max:20',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'zip' => 'required|string|max:10',
-            'is_default' => 'nullable|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'type' => 'required|in:billing,shipping',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'company' => 'nullable|string|max:255',
+                'address_line1' => 'required|string|max:255',
+                'address_line2' => 'nullable|string|max:255',
+                'phone' => 'required|string|max:20',
+                'city' => 'required|string|max:255',
+                'state' => 'required|string|max:255',
+                'country' => 'required|string|max:255',
+                'zip' => 'required|string|max:10',
+                'is_default' => 'nullable|boolean',
+            ]);
+            $validated['is_default'] = $request->boolean('is_default');
 
-        $address = Auth::user()->addresses()->create($validated);
+            $address = Auth::user()->addresses()->create($validated);
 
-        if ($request->is_default) {
-            $address->makeDefault();
+            if ($request->is_default) {
+                $address->makeDefault();
+            }
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Address added successfully!',
+                    'redirect_url' => route('profile.addresses')
+                ]);
+            }
+        } catch (ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors()
+                ], 422);
+            }
+
+            throw $e;
         }
-
         return redirect()->route('profile.addresses')
             ->with('success', 'Address added successfully!');
     }
@@ -366,4 +401,5 @@ class ProfileController extends Controller
 
         return view('profile.transactions.show', compact('transaction'));
     }
+
 }
