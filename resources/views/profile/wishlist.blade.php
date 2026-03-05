@@ -6,8 +6,7 @@
 @section('content')
     <section class="account-sec">
         <div class="container mt-4 mb-5">
-            <h1 class="mb-4">My Account</h1>
-
+           
             <div class="row">
                 @include('profile.partials.sidebar')
 
