@@ -8,8 +8,6 @@
     <!--  account section start here -->
     <section class="account-sec">
         <div class="container mt-4 mb-5">
-            <h1 class="mb-4">My Account</h1>
-
             <div class="row">
                 @include('profile.partials.sidebar')
 
@@ -23,23 +21,32 @@
                                 enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
-                                <div class="row mb-3">
-                                    <div class="col-md-8 mb-3">
-                                        <label class="form-label">Current Password</label>
-                                        <input type="password" id="current_password" name="current_password"
-                                            class="form-control">
-                                    </div>
-                                    <div class="col-md-8 mb-3">
-                                        <label class="form-label">New Password</label>
-                                        <input type="password" id="password" name="password" class="form-control">
-                                    </div>
-                                    <div class="col-md-8 mb-3">
-                                        <label class="form-label">Confirm Password</label>
-                                        <input type="password" id="password_confirmation" name="password_confirmation"
-                                            class="form-control">
+
+                                <div class="row justify-content-center">
+                                    <div class="col-md-5">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Current Password</label>
+                                            <input type="password" id="current_password" name="current_password"
+                                                class="form-control">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">New Password</label>
+                                            <input type="password" id="password" name="password" class="form-control">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Confirm Password</label>
+                                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                                class="form-control">
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary-custom w-100 mybtn"> Update </button>
+
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary-custom">Update</button>
+
                             </form>
                         </div>
                     </div>

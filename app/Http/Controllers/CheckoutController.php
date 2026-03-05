@@ -219,7 +219,7 @@ class CheckoutController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Order placed successfully!',
-                'redirect_url' => route('orders.show', $order->id)
+                'redirect_url' => route('page', ['slug' => 'thank-you', 'order' => encrypt($order->id)]),
             ]);
 
         } catch (ValidationException $e) {
