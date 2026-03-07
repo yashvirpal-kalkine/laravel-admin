@@ -113,6 +113,7 @@ class HomeController extends Controller
 
     public function page($slug)
     {
+        
         $page = Page::where('slug', $slug)->first();
         if (!$page) {
             return response()->view('frontend.404', [], 404);
@@ -161,6 +162,7 @@ class HomeController extends Controller
                     if (Auth::check()) {
                         return redirect(route('profile.dashboard', absolute: false));
                     }
+                   
                     return view("frontend.$template.$page->slug", compact('page'));
                 }
                 return view("frontend.$template", compact('page'));

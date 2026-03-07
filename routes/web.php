@@ -18,9 +18,6 @@ require __DIR__ . '/admin.php';
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/search', [HomeController::class, 'search'])->name('search');
 
-Route::post('/get-variant-price', [HomeController::class, 'getVariantPrice']);
-
-
 Route::post('/get-variant-price', [HomeController::class, 'getVariantPrice'])->name('product.variant.price');
 
 
@@ -53,20 +50,20 @@ Route::prefix('products')->group(function () {
 
 
 Route::prefix('cart')->name('cart.')->group(function () {
-   // Route::get('/', [CartController::class, 'index'])->name('index');
+    // Route::get('/', [CartController::class, 'index'])->name('index');
     Route::get('/mini', [CartController::class, 'mini'])->name('mini');
     Route::post('/add/{product}', [CartController::class, 'add'])->name('add');
     Route::put('/update/{itemId}', [CartController::class, 'update'])->name('update');
     Route::delete('/remove/{itemId}', [CartController::class, 'remove'])->name('remove');
     Route::delete('/clear', [CartController::class, 'clear'])->name('clear');
-    
+
     Route::post('/coupon/apply', [CartController::class, 'applyCoupon'])->name('coupon.apply');
     Route::delete('/coupon/{couponId}', [CartController::class, 'removeCoupon'])->name('coupon.remove');
 });
 
 
 Route::prefix('checkout')->name('checkout.')->group(function () {
-   
+
     Route::post('/login', [CheckoutController::class, 'login'])->name('login');
     Route::post('/shipping', [CheckoutController::class, 'updateShipping'])->name('shipping');
     Route::post('/process', [CheckoutController::class, 'checkOut'])->name('process');
@@ -101,22 +98,12 @@ Route::get('/api/geo/country', [GeoLocationController::class, 'getCountry'])->na
 
 
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-  Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::get('/user/dashboard')->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
 Route::middleware('auth')->prefix('user')->name('profile.')->group(function () {
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Route::get('/orders', [ProfileController::class, 'index'])->name('orders.index');
-    // Route::get('/orders/{order}', [ProfileController::class, 'show'])->name('orders.show');
-
-     // Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-
-     // Dashboard
+    // Dashboard
     Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
 
     //Wishlist
@@ -146,40 +133,10 @@ Route::middleware('auth')->prefix('user')->name('profile.')->group(function () {
     Route::get('/transactions/{id}', [ProfileController::class, 'transactionDetail'])->name('transactions.show');
 });
 
+require __DIR__ . '/auth.php';
 
 
-// use App\Http\Controllers\UserProfileController;
-
-
-// Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
-//     // Dashboard
-//     Route::get('/dashboard', [UserProfileController::class, 'dashboard'])->name('dashboard');
-
-//     // Profile
-//     Route::get('/', [UserProfileController::class, 'profile'])->name('edit');
-//     Route::put('/update', [UserProfileController::class, 'updateProfile'])->name('update');
-//     Route::put('/password', [UserProfileController::class, 'updatePassword'])->name('password.update');
-
-//     // Addresses
-//     Route::get('/addresses', [UserProfileController::class, 'addresses'])->name('addresses');
-//     Route::get('/addresses/create', [UserProfileController::class, 'createAddress'])->name('addresses.create');
-//     Route::post('/addresses', [UserProfileController::class, 'storeAddress'])->name('addresses.store');
-//     Route::get('/addresses/{address}/edit', [UserProfileController::class, 'editAddress'])->name('addresses.edit');
-//     Route::put('/addresses/{address}', [UserProfileController::class, 'updateAddress'])->name('addresses.update');
-//     Route::delete('/addresses/{address}', [UserProfileController::class, 'deleteAddress'])->name('addresses.destroy');
-//     Route::post('/addresses/{address}/default', [UserProfileController::class, 'makeDefaultAddress'])->name('addresses.default');
-
-//     // Orders
-//     Route::get('/orders', [UserProfileController::class, 'orders'])->name('orders');
-//     Route::get('/orders/{order}', [UserProfileController::class, 'orderDetail'])->name('orders.show');
-//     Route::post('/orders/{order}/cancel', [UserProfileController::class, 'cancelOrder'])->name('orders.cancel');
-
-//     // Transactions
-//     Route::get('/transactions', [UserProfileController::class, 'transactions'])->name('transactions');
-//     Route::get('/transactions/{id}', [UserProfileController::class, 'transactionDetail'])->name('transactions.show');
-// });
-
-// Dynamic pages (keep last)
+// Dynamic CMS pages
 Route::get('/{slug}', [HomeController::class, 'page'])->name('page');
 
-require __DIR__ . '/auth.php';
+

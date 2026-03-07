@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Notifications\ResetPassword;
+
 
 class User extends Authenticatable
 {
@@ -71,7 +73,7 @@ class User extends Authenticatable
             ->where('is_default', true);
     }
 
-     public function orders()
+    public function orders()
     {
         return $this->hasMany(Order::class)->latest();
     }
@@ -94,8 +96,8 @@ class User extends Authenticatable
 
     public function getProfileImageUrlAttribute()
     {
-        return $this->profile_image 
-            ? asset('storage/users/' . $this->profile_image) 
+        return $this->profile_image
+            ? asset('storage/users/' . $this->profile_image)
             : asset('images/default-avatar.png');
     }
 
@@ -142,6 +144,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Wishlist::class);
     }
-
+    public function sendPasswordResetNotification($token): void
+    {
+        // ✅ Do nothing — our listener handles it
+    }
 
 }
